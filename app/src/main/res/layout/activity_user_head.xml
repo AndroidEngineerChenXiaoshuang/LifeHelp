@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@color/colorPrimary"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
+    android:background="#01a1dd"
     android:layout_width="match_parent"
-    android:layout_height="?android:attr/actionBarSize">
+    android:layout_height="50dp">
 
         <ImageButton
             android:layout_centerVertical="true"
             android:id="@+id/title_return"
-            android:src="@drawable/ic_back"
-            android:background="@drawable/back_ripple"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:background="@drawable/popup_return"
+            android:layout_width="30dp"
+            android:layout_height="30dp" />
 
         <TextView
             android:layout_centerInParent="true"
@@ -26,5 +23,5 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-</RelativeLayout>
+    </RelativeLayout>
 

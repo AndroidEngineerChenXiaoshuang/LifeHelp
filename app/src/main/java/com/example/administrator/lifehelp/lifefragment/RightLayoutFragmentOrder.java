@@ -11,12 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.util.Util;
 import com.example.administrator.lifehelp.MainActivity;
 import com.example.administrator.lifehelp.R;
 import com.example.administrator.lifehelp.adapter.ListBaseAdapter;
@@ -50,16 +48,15 @@ public class RightLayoutFragmentOrder extends Fragment implements View.OnClickLi
         this.className = className;
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = LayoutInflater.from(MyApplication.getContext()).inflate(R.layout.right_layout_two,container,false);
-        if(Build.VERSION.SDK_INT>=21){
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,Utils.getStatusHeight());
-            root.findViewById(R.id.title_status).setLayoutParams(layoutParams);
-            root.findViewById(R.id.title_status).setBackgroundColor(0xFFBABABA);
-
-        }
         //注册点击事件
+        if(Build.VERSION.SDK_INT>=21){
+            //添加paddingTop
+            root.setPadding(0, Utils.getStatusHeight(),0,0);
+        }
         root.findViewById(R.id.back_layout).setOnClickListener(this);
         root.findViewById(R.id.right_layout_two_back).setOnClickListener(this);
         listView = (ListView) root.findViewById(R.id.list_help_class);

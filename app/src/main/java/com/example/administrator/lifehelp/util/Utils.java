@@ -1,11 +1,22 @@
 package com.example.administrator.lifehelp.util;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.PopupWindowCompat;
+import android.util.Base64;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,12 +25,26 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.AnimationUtils;
 import android.widget.PopupWindow;
 import android.widget.Toast;
+
+import com.example.administrator.lifehelp.MainActivity;
 import com.example.administrator.lifehelp.R;
 import com.example.administrator.lifehelp.application.MyApplication;
 import com.example.administrator.lifehelp.lifefragment.MainFragment;
+
+import java.io.IOException;
+import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import okhttp3.Cookie;
+import okhttp3.CookieJar;
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 /**
  * 设置顶部color
@@ -89,7 +114,7 @@ public class Utils {
         downloadPopupWindow = new PopupWindow();
         View root = LayoutInflater.from(MyApplication.getContext()).inflate(R.layout.download_think_layout, (ViewGroup) parent,false);
         downloadPopupWindow.setContentView(root);
-        downloadPopupWindow.setWidth(dip2px(MyApplication.getContext(),300));
+        downloadPopupWindow.setWidth(dip2px(MyApplication.getContext(),250));
         downloadPopupWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         downloadPopupWindow.setAnimationStyle(R.style.StartDownloadAnimation);
         //点击确定下载
@@ -233,6 +258,28 @@ public class Utils {
     //获取到指定范围的随机数
     public static int radom(int min,int max){
         return (int)(Math.random()*(max-min)+min);
+    }
+
+    //将字符串转换为纯数字手机号
+    public static String getPhoneNumber(String userPhone) {
+        String userPhoneNumber;
+        String regEx="[^0-9]";
+        Pattern p = Pattern.compile(regEx);
+        Matcher m = p.matcher(userPhone);
+        userPhoneNumber = m.replaceAll("").trim();
+        return userPhoneNumber;
+    }
+
+    //将传来的字符串转换成Bitmap类型
+    public static Bitmap getStringToBitmap(String verifyImg) {
+        Bitmap bitmap = null;
+        try {
+            byte[]bitmapArray = Base64.decode(verifyImg, Base64.DEFAULT);
+            bitmap= BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return bitmap;
     }
 
 }

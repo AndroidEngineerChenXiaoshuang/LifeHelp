@@ -1,21 +1,21 @@
 package com.example.administrator.lifehelp.db;
 
 import org.litepal.crud.DataSupport;
+
 import java.io.Serializable;
 
 /**
- * Created by Administrator on 2017/5/1 0001.
+ * Created by Administrator on 2017/5/1 0001
  */
 
 public class UserHelpInfo extends DataSupport implements Serializable{
+
     public String user_title;
     public String user_money;
     public String user_info;
     public String user_img;
     public String user_timer;
     public int id;
-
-
 
     public void setUser_title(String user_title){
         this.user_title = user_title;
@@ -56,4 +56,7 @@ public class UserHelpInfo extends DataSupport implements Serializable{
     public String getUser_timer() {
         return user_timer;
     }
+
+
+
 }

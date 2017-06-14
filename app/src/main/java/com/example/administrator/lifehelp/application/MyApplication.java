@@ -12,7 +12,6 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.Request;
 import com.bumptech.glide.request.target.ImageViewTarget;
 import com.example.administrator.lifehelp.R;
-import com.example.administrator.lifehelp.util.Utils;
 
 import org.litepal.LitePalApplication;
 
@@ -181,11 +180,6 @@ public class MyApplication extends Application{
         public static final String[] HELP_CLASS_NAMES = {"全部分类","宠物/宠物用品/代看","游戏账号/虚拟帮助","早中晚餐/夜宵"};
         //用于保存帮助类说有图片的资源id
         public static final int[] HELP_CLASS_IMAGES = {R.drawable.help_all,R.drawable.help_dog,R.drawable.help_foot,R.drawable.help_game};
-        //该设备的状态栏高度
-        public static final int STATUS_HEIGHT = Utils.getStatusHeight();
-        //本地用户头像下标
-        public static final int[] USER_IMAGE = {R.drawable.ic_user};
-
     }
 
     /**

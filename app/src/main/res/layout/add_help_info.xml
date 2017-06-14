@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout
     android:id="@+id/addHelpMain"
     android:layout_width="match_parent"
@@ -25,6 +26,7 @@
                  android:background="#e2e8ea"
                  android:layout_width="45dp"
                  android:layout_height="match_parent" />
+
              <TextView
                  android:layout_marginLeft="10dp"
                  android:layout_width="wrap_content"
@@ -33,6 +35,7 @@
                  android:textSize="15sp"
                  android:gravity="center_vertical"
                  android:text="发布需求"/>
+
              <TextView
                  android:id="@+id/helpInfoCommit"
                  android:paddingLeft="10dp"
@@ -44,6 +47,7 @@
                  android:textSize="15sp"
                  android:gravity="center"
                  android:layout_alignParentRight="true"/>
+
              <LinearLayout
                  android:layout_width="match_parent"
                  android:background="#fff"
@@ -64,12 +68,19 @@
                      android:layout_gravity="center"
                      android:text="@string/helpMoney_SizeWarn"/>
              </LinearLayout>
+
+
+
          </RelativeLayout>
+
+
+
          <LinearLayout
              android:layout_width="match_parent"
              android:padding="10dp"
              android:orientation="vertical"
              android:layout_height="wrap_content">
+
              <EditText
                  android:maxLines="1"
                  android:maxLength="25"
@@ -83,10 +94,12 @@
                  android:textColor="@color/fontsColor"
                  android:hint="请输入标题"
                  android:id="@+id/help_title"/>
+
              <View
                  android:layout_width="match_parent"
                  android:layout_height="0.1dp"
                  android:background="@color/viewBackColor"/>
+
              <EditText
                  android:textColor="#f9a420"
                  android:maxLength="6"
@@ -131,7 +144,9 @@
                  android:layout_width="match_parent"
                  android:layout_height="0.1dp"
                  android:background="@color/viewBackColor"/>
+
          </LinearLayout>
+
          <LinearLayout
              android:layout_width="match_parent"
              android:orientation="horizontal"

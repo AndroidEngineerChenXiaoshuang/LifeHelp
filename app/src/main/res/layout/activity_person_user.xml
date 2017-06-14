@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <Button
+        android:textColor="#fafafa"
+        android:textSize="18sp"
+        android:text="开始认证"
+        android:layout_margin="25dp"
+        android:background="@drawable/shape_wallet_btn_color_blue"
+        android:id="@+id/begin_Authentication"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="25dp" />
+
+    <ImageView
+        android:id="@+id/img"
+        android:src="@drawable/ic_svg_boy_green"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="108dp"
+        android:layout_below="@+id/include"
+        android:layout_centerHorizontal="true" />
+
+    <ImageView
+        android:layout_marginLeft="-70dp"
+        android:layout_marginTop="207dp"
+        android:src="@drawable/ic_diploma"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_toRightOf="@id/img"
+        android:id="@+id/imageView4" />
+
+    <TextView
+        android:layout_marginTop="20dp"
+        android:id="@+id/Exclusive_Icon"
+        android:textColor="#7d7f80"
+        android:textSize="20sp"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/imageView4"
+        android:text="成为认证用户体验更多服务"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>

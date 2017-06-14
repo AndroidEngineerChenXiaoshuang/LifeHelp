@@ -4,10 +4,7 @@
     android:background="#fff"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/title_status"/>
+
     <RelativeLayout
         android:id="@+id/back_layout"
         android:layout_width="match_parent"

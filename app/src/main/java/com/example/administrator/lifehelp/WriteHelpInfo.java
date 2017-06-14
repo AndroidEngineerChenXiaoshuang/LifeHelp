@@ -1,13 +1,11 @@
 package com.example.administrator.lifehelp;
 
 import android.content.ContentValues;
-import android.content.Intent;
 import android.media.MediaScannerConnection;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -15,11 +13,9 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -38,10 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import cn.finalteam.galleryfinal.GalleryFinal;
 import cn.finalteam.galleryfinal.model.PhotoInfo;
-import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 
 /**
  * 用户发布帮助
@@ -138,6 +131,7 @@ public class WriteHelpInfo extends AppCompatActivity implements View.OnClickList
         });
         timePicker.setCurrentHour(0);
         timePicker.setCurrentMinute(0);
+
         //设置timerPicker控件不能设置
         timePicker.setDescendantFocusability(TimePicker.FOCUS_BLOCK_DESCENDANTS);
         //监听popupWindow的确定按钮事件
@@ -327,7 +321,8 @@ public class WriteHelpInfo extends AppCompatActivity implements View.OnClickList
                     Toast.makeText(WriteHelpInfo.this,"图片最多上传5张!",Toast.LENGTH_SHORT).show();
                 }
                 break;
-
+            case R.id.helpInfoCommit:
+                break;
             //用户点击了取消
             case R.id.save_dismss:
                 Utils.closeWindowManager();
@@ -375,12 +370,10 @@ public class WriteHelpInfo extends AppCompatActivity implements View.OnClickList
             case R.id.windowBack:
                 Utils.closeWindowManager();
                 break;
-            case R.id.helpInfoCommit:
-                break;
         }
     }
 
-    public void addPhtoView(List<PhotoInfo> photoInfos){
+    public  void addPhtoView(List<PhotoInfo> photoInfos){
         for(PhotoInfo photoInfo : photoInfos){
             final int position = photoView.getChildCount();
             final View childView = LayoutInflater.from(WriteHelpInfo.this).inflate(R.layout.photo_item,photoView,false);
@@ -400,7 +393,6 @@ public class WriteHelpInfo extends AppCompatActivity implements View.OnClickList
                     .crossFade(500)
                     .into(imageView);
             photoView.addView(childView);
-
         }
     }
 

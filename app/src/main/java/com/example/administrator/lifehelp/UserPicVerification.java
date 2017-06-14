@@ -17,8 +17,11 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.example.administrator.lifehelp.application.MyApplication;
+import com.example.administrator.lifehelp.gson.VerficationJson;
 import com.example.administrator.lifehelp.util.HttpRequest;
 import com.example.administrator.lifehelp.util.ToastUtil;
+import com.example.administrator.lifehelp.util.Utils;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.regex.Matcher;
@@ -65,7 +68,12 @@ public class UserPicVerification extends AppCompatActivity implements View.OnKey
         Intent intent = getIntent();
         userPhone = intent.getStringExtra("userPhoneNumber");
         mTemporaryToken = intent.getStringExtra("temporaryToken");
-        VerifyImgString = intent.getStringExtra("VerifyImgBase64");
+        VerifyImgString = intent.getStringExtra("verifyImgBase64");
+        Log.i(TAG, "onCreate: " + userPhone + mTemporaryToken );
+
+//        Log.i(TAG, "afterTextChanged: "+intent.getStringExtra("user_phone"));
+//        Log.i(TAG, "afterTextChanged: "+intent.getStringExtra("userPhoneNumber"));
+//        Log.i(TAG, "afterTextChanged: "+intent.getStringExtra("temporaryToken"));
         Log.i(TAG, "VerifyImgString: " + VerifyImgString);
         //初始化控件
         initControl();
@@ -101,42 +109,17 @@ public class UserPicVerification extends AppCompatActivity implements View.OnKey
         editThree.setOnKeyListener(this);
         editFore.setOnKeyListener(this);
 
+        aginRequest.setOnClickListener(this);
+
     }
 
     /**
      * 显示出服务器传来的base64验证码图片
      */
     private void LoadServerImage() {
-        serverVerificationImgae.setImageBitmap(stringToBitmap(VerifyImgString));
+        serverVerificationImgae.setImageBitmap(Utils.getStringToBitmap(VerifyImgString));
     }
 
-    /**
-     * 服务器传来的base64字符转换为图片
-     */
-    public Bitmap stringToBitmap(String string){
-        //将字符串转换成Bitmap类型
-        Bitmap bitmap = null;
-        try {
-            byte[]bitmapArray = Base64.decode(getBase64ImageString(string), Base64.DEFAULT);
-            bitmap= BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length);
-            Log.i("jsone", "stringToBitmap: " + bitmap);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return bitmap;
-    }
-
-    /**
-     * 将含有转义字符的base64进行筛选获得正确格式的base64
-     */
-    private String getBase64ImageString(String userPhone) {
-        String userPhoneNumber;
-        String regEx="\\W+/";
-        Pattern p = Pattern.compile(regEx);
-        Matcher m = p.matcher(userPhone);
-        userPhoneNumber = m.replaceAll("").trim();
-        return userPhoneNumber;
-    }
 
     @Override
     public boolean onKey(View view, int i, KeyEvent keyEvent) {
@@ -152,10 +135,7 @@ public class UserPicVerification extends AppCompatActivity implements View.OnKey
                     editTwo.setFocusable(false);
                     editTwo.getText().clear();
                     editOne.getText().clear();
-                    editOne.setFocusable(true);
-                    editOne.setFocusableInTouchMode(true);
-                    editOne.requestFocus();
-                    editOne.findFocus();
+                    findFocusable(editOne);
                     return true;
                 }
                 break;
@@ -164,10 +144,7 @@ public class UserPicVerification extends AppCompatActivity implements View.OnKey
                     editThree.getText().clear();
                     editThree.setFocusable(false);
                     editTwo.getText().clear();
-                    editTwo.setFocusable(true);
-                    editTwo.setFocusableInTouchMode(true);
-                    editTwo.requestFocus();
-                    editTwo.findFocus();
+                    findFocusable(editTwo);
                     return true;
                 }
                 break;
@@ -176,10 +153,7 @@ public class UserPicVerification extends AppCompatActivity implements View.OnKey
                     editFore.setFocusable(false);
                     editFore.getText().clear();
                     editThree.getText().clear();
-                    editThree.setFocusable(true);
-                    editThree.setFocusableInTouchMode(true);
-                    editThree.requestFocus();
-                    editThree.findFocus();
+                    findFocusable(editThree);
                     return true;
                 }
                 break;
@@ -191,7 +165,11 @@ public class UserPicVerification extends AppCompatActivity implements View.OnKey
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.returnPhone:
-                    finish();
+                finish();
+                break;
+            case R.id.aginRequest:
+                editNum = 1;
+                verificationRequest();
                 break;
         }
 
@@ -213,83 +191,25 @@ public class UserPicVerification extends AppCompatActivity implements View.OnKey
         public void afterTextChanged(Editable editable) {
 
             if (editOne.length() >= 1){
-                editOne.clearFocus();
-                editOne.setFocusable(false);
-
+                clearFocusable(editOne);
                 editTwo.setEnabled(true);
-                editTwo.setFocusable(true);
-                editTwo.setFocusableInTouchMode(true);
-                editTwo.requestFocus();
-                editTwo.findFocus();
-
+                findFocusable(editTwo);
                 if (editTwo.length()>=1){
-                    editTwo.clearFocus();
-                    editTwo.setFocusable(false);
-
+                    clearFocusable(editTwo);
                     editThree.setEnabled(true);
-                    editThree.setFocusable(true);
-                    editThree.setFocusableInTouchMode(true);
-                    editThree.requestFocus();
-                    editThree.findFocus();
+                    findFocusable(editThree);
                     if (editThree.length()>=1){
-                        editThree.clearFocus();
-                        editThree.setFocusable(false);
-
+                        clearFocusable(editThree);
                         editFore.setEnabled(true);
-                        editFore.setFocusable(true);
-                        editFore.setFocusableInTouchMode(true);
-                        editFore.requestFocus();
-                        editFore.findFocus();
-                        if (editFore.length() >= 1){
-                            editNum = 1;
-                        }
+                        findFocusable(editFore);
                     }
                 }
             }
             userEditVer = editOne.getText().toString() + editTwo.getText().toString()
                     + editThree.getText().toString() + editFore.getText().toString();
-            if (editNum == 1){
-                if (userEditVer.equals(serverVerification)){
-                    Intent intentVerification = new Intent(UserPicVerification.this,UserVerification.class);
-                    startActivity(intentVerification);
-                    finish();
-                    //请求短信验证码
-                    verificationRequest();
-                    //timer.start();
-                    //yanzhenPD = 1;
-                    //isOpen = 1;
-                }else{
-                    editNum = 0;
-                    editOne.getText().clear();
-                    editTwo.getText().clear();
-                    editThree.getText().clear();
-                    editFore.getText().clear();
-                    editTwo.setEnabled(false);
-                    editThree.setEnabled(false);
-                    editFore.setEnabled(false);
-                    //
-                    editTwo.setFocusable(true);
-                    editTwo.setFocusableInTouchMode(true);
-                    editTwo.requestFocus();
-                    editTwo.findFocus();
-                    //
-                    editThree.setFocusable(true);
-                    editThree.setFocusableInTouchMode(true);
-                    editThree.requestFocus();
-                    editThree.findFocus();
-                    //
-                    editFore.setFocusable(true);
-                    editFore.setFocusableInTouchMode(true);
-                    editFore.requestFocus();
-                    editFore.findFocus();
-
-                    editOne.setFocusable(true);
-                    editOne.setFocusableInTouchMode(true);
-                    editOne.requestFocus();
-                    editOne.findFocus();
-
-                    ToastUtil.showToast(MyApplication.getContext(),"请重新输入验证码",3000);
-                }
+            if (userEditVer.length() == 4){
+                //请求短信验证码
+                verificationRequest();
             }
         }
     }
@@ -298,8 +218,10 @@ public class UserPicVerification extends AppCompatActivity implements View.OnKey
      * 对频繁操作的用户进行验证码判断
      */
     private void verificationRequest() {
+        Log.i(TAG, "response verificationRequest Url: " + MyApplication.ServerUrl.LIFEHELP_SERVER_URL +
+                "v1/UserAction/inorup/" + userPhone +"/"+ mTemporaryToken +"/"+ userEditVer);
         HttpRequest.request(MyApplication.ServerUrl.LIFEHELP_SERVER_URL +
-                "UserAction/inorup/" + userPhone + mTemporaryToken + serverVerification, new Callback() {
+                "v1/UserAction/inorup/" + userPhone +"/"+ mTemporaryToken +"/"+ userEditVer, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
 
@@ -308,10 +230,67 @@ public class UserPicVerification extends AppCompatActivity implements View.OnKey
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String res = response.body().string();
-                Log.i("jsone", "onResponse: " + res);
+                Log.i(TAG, "onResponse: " + res);
+                Gson gson = new Gson();
+                final VerficationJson verficationJson = gson.fromJson(res,VerficationJson.class);
+                int code = verficationJson.getCode();
+                Log.i(TAG, "onResponse: " + code);
+                if (code == 1021){
+                    timerStart();
+                }else {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            serverVerificationImgae.setImageBitmap(Utils.getStringToBitmap(verficationJson.getVerifyImg()));
+                            requestError();
+                        }
+                    });
+
+                }
             }
         });
 
+    }
+    //让editText获取焦点
+    public void findFocusable(EditText editText){
+        editText.setFocusable(true);
+        editText.setFocusableInTouchMode(true);
+        editText.requestFocus();
+        editText.findFocus();
+    }
+    //让editText失去焦点
+    public void clearFocusable(EditText editText){
+        editText.clearFocus();
+        editText.setFocusable(false);
+    }
+    //请求错误
+    public void requestError() {
+        editOne.getText().clear();
+        editTwo.getText().clear();
+        editThree.getText().clear();
+        editFore.getText().clear();
+        editTwo.setEnabled(false);
+        editThree.setEnabled(false);
+        editFore.setEnabled(false);
+        findFocusable(editTwo);
+        findFocusable(editThree);
+        findFocusable(editFore);
+        findFocusable(editOne);
+        if (editNum == 0){
+            ToastUtil.showToast(MyApplication.getContext(),"请重新输入验证码",3000);
+        }
+        editNum = 0;
+    }
+    //启动倒计时
+    public void timerStart() {
+
+        Intent intentVerification = new Intent(UserPicVerification.this,UserVerification.class);
+        Intent intent = getIntent();
+        intentVerification.putExtra("user_phone",intent.getStringExtra("user_phone"));
+        intentVerification.putExtra("userPhoneNumber",intent.getStringExtra("userPhoneNumber"));
+        intentVerification.putExtra("temporaryToken",intent.getStringExtra("temporaryToken"));
+        startActivity(intentVerification);
+        finish();
     }
 
 }

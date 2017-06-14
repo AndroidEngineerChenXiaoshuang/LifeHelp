@@ -19,6 +19,4 @@ public class HttpRequest {
         Request request = new Request.Builder().url(url).build();
         okHttpClient.newCall(request).enqueue(callback);
     }
-
-
 }
