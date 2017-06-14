@@ -1,5 +1,4 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/lifehelp_background">
@@ -10,11 +9,11 @@
         android:layout_width="50dp"
         android:layout_height="50dp" />
 
-    <!--这是验证码-->
+    <!--这是手机图标-->
     <ImageView
         android:src="@drawable/ic_svg_phone"
-        android:layout_width="240dp"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="80dp"
         android:id="@+id/server_Verification"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
@@ -73,9 +72,9 @@
 
     <!--这是倒计时区域-->
     <TextView
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="15dp"
         android:textSize="20sp"
-        android:text="输入你的验证码"
+        android:text="验证你的身份"
         android:id="@+id/user_end_time"
         android:textColor="#212121"
         android:layout_marginLeft="5dp"
@@ -121,8 +120,6 @@
         android:layout_below="@+id/textView2"
         android:layout_alignLeft="@+id/user_end_time"
         android:layout_alignStart="@+id/user_end_time" />
-
-
 
 
 </RelativeLayout>

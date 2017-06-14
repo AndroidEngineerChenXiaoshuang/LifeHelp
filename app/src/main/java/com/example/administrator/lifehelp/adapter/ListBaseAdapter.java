@@ -13,7 +13,7 @@ import com.example.administrator.lifehelp.R;
 import com.example.administrator.lifehelp.application.MyApplication;
 
 /**
- * Created by Administrator on 2017/4/10 0010. 
+ * Created by Administrator on 2017/4/10 0010.
  */
 
 public class ListBaseAdapter extends BaseAdapter {

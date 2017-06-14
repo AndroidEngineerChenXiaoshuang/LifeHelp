@@ -61,15 +61,30 @@ public class DownloadService extends Service {
 
     public static boolean isPause = false;
 
+    //强制更新
+    public static final int MandatoryUpdate = 1;
+    //选择新更新
+    public static final int ThinkeUpdate = 2;
+
+    public int downloadType ;
+
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return new DownloadBinder();
     }
+
+    public class DownloadBinder extends Binder{
+
+    }
+
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if(downloadType==0){
+            downloadType = intent.getIntExtra("DownloadType",0);
+        }
         if(downloadUrl==null){
             downloadUrl = intent.getStringExtra("DownloadUrl");
         }
@@ -90,6 +105,7 @@ public class DownloadService extends Service {
         }
         return null;
     }
+
 
     @Override
     public void onCreate() {
@@ -210,6 +226,9 @@ public class DownloadService extends Service {
         protected void onProgressUpdate(Integer... values) {
             super.onProgressUpdate(values);
             notificationManager.notify(1,getNotification(values[0]));
+            if(downloadType==MandatoryUpdate&&startOnUpdateInfo!=null){
+                startOnUpdateInfo.setPorgress(values[0]);
+            }
         }
         @Override
         protected void onPostExecute(Integer result) {
@@ -293,7 +312,20 @@ public class DownloadService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.d("Jam","Service onDestroy");
     }
+
+    public interface onUpdate {
+        void setPorgress(int progress);
+        void onFailure();
+    }
+
+    public static onUpdate startOnUpdateInfo;
+
+    public static void setOnUpdateProgress(onUpdate startOnUpdateInfo){
+        DownloadService.startOnUpdateInfo = startOnUpdateInfo;
+    }
+
 
 
 }

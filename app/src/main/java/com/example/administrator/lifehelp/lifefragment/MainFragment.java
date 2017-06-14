@@ -1,19 +1,22 @@
 package com.example.administrator.lifehelp.lifefragment;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -25,28 +28,35 @@ import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.load.resource.gifbitmap.GifBitmapWrapper;
-import com.bumptech.glide.util.Util;
+import com.bumptech.glide.Glide;
 import com.example.administrator.lifehelp.MainActivity;
 import com.example.administrator.lifehelp.R;
 import com.example.administrator.lifehelp.WriteHelpInfo;
+import com.example.administrator.lifehelp.adapter.InitArticleAdapter;
+import com.example.administrator.lifehelp.adapter.OnRecyclerListener;
+import com.example.administrator.lifehelp.adapter.RecyclerItemDecoration;
+import com.example.administrator.lifehelp.adapter.OnRefreshListener;
 import com.example.administrator.lifehelp.application.MyApplication;
+import com.example.administrator.lifehelp.gson.InitArticle;
 import com.example.administrator.lifehelp.gson.InitData;
+import com.example.administrator.lifehelp.service.DownloadService;
 import com.example.administrator.lifehelp.util.AnimationUtil;
 import com.example.administrator.lifehelp.util.HttpRequest;
 import com.example.administrator.lifehelp.util.Utils;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
-import java.net.SocketTimeoutException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
@@ -55,7 +65,7 @@ import okhttp3.Response;
  *  主碎片：布局在主界面之上的碎片
  */
 
-public class MainFragment extends Fragment implements View.OnClickListener,Animation.AnimationListener,SwipeRefreshLayout.OnRefreshListener{
+public class MainFragment extends Fragment implements View.OnClickListener,Animation.AnimationListener{
 
     //用于打开左边的侧滑
     public ImageView open_userSetting;
@@ -77,6 +87,11 @@ public class MainFragment extends Fragment implements View.OnClickListener,Anima
     public ImageView quickImageView;
     //imageView 发布
     public ImageView writeImageView;
+    //该RecyclerView是我们的文章界面展示
+    public RecyclerView initDateRecycler;
+    //用于使用RecyclerView的adapter
+    public InitArticleAdapter initArticleAdapter;
+    public List<InitArticle> initArticles;
     //SwipeRefersh控件
     public SwipeRefreshLayout swipeRefreshLayout;
 
@@ -84,6 +99,13 @@ public class MainFragment extends Fragment implements View.OnClickListener,Anima
     public TextView infoCommit;
 
     public HandlerInfo handlerInfo;
+
+    //是否显示有网络连接
+    public LinearLayout shownoNetWork;
+    //是否显示没有文章提示
+    public LinearLayout showServerNoContent;
+
+
     /**
      * 动画类型
      * START_ROATE:表示开始进行添加按钮的旋转动画
@@ -120,6 +142,13 @@ public class MainFragment extends Fragment implements View.OnClickListener,Anima
     public static final int CLOSE_REFRESH = 3 ;
     //启动让用户选择下载的popupwindow
     public static final int OPEN_THINKE_DOWNLOAD = 4;
+    //需要进行强制性更新操作
+    public static final int OPEN_UPDATE = 5;
+
+    //Appbar的高度
+    public int appBarHeight ;
+    //appBar隐藏高度
+    public int verticalOffset;
 
 
 
@@ -130,6 +159,8 @@ public class MainFragment extends Fragment implements View.OnClickListener,Anima
 
     public View windowBack2;
 
+    public boolean isRequestInitInfo = false;
+
     public String testToken = "ew0KImdyYWRlIjogIjEiLA0KIk1hYyI6" +
             "ICI1NWI0ZjllMzEyNTc0ZmFiMWMwYTc3MTc0NjllNzM0OC" +
             "IsDQoic3RhcnRfdGltZSI6ICIxNDk1MDIyNjgzIiwNCiJpcC" +
@@ -137,6 +168,9 @@ public class MainFragment extends Fragment implements View.OnClickListener,Anima
             "yIjogImh0dHA6Ly9iYW5nYmFuZ3NoZW5naHVvc2VydmVyMDEu" +
             "d2Vic2l0ZSINCn0=.f325d089682d21f236acfe4b2bf57021a" +
             "bd110466e3dd79ae3815ea60bdfe684";
+    //测试用的Url地址，后面将不会使用这样的Url
+
+    public PopupWindow downloadPop;
 
     @Nullable
     @Override
@@ -146,62 +180,102 @@ public class MainFragment extends Fragment implements View.OnClickListener,Anima
         return root;
     }
 
-
-
     /**
      * 用于初始化所有控件的方法
      */
     public void initData(){
         open_orderInfo = (ImageView)root.findViewById(R.id.open_userSetting);
+
         open_userSetting = (ImageView)root.findViewById(R.id.open_order_info);
+
         bottom_item1 = (ImageView)root.findViewById(R.id.icon_item1);
+
         bottom_item2 = (ImageView)root.findViewById(R.id.icon_item2);
+
         bottom_item3 = (ImageView)root.findViewById(R.id.icon_item3);
+
         mainActivity = (MainActivity) getActivity();
+
         windowBack = root.findViewById(R.id.windowBack);
+
         quickImageView = (ImageView) root.findViewById(R.id.quick_write);
+
         writeImageView = (ImageView) root.findViewById(R.id.write_info);
+
         quickText = (TextView) root.findViewById(R.id.textInfo_quick);
+
         infoCommit = (TextView) root.findViewById(R.id.textInfo_commit);
+
         leftView = root.findViewById(R.id.lisenter1);
+
         rightView = root.findViewById(R.id.lisenter2);
+
+        initArticles = new ArrayList<>();
+
+        initArticleAdapter = new InitArticleAdapter(getContext(),initArticles);
+
+        initDateRecycler = (RecyclerView) root.findViewById(R.id.infoRecycler);
+
+        initDateRecycler.addOnScrollListener(new OnRecyclerListener(root,getActivity(),initArticles));
+
+        initDateRecycler.addItemDecoration(new RecyclerItemDecoration());
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
+
+        initDateRecycler.setLayoutManager(linearLayoutManager);
+
+        initDateRecycler.setAdapter(initArticleAdapter);
+
         swipeRefreshLayout = (SwipeRefreshLayout) root.findViewById(R.id.refreshInfo);
 
         swipeRefreshLayout.setColorSchemeColors(MyApplication.Color.PRIMARYCOLOR);
 
-        swipeRefreshLayout.setOnRefreshListener(this);
-
+        swipeRefreshLayout.setOnRefreshListener(new OnRefreshListener(mainActivity,initArticles));
         if(Build.VERSION.SDK_INT>=21){
             //设置appBar的paddingTop
             root.findViewById(R.id.appBar).setPadding(0,Utils.getStatusHeight(),0,0);
         }
+
         //初始化所有动画
         List<Animation> animations = AnimationUtil.initAnimation(Animation.RELATIVE_TO_SELF,0f,1f,0f,45f,0.5f,0.5f);
-        showWindowBackAnimation = (AlphaAnimation) animations.get(0);
-        exitAnimation = animations.get(1);
-        rotateAnimation = (RotateAnimation) animations.get(2);
-        rotateAnimation_exit = (RotateAnimation) animations.get(3);
-        showWindowBackAnimation.setAnimationListener(this);
-        exitAnimation.setAnimationListener(this);
 
+        showWindowBackAnimation = (AlphaAnimation) animations.get(0);
+
+        exitAnimation = animations.get(1);
+
+        rotateAnimation = (RotateAnimation) animations.get(2);
+
+        rotateAnimation_exit = (RotateAnimation) animations.get(3);
+
+        showWindowBackAnimation.setAnimationListener(this);
+
+        exitAnimation.setAnimationListener(this);
 
         //设置动画弹出快速编辑
         animationSet = AnimationUtil.startInfoAnimation(Animation.RELATIVE_TO_SELF,0f,-1f,0f,-1.5f,1f,1.3f,1f,1.3f,0.5f,0.5f);
+
         //设置动画弹出新手编辑
         animationSet_two = AnimationUtil.startInfoAnimation(Animation.RELATIVE_TO_SELF,0f,1f,0f,-1.5f,1f,1.3f,1f,1.3f,0.5f,0.5f);
+
         animationSet_two.setStartOffset(SHORT_ANIMATION-200);
+
        //设置动画退出快速编辑
         animationSet_exit =  AnimationUtil.setExitAnimation(Animation.RELATIVE_TO_SELF,-1f,0,-1.5f,0f,1.3f,1f,1.3f,1f,0.5f,0.5f);
+
        //设置动画退出新手编辑
         animationSet_exit_two = AnimationUtil.setExitAnimation(Animation.RELATIVE_TO_SELF,1f,0f,-1.5f,0f,1.3f,1f,1.3f,1f,0.5f,0.5f);
 
         //获取windowBack2
         windowBack2 = root.findViewById(R.id.windowBack2);
 
+        //获取显示网络异常的layout
+        shownoNetWork = (LinearLayout) root.findViewById(R.id.show_no_network);
+        //获取显示服务器没有文章的layout
+        showServerNoContent = (LinearLayout) root.findViewById(R.id.show_no_data);
+
         //异步消息处理类
         handlerInfo = new HandlerInfo();
 
-//------------------------------------分割线------------------------------------
         windowBack.setOnClickListener(this);
         open_userSetting.setOnClickListener(this);
         open_orderInfo.setOnClickListener(this);
@@ -210,7 +284,23 @@ public class MainFragment extends Fragment implements View.OnClickListener,Anima
         bottom_item3.setOnClickListener(this);
         leftView.setOnClickListener(this);
         rightView.setOnClickListener(this);
-
+        AppBarLayout appBarLayout = (AppBarLayout) root.findViewById(R.id.appBar);
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if(verticalOffset == -(appBarLayout.getHeight()-MyApplication.Info.STATUS_HEIGHT)){
+                    if(Build.VERSION.SDK_INT>=21){
+                        getActivity().getWindow().setStatusBarColor(MyApplication.Color.THEMECOLOR);
+                        MainFragment.this.verticalOffset = verticalOffset;
+                    }
+                }else{
+                    if(Build.VERSION.SDK_INT>=21){
+                        getActivity().getWindow().setStatusBarColor(Color.TRANSPARENT);
+                    }
+                    MainFragment.this.verticalOffset = verticalOffset;
+                }
+            }
+        });
 
     }
 
@@ -219,49 +309,90 @@ public class MainFragment extends Fragment implements View.OnClickListener,Anima
     public void onResume() {
         super.onResume();
         if(!ISREQUEST){
-            if (Utils.isUpdate()){
-                swipeRefreshLayout.setRefreshing(true);
-                HttpRequest.request("http://192.168.43.67/V1/INITIALIZATION/ew0KImdyYWRlIjogIjEiLA0KIk1hYyI6ICI1NWI0Zjll" +
-                        "MzEyNTc0ZmFiMWMwYTc3MTc0NjllNzM0OCIsDQoic3RhcnRfdGltZSI6ICIxNDk1MDIy" +
-                        "NjgzIiwNCiJpcCI6ICIxOTIuMTY4LjQzLjc0IiwNCiJzaWduYXR1cmVfc2VydmVyIjogImh" +
-                        "0dHA6Ly9iYW5nYmFuZ3NoZW5naHVvc2VydmVyMDEud2Vic2l0ZSINCn0=.f325d089682d21f236acf" +
-                        "e4b2bf57021abd110466e3dd79ae3815ea60bdfe684", new Callback() {
-                    @Override
-                    public void onFailure(Call call, IOException e) {
-                        Message message = new Message();
-                        message.obj = "请检查设备是否联网";
-                        message.what = CLOSE_REFRESH;
-                        handlerInfo.sendMessage(message);
+            swipeRefreshLayout.setRefreshing(true);
+            HttpRequest.request("http://192.168.43.67/v1/articles/getarticle/0/10", new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    ISREQUEST = true;
+                    Message message = new Message();
+                    message.obj = "请检查设备是否联网";
+                    message.what = CLOSE_REFRESH;
+                    handlerInfo.sendMessage(message);
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    ISREQUEST = true;
+                    String result = response.body().string();
+                    if(!result.equals("0")){
+                        Gson gson = new Gson();
+                        List<InitArticle> initArticles = gson.fromJson(result,new TypeToken<List<InitArticle>>(){}.getType());
+                        for(InitArticle initArticle : initArticles){
+                            MainFragment.this.initArticles.add(initArticle);
+                        }
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                //通知刷新RecyclerView
+                                initArticleAdapter.notifyItemInserted(MainFragment.this.initArticles.size()-1);
+                                swipeRefreshLayout.setRefreshing(false);
+                                startRequestInit();
+                            }
+                        });
+                    }else{
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getActivity(),"服务器中没有数据",Toast.LENGTH_SHORT).show();
+                                swipeRefreshLayout.setRefreshing(false);
+                                showServerNoContent.setVisibility(View.VISIBLE);
+                                startRequestInit();
+                            }
+                        });
                     }
 
-                    @Override
-                    public void onResponse(Call call, Response response) throws IOException {
-                        ISREQUEST = true;
-                        handlerInfo.sendEmptyMessage(CLOSE_REFRESH);
-                        Gson gson = new Gson();
-                        initData = gson.fromJson(response.body().string(),InitData.class);
-                        Log.d("Jam",initData.apk_link);
-                        Log.d("Jam",initData.version);
-                        Log.d("Jam", String.valueOf(initData.is_update));
-                        //从服务器里面拉取数据版本号将其格式解析出来
-                        int version = Integer.parseInt(initData.version.split("\\.")[0]);
-                        try {
-                            //判断版本是否有过更新,如果又新的版本就提示用户升级
-                            if(version>MyApplication.getContext().getPackageManager().getPackageInfo("com.example.administrator.lifehelp",0).versionCode){
-                                //如果需要强制更新
-                                if(initData.is_update==1){
+                }
+            });
+        }
+    }
+    //该方法用于请求服务器的一些初始数据,判断版本号等.
+    public void startRequestInit() {
+        Log.d("Jam","startRequestInit");
+        if(!isRequestInitInfo){
+            HttpRequest.request("http://192.168.43.67/V1/INITIALIZATION/ewoiZ3JhZGUiOiAiMSIsCiJNYWMiOiAiYjIwN2UyYmVmNTN\n" +
+                    "mYjA4NzA0YjVhMjUxOGQ3Y2Y4YmIiLAoic3RhcnRfdGltZSI6ICIxNDk3MjMyMTI3IiwKImlwIjogIjE5Mi4\n" +
+                    "xNjguNDMuODUiLAoic2lnbmF0dXJlX3NlcnZlciI6ICJodHRwOi8vMTkyLjE2OC40My42NyIKfQ==.4e95\n" +
+                    "b9796c21628cdbadf4ead488eea665d0446e176097bf32cb47678baf9d4e", new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                }
 
-                                }else{
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    isRequestInitInfo = true;
+                    Gson gson = new Gson();
+                    initData = gson.fromJson(response.body().string(),InitData.class);
+                    //从服务器里面拉取数据版本号将其格式解析出来
+                    int version = Integer.parseInt(initData.version.split("\\.")[0]);
+                    try {
+                        //判断版本是否有过更新,如果又新的版本就提示用户升级
+                        if(version>MyApplication.getContext().getPackageManager().getPackageInfo("com.example.administrator.lifehelp",0).versionCode){
+                            //如果需要强制更新
+                            if(initData.is_update==1){
+                                handlerInfo.sendEmptyMessage(OPEN_UPDATE);
+                            }else{
+                                if(Utils.isUpdate()){
                                     handlerInfo.sendEmptyMessage(OPEN_THINKE_DOWNLOAD);
                                 }
                             }
-                        } catch (PackageManager.NameNotFoundException e) {
-                            e.printStackTrace();
                         }
+                    } catch (PackageManager.NameNotFoundException e) {
+                        e.printStackTrace();
                     }
-                });
-            }
+                }
+            });
         }
+
     }
 
     //点击事件
@@ -287,7 +418,11 @@ public class MainFragment extends Fragment implements View.OnClickListener,Anima
                 //开始动画,将主界面加上一层阴影效果,判断如果main_isRunning等于false那么主体动画没被启动
                 if(!main_isRunning){
                     if(!isRunning){
-                        //关闭滑动功能q2wa1qq
+                        if(verticalOffset==-(root.findViewById(R.id.appBar).getHeight()-MyApplication.Info.STATUS_HEIGHT)){
+                            if(Build.VERSION.SDK_INT>=21)
+                                getActivity().getWindow().setStatusBarColor(Color.BLACK);
+                        }
+                        //关闭滑动功能
                         Utils.setCloseDrawer(mainActivity.drawer);
                         main_isRunning = true;//主体动画已经启动
                         bottom_item2.setImageResource(R.drawable.help_info_add_selector);
@@ -300,7 +435,6 @@ public class MainFragment extends Fragment implements View.OnClickListener,Anima
                     if(!isRunning){
                         exitAnimation();
                     }
-
                 }
                 break;
             //点击最下边的第三项
@@ -384,7 +518,6 @@ public class MainFragment extends Fragment implements View.OnClickListener,Anima
                     e.printStackTrace();
                 }
                 isRunning = false;
-
             }
         }).start();
         if(main_isRunning){
@@ -407,12 +540,6 @@ public class MainFragment extends Fragment implements View.OnClickListener,Anima
     public void onAnimationRepeat(Animation animation) {
     }
 
-    //加载数据的监听事件
-    @Override
-    public void onRefresh() {
-    }
-
-
     public class HandlerInfo extends Handler{
         @Override
         public void handleMessage(final Message msg) {
@@ -433,6 +560,7 @@ public class MainFragment extends Fragment implements View.OnClickListener,Anima
                     if(msg.obj!=null){
                         Toast.makeText(getActivity(),(String)msg.obj,Toast.LENGTH_SHORT).show();
                     }
+                    shownoNetWork.setVisibility(View.VISIBLE);
                     break;
                 case OPEN_THINKE_DOWNLOAD:
                     windowBack2.setVisibility(View.VISIBLE);
@@ -441,16 +569,71 @@ public class MainFragment extends Fragment implements View.OnClickListener,Anima
                         @Override
                         public void onClickDownload() {
                             if(ContextCompat.checkSelfPermission(mainActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PackageManager.PERMISSION_GRANTED){
-                                ActivityCompat.requestPermissions(mainActivity,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
+                                ActivityCompat.requestPermissions(mainActivity,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},DownloadService.ThinkeUpdate);
                             }else{
-                                mainActivity.startDownload(initData.apk_link);
+                                mainActivity.startDownload(initData.apk_link, DownloadService.ThinkeUpdate);
                             }
                         }
                     });
+                    break;
+                case OPEN_UPDATE:
+                    windowBack2.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            //拦截屏幕的点击事件,此处不做任何逻辑代码操作
+                        }
+                    });
+                    Utils.setCloseDrawer(mainActivity.drawer);//关闭drawer滑动
+                    windowBack2.setVisibility(View.VISIBLE);
+                    windowBack2.startAnimation(AnimationUtils.loadAnimation(mainActivity,R.anim.start_activity_animation_alph));
+                    downloadPop = new PopupWindow();
+                    View thinkeRoot = LayoutInflater.from(getActivity()).inflate(R.layout.download_think_layout,null,false);
+                    thinkeRoot.findViewById(R.id.download_dimsses).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mainActivity.finish();
+                        }
+                    });
+                    thinkeRoot.findViewById(R.id.download_sure).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            downloadPop.dismiss();
+                            View root = LayoutInflater.from(getContext()).inflate(R.layout.update_start,null,false);
+                            downloadPop.setContentView(root);
+                            downloadPop.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                                @Override
+                                public void onDismiss() {
+                                    mainActivity.downloadRunning = false;
+                                    windowBack2.setVisibility(View.GONE);
+                                    windowBack2.setAnimation(AnimationUtils.loadAnimation(getContext(),R.anim.exit_activity_animation_alph));
+                                    windowBack2.setOnClickListener(null);
+                                    Utils.setUnLockModeDrawer(mainActivity.drawer);//解锁滑动
+                                }
+                            });
+                            downloadPop.showAtLocation(root,Gravity.CENTER,0,0);
+                            if(ContextCompat.checkSelfPermission(mainActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE)!=PackageManager.PERMISSION_GRANTED){
+                                ActivityCompat.requestPermissions(mainActivity,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},DownloadService.MandatoryUpdate);
+                            }else{
+                                mainActivity.startDownload(initData.apk_link, DownloadService.MandatoryUpdate);
+                            }
+                        }
+                    });
+                    downloadPop.setContentView(thinkeRoot);
+                    downloadPop.setBackgroundDrawable(new BitmapDrawable());
+                    downloadPop.setTouchable(true);
+                    mainActivity.downloadRunning = true;
+                    downloadPop.setWidth(Utils.dip2px(getContext(),300));
+                    downloadPop.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+                    downloadPop.showAtLocation(root,Gravity.CENTER,0,0);
                     break;
 
             }
         }
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ISREQUEST = false;
+    }
 }

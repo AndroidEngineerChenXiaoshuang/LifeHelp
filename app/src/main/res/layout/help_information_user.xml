@@ -165,7 +165,6 @@
             android:layout_toEndOf="@+id/image_jizai" />
 
         <ImageView
-            android:layout_marginTop="-3dp"
             android:id="@+id/image_rmb"
             android:layout_marginLeft="40dp"
             android:src="@drawable/user_rmb_icon"
@@ -179,8 +178,9 @@
             android:layout_marginTop="17dp"
             android:id="@+id/user_content_rmb"
             android:layout_marginLeft="7dp"
-            android:textSize="20dp"
+            android:textSize="15sp"
             android:text="80.00"
+            android:layout_centerVertical="true"
             android:textColor="#01a2df"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

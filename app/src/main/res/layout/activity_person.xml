@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:id="@+id/activity_tset"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -9,13 +8,63 @@
     <include layout="@layout/activity_user_head"
         android:id="@+id/include" />
 
-    <android.support.v4.view.ViewPager
+    <Button
+        android:textColor="#fafafa"
+        android:textSize="18sp"
+        android:text="开始认证"
+        android:layout_margin="25dp"
+        android:background="@drawable/shape_wallet_btn_color_blue"
+        android:id="@+id/wallet_Recharge"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="25dp" />
 
-        android:id="@+id/person_viewPager"
+    <ImageView
+        android:id="@+id/img"
+        android:src="@drawable/ic_svg_boy_green"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="58dp"
+        android:layout_below="@+id/include"
+        android:layout_centerHorizontal="true" />
 
-    </android.support.v4.view.ViewPager>
+    <ImageView
+        android:layout_marginLeft="-70dp"
+        android:layout_marginTop="207dp"
+        android:src="@drawable/ic_diploma"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_toRightOf="@id/img"
+        android:id="@+id/imageView4" />
+    <TextView
+        android:id="@+id/custom_name"
+        android:layout_marginTop="10dp"
+        android:textColor="#f9dd10"
+        android:textSize="28sp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/img"
+        android:text="自定义用户名"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/Exclusive_Icon"
+        android:textColor="#55a0c8"
+        android:textSize="20sp"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/custom_name"
+        android:text="专属认证图标"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
-
-</LinearLayout>
+    <TextView
+        android:textSize="40dp"
+        android:textColor="#bc6a53"
+        android:layout_centerInParent="true"
+        android:text="成为接单员"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/Exclusive_Icon"/>
+</RelativeLayout>

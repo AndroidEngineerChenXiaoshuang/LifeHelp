@@ -60,10 +60,10 @@ public class RightLayoutFragment extends Fragment implements View.OnClickListene
         LayoutInflater inflaterRoot = LayoutInflater.from(MyApplication.getContext());
         root = inflaterRoot.inflate(R.layout.right_layout_one,container,false);
         if(Build.VERSION.SDK_INT>=21){
-            //添加paddingTop
-            root.setPadding(0,Utils.getStatusHeight(),0,0);
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,Utils.getStatusHeight());
+            root.findViewById(R.id.title_status).setLayoutParams(layoutParams);
+            root.findViewById(R.id.title_status).setBackgroundColor(0xFFBABABA);
         }
-
         className = (TextView) root.findViewById(R.id.selectorClassName);
         startMoney = (EditText) root.findViewById(R.id.start_money);
         //监听焦点获取

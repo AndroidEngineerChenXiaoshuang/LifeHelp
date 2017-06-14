@@ -14,13 +14,9 @@ import android.widget.Toast;
 
 
 import com.example.administrator.lifehelp.application.MyApplication;
-import com.example.administrator.lifehelp.db.UserHelpInfo;
-import com.example.administrator.lifehelp.db.UserInfo;
-import com.example.administrator.lifehelp.gson.LoginAndRegisterJson;
 import com.example.administrator.lifehelp.util.HttpRequest;
 import com.example.administrator.lifehelp.util.ToastUtil;
 import com.example.administrator.lifehelp.util.Utils;
-import com.google.gson.Gson;
 
 
 import org.json.JSONArray;
@@ -37,55 +33,64 @@ import okhttp3.Response;
  * 这里是让用户输入手机验证码的界面
  */
 public class UserVerification extends AppCompatActivity implements View.OnClickListener{
+    
+    private final static String TAG = "jsone";
 
-    public final static String TAG = "jsone";
-
-    public boolean isOpen;
+    private boolean isOpen;
     //这是显示倒计时的view
-    public TextView txtView;
+    private TextView txtView;
     //这是倒计时重发的按钮
-    public Button user_end_time_button;
+    private Button user_end_time_button;
     //这里是4个输入框
-    public View view1;
-    public View view2;
-    public View view3;
-    public View view4;
+    private View view1;
+    private View view2;
+    private View view3;
+    private View view4;
+
+
     //  这是输入键盘
-    public View include;
-    public TextView user_phone_number;
+
+    private View include;
+    private TextView user_phone_number;
+
+
     //  这是显示输入的数字
-    public TextView view_text_1;
-    public TextView view_text_2;
-    public TextView view_text_3;
-    public TextView view_text_4;
 
-    public ImageButton user_btn_return;
+    private TextView view_text_1;
+    private TextView view_text_2;
+    private TextView view_text_3;
+    private TextView view_text_4;
 
-    public Button keyBoard1;
-    public Button keyBoard2;
-    public Button keyBoard3;
-    public Button keyBoard4;
-    public Button keyBoard5;
-    public Button keyBoard6;
-    public Button keyBoard7;
-    public Button keyBoard8;
-    public Button keyBoard9;
-    public Button keyBoard0;
-    public ImageButton keyBoard_delete;
+    private ImageButton user_btn_return;
+
+    private Button keyBoard1;
+    private Button keyBoard2;
+    private Button keyBoard3;
+    private Button keyBoard4;
+    private Button keyBoard5;
+    private Button keyBoard6;
+    private Button keyBoard7;
+    private Button keyBoard8;
+    private Button keyBoard9;
+    private Button keyBoard0;
+    private ImageButton keyBoard_delete;
+
     //判断用户输入次数
-    public int user_btn_click = 0;
+    private int user_btn_click = 0;
     //这里是获取intent传输的手机号
-    public String user_phone ;
+    private String user_phone ;
     //这是用户输入的验证码
-    public String user_input;
+    private String user_input;
     //这是服务器传来的验证码
-    public String serverVerification = "1234";
+    private String serverVerification = "1234";
     //标准11位手机号
-    public String userPhoneNumber;
+    private String userPhoneNumber;
     //临时token
-    public String mTemporaryToken;
+    private String mTemporaryToken;
 
-    public Toast toast;
+    private UserPhone userPhone = new UserPhone();
+
+    private Toast toast;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +103,8 @@ public class UserVerification extends AppCompatActivity implements View.OnClickL
         mTemporaryToken = intent.getStringExtra("temporaryToken");
         Log.i(TAG, "userPhoneNumber: " + userPhoneNumber + user_phone + mTemporaryToken);
         initControl();
+       // UserPhone userPhone = new UserPhone();
+       // userPhone.finish();
     }
 
     /**
@@ -110,8 +117,9 @@ public class UserVerification extends AppCompatActivity implements View.OnClickL
         //这是倒计时
         txtView = (TextView) findViewById(R.id.user_end_time);
         //进行倒计时
-        timers.start();
+            timers.start();
         include = findViewById(R.id.keyboard);
+
         //这是输入的内容
         view_text_1 = (TextView) findViewById(R.id.view_text_1);
         view_text_2 = (TextView) findViewById(R.id.view_text_2);
@@ -177,7 +185,6 @@ public class UserVerification extends AppCompatActivity implements View.OnClickL
             user_end_time_button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    loginAndRegisterRequest();
                     user_end_time_button.setVisibility(View.GONE);
                     txtView.setVisibility(View.VISIBLE);
                     timers.start();
@@ -205,45 +212,182 @@ public class UserVerification extends AppCompatActivity implements View.OnClickL
             case R.id.minute:
                 include.setVisibility(View.VISIBLE);
                 break;
+
             case R.id.user_btn_return:
                 include.setVisibility(View.GONE);
                 break;
             //这是键盘输入
+            case R.id.keyboard0:
+                user_btn_click ++;
+                if (user_btn_click == 1){
+                    view_text_1.setText("0");
+                    user_input =view_text_1.getText().toString();
+
+                }else if (user_btn_click == 2){
+                    view_text_2.setText("0");
+                    user_input =user_input+view_text_2.getText().toString();
+
+                }else if (user_btn_click == 3){
+                    view_text_3.setText("0");
+                    user_input =user_input+view_text_3.getText().toString();
+
+                }else if (user_btn_click == 4){
+                    view_text_4.setText("0");
+                    user_input =user_input+view_text_4.getText().toString();
+
+
+                }
+                break;
             case R.id.keyboard1:
-                getTextViewContext(view_text_1,view_text_2,view_text_3,view_text_4,"1");
+                user_btn_click ++;
+                if (user_btn_click == 1){
+                    view_text_1.setText("1");
+                    user_input =view_text_1.getText().toString();
+                }else if (user_btn_click == 2){
+                    view_text_2.setText("1");
+                    user_input =user_input+view_text_2.getText().toString();
+                }else if (user_btn_click == 3){
+                    view_text_3.setText("1");
+                    user_input =user_input+view_text_3.getText().toString();
+                }else if (user_btn_click == 4){
+                    view_text_4.setText("1");
+                    user_input =user_input+view_text_4.getText().toString();
+                }
                 break;
             case R.id.keyboard2:
-                getTextViewContext(view_text_1,view_text_2,view_text_3,view_text_4,"2");
+                user_btn_click ++;
+                if (user_btn_click == 1){
+                    view_text_1.setText("2");
+                    user_input =view_text_1.getText().toString();
+                }else if (user_btn_click == 2){
+                    view_text_2.setText("2");
+                    user_input =user_input+view_text_2.getText().toString();
+                }else if (user_btn_click == 3){
+                    view_text_3.setText("2");
+                    user_input =user_input+view_text_3.getText().toString();
+                }else if (user_btn_click == 4){
+                    view_text_4.setText("2");
+                    user_input =user_input+view_text_4.getText().toString();
+                }
                 break;
             case R.id.keyboard3:
-                getTextViewContext(view_text_1,view_text_2,view_text_3,view_text_4,"3");
+                user_btn_click ++;
+                if (user_btn_click == 1){
+                    view_text_1.setText("3");
+                    user_input =view_text_1.getText().toString();
+                }else if (user_btn_click == 2){
+                    view_text_2.setText("3");
+                    user_input =user_input+view_text_2.getText().toString();
+                }else if (user_btn_click == 3){
+                    view_text_3.setText("3");
+                    user_input =user_input+view_text_3.getText().toString();
+                }else if (user_btn_click == 4){
+                    view_text_4.setText("3");
+                    user_input =user_input+view_text_4.getText().toString();
+                }
                 break;
             case R.id.keyboard4:
-                getTextViewContext(view_text_1,view_text_2,view_text_3,view_text_4,"4");
+                user_btn_click ++;
+                if (user_btn_click == 1){
+                    view_text_1.setText("4");
+                    user_input =view_text_1.getText().toString();
+                }else if (user_btn_click == 2){
+                    view_text_2.setText("4");
+                    user_input =user_input+view_text_2.getText().toString();
+                }else if (user_btn_click == 3){
+                    view_text_3.setText("4");
+                    user_input =user_input+view_text_3.getText().toString();
+                }else if (user_btn_click == 4){
+                    view_text_4.setText("4");
+                    user_input =user_input+view_text_4.getText().toString();
+                }
                 break;
             case R.id.keyboard5:
-                getTextViewContext(view_text_1,view_text_2,view_text_3,view_text_4,"5");
+                user_btn_click ++;
+                if (user_btn_click == 1){
+                    view_text_1.setText("5");
+                    user_input =view_text_1.getText().toString();
+                }else if (user_btn_click == 2){
+                    view_text_2.setText("5");
+                    user_input =user_input+view_text_2.getText().toString();
+                }else if (user_btn_click == 3){
+                    view_text_3.setText("5");
+                    user_input =user_input+view_text_3.getText().toString();
+                }else if (user_btn_click == 4){
+                    view_text_4.setText("5");
+                    user_input =user_input+view_text_4.getText().toString();
+                }
                 break;
             case R.id.keyboard6:
-                getTextViewContext(view_text_1,view_text_2,view_text_3,view_text_4,"6");
+                user_btn_click ++;
+                if (user_btn_click == 1){
+                    view_text_1.setText("6");
+                    user_input =view_text_1.getText().toString();
+                }else if (user_btn_click == 2){
+                    view_text_2.setText("6");
+                    user_input =user_input+view_text_2.getText().toString();
+                }else if (user_btn_click == 3){
+                    view_text_3.setText("6");
+                    user_input =user_input+view_text_3.getText().toString();
+                }else if (user_btn_click == 4){
+                    view_text_4.setText("6");
+                    user_input =user_input+view_text_4.getText().toString();
+                }
                 break;
             case R.id.keyboard7:
-                getTextViewContext(view_text_1,view_text_2,view_text_3,view_text_4,"7");
+                user_btn_click ++;
+                if (user_btn_click == 1){
+                    view_text_1.setText("7");
+                    user_input =view_text_1.getText().toString();
+                }else if (user_btn_click == 2){
+                    view_text_2.setText("7");
+                    user_input =user_input+view_text_2.getText().toString();
+                }else if (user_btn_click == 3){
+                    view_text_3.setText("7");
+                    user_input =user_input+view_text_3.getText().toString();
+                }else if (user_btn_click == 4){
+                    view_text_4.setText("7");
+                    user_input =user_input+view_text_4.getText().toString();
+                }
                 break;
             case R.id.keyboard8:
-                getTextViewContext(view_text_1,view_text_2,view_text_3,view_text_4,"8");
+                user_btn_click ++;
+                if (user_btn_click == 1){
+                    view_text_1.setText("8");
+                    user_input =view_text_1.getText().toString();
+                }else if (user_btn_click == 2){
+                    view_text_2.setText("8");
+                    user_input =user_input+view_text_2.getText().toString();
+                }else if (user_btn_click == 3){
+                    view_text_3.setText("8");
+                    user_input =user_input+view_text_3.getText().toString();
+                }else if (user_btn_click == 4){
+                    view_text_4.setText("8");
+                    user_input =user_input+view_text_4.getText().toString();
+                }
                 break;
             case R.id.keyboard9:
-                getTextViewContext(view_text_1,view_text_2,view_text_3,view_text_4,"9");
-                break;
-            case R.id.keyboard0:
-                getTextViewContext(view_text_1,view_text_2,view_text_3,view_text_4,"0");
+                user_btn_click ++;
+                if (user_btn_click == 1){
+                    view_text_1.setText("9");
+                    user_input =view_text_1.getText().toString();
+                }else if (user_btn_click == 2){
+                    view_text_2.setText("9");
+                    user_input =user_input+view_text_2.getText().toString();
+                }else if (user_btn_click == 3){
+                    view_text_3.setText("9");
+                    user_input =user_input+view_text_3.getText().toString();
+                }else if (user_btn_click == 4){
+                    view_text_4.setText("9");
+                    user_input =user_input+view_text_4.getText().toString();
+                }
                 break;
 //            这是删除键
             case R.id.keyboard_delete:
                 if (user_btn_click == 1){
                     view_text_1.setText(" ");
                     user_btn_click = 0;
+
                 }else if (user_btn_click == 2){
                     view_text_2.setText(" ");
                     user_btn_click = 1;
@@ -257,87 +401,42 @@ public class UserVerification extends AppCompatActivity implements View.OnClickL
                 break;
         }
         //这里进行判断如果用户输入的验证码正确就注册成功并进入主界面
-        if (user_btn_click == 4 ){
-            loginAndRegisterRequest();
-        }
-     }
-    //登陆和注册请求
-    public void loginAndRegisterRequest() {
-        Log.i(TAG, "httpUrl: " + MyApplication.ServerUrl.LIFEHELP_SERVER_URL +
-                "v1/UserAction/verifySMS/" + userPhoneNumber +"/"+ user_input +"/"+ mTemporaryToken);
-        HttpRequest.request(MyApplication.ServerUrl.LIFEHELP_SERVER_URL +
-                "v1/UserAction/verifySMS/" + userPhoneNumber +"/"+ user_input +"/"+ mTemporaryToken, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
+        if (user_btn_click == 4 && user_input.equals(serverVerification)){
+            Log.i(TAG, "httpUrl: " + MyApplication.ServerUrl.LIFEHELP_SERVER_URL +
+                    "v1/UserAction/verifySMS/" + userPhoneNumber +"/"+ serverVerification +"/"+ mTemporaryToken);
+            HttpRequest.request(MyApplication.ServerUrl.LIFEHELP_SERVER_URL +
+                    "v1/UserAction/verifySMS/" + userPhoneNumber +"/"+ serverVerification +"/"+ mTemporaryToken, new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
 
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String res = response.body().string();
-                Log.i(TAG, "onResponse: " + res);
-                Gson gson = new Gson();
-                LoginAndRegisterJson loginAndRegisterJson = gson.fromJson(res,LoginAndRegisterJson.class);
-                if (loginAndRegisterJson.getCode() == 5854 || loginAndRegisterJson.getCode() == 5754){
-                    UserInfo userInfo = new UserInfo();
-                    userInfo.setStatus(loginAndRegisterJson.getStatus());
-                    userInfo.setMessage(loginAndRegisterJson.getMessage());
-                    userInfo.setCode(loginAndRegisterJson.getCode());
-                    userInfo.setToken(loginAndRegisterJson.getToken());
-                    userInfo.setTlssToken(loginAndRegisterJson.getTlssToken());
-                    userInfo.setNickname(loginAndRegisterJson.getUserinfo().getNickname());
-                    userInfo.setAvatar(loginAndRegisterJson.getUserinfo().getAvatar());
-                    userInfo.setBalance(loginAndRegisterJson.getUserinfo().getBalance());
-                    userInfo.setCredit_grade(loginAndRegisterJson.getUserinfo().getCredit_grade());
-                    userInfo.save();
-                    //让键盘消失。
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            include.setVisibility(View.GONE);
-                            ToastUtil.showToast(MyApplication.getContext(),"验证成功，你以成功注册",3000);
-                            Intent intent = new Intent(UserVerification.this,MainActivity.class);
-                            startActivity(intent);
-                            finish();
-                        }
-                    });
-                }else if (loginAndRegisterJson.getCode() == 5756){
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            view_text_1.setText(" ");
-                            view_text_2.setText(" ");
-                            view_text_3.setText(" ");
-                            view_text_4.setText(" ");
-                            user_btn_click = 0;
-                            ToastUtil.showToast(MyApplication.getContext(),"您输入错误，请重新输入",3000);
-                        }
-                    });
                 }
-            }
-        });
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    //String res = response.body().toString();
+                    Log.i(TAG, "jsone Server: " + response.body().string());
+                    //parseJSON(res);
+                    finish();
+                }
+            });
+            //让键盘消失。
+            include.setVisibility(View.GONE);
+            ToastUtil.showToast(MyApplication.getContext(),"验证成功，你以成功注册",3000);
+            Intent intent = new Intent(UserVerification.this,MainActivity.class);
+            startActivity(intent);
+            finish();
+        }else if (user_btn_click == 4 && !user_input.equals("1234") ){
+            view_text_1.setText(" ");
+            view_text_2.setText(" ");
+            view_text_3.setText(" ");
+            view_text_4.setText(" ");
+            user_btn_click = 0;
+            ToastUtil.showToast(MyApplication.getContext(),"您输入错误，请重新输入",3000);
+        }
     }
 
-    //判断当前显示为第几个textView并且获取textView显示的内容
-    public void getTextViewContext(TextView view_text_1, TextView view_text_2, TextView view_text_3, TextView view_text_4, String s) {
-        if (user_btn_click == 0){
-            view_text_1.setText(s);
-            user_input =view_text_1.getText().toString();
-            user_btn_click++;
-        }else if (user_btn_click == 1){
-            view_text_2.setText(s);
-            user_input = user_input + view_text_2.getText().toString();
-            user_btn_click++;
-        }else if (user_btn_click == 2){
-            view_text_3.setText(s);
-            user_input = user_input + view_text_3.getText().toString();
-            user_btn_click++;
-        }else if (user_btn_click == 3){
-            view_text_4.setText(s);
-            user_input = user_input + view_text_4.getText().toString();
-            user_btn_click++;
-        }
-        Log.i(TAG, "getTextViewContext: " + user_input);
+    private void parseJSON(String res) {
+
     }
 
     @Override

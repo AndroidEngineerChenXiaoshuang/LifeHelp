@@ -1,138 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-android:orientation="vertical"
-android:layout_width="match_parent"
-android:background="#fbfbfb"
-android:layout_height="wrap_content">
-
-<!--这是时间栏-->
-<LinearLayout
-    android:layout_marginLeft="10dp"
-    android:layout_marginRight="10dp"
-    android:layout_marginTop="10dp"
-    android:orientation="horizontal"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
-
-    <ImageView
-        android:src="@drawable/help_time"
-        android:layout_width="20dp"
-        android:layout_height="20dp" />
-    <!--这是下单的后的期限时间-->
-    <TextView
-        android:layout_marginTop="2dp"
-        android:id="@+id/help_time"
-        android:layout_marginLeft="5dp"
-        android:text="10分钟后过期"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-</LinearLayout>
-
-<View
-    android:layout_margin="10dp"
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:background="#f0f0f0"
-    android:layout_height="0.5dp" />
-
-<!--这是用户发布的信息-->
-<LinearLayout
-    android:layout_marginLeft="10dp"
-    android:layout_marginRight="10dp"
-    android:orientation="vertical"
-    android:layout_width="wrap_content"
+    android:clickable="true"
+    app:cardElevation="1dp"
     android:layout_height="wrap_content">
-    <View
-        android:background="#fbfbfb"
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"/>
-    <!--这是内容头标题-->
-    <TextView
-        android:id="@+id/help_title_content"
-        android:textColor="#030303"
-        android:textSize="16sp"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:text="我有5只老虎，因为要出去旅游，所以需要人帮忙照看下老虎"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    <!--这是内容-->
-    <TextView
-
-        android:id="@+id/help_content"
-        android:layout_marginTop="7dp"
-        android:textColor="#84181717"
-        android:maxLines="2"
-        android:ellipsize="end"
-        android:text="我有5只老虎，因为要出去旅游，所以需要人帮忙照看下老虎233333333333333333333333333333333333333"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    <View
-        android:layout_margin="0.1dp"
-        android:background="#fbfbfb"
-        android:layout_width="match_parent"
-        android:layout_height="0.1dp" />
-</LinearLayout>
-
-
-<View
-    android:layout_margin="10dp"
-    android:background="#f0f0f0"
-    android:layout_width="match_parent"
-    android:layout_height="0.5dp" />
-
-<!--这是标签栏和价格栏-->
-    <RelativeLayout
-        android:layout_marginTop="-8dp"
-        android:orientation="horizontal"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+    <LinearLayout
+        android:background="@drawable/ontouch_anim_item"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <!--标签图标-->
-        <ImageView
-            android:id="@+id/help_label_image"
-            android:src="@drawable/help_animal_label"
-            android:layout_marginTop="5dp"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            />
-        <!--用户定义的价钱-->
-        <TextView
-            android:id="@+id/help_price"
-            android:layout_marginTop="1dp"
-            android:textSize="28sp"
-            android:textColor="#f9a420"
-            android:text="10.00"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/help_label"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
 
-        <ImageView
-            android:layout_centerInParent="true"
-            android:layout_margin="1dp"
+        <!--这是时间栏-->
+        <LinearLayout
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:src="@drawable/ic_user"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:id="@+id/user_image"/>
+            <!--这是下单的后的期限时间-->
+            <TextView
+                android:layout_gravity="center_vertical"
+                android:id="@+id/userName"
+                android:layout_marginLeft="8dp"
+                android:text="UserJam"
+                android:textSize="13sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
             android:background="#f0f0f0"
-            android:layout_width="0.5dp"
-            android:layout_height="24dp" />
-        <!--宠物标签-->
-        <TextView
-            android:id="@+id/help_label"
-            android:layout_gravity="center"
-            android:textSize="12sp"
-            android:text="动物/宠物用品/代看"
+            android:layout_height="0.5dp" />
+
+        <!--这是用户发布的信息-->
+        <LinearLayout
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:orientation="vertical"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="12dp"
-            android:layout_marginStart="12dp"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/help_label_image"
-            android:layout_toEndOf="@+id/help_label_image" />
+            android:layout_height="wrap_content">
+            <!--这是内容头标题-->
+            <TextView
+                android:id="@+id/help_title_content"
+                android:textColor="#030303"
+                android:textSize="16sp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:text="我有5只老虎，因为要出去旅游，所以需要人帮忙照看下老虎"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <!--这是内容-->
+            <TextView
+                android:id="@+id/help_content"
+                android:layout_marginTop="7dp"
+                android:textColor="#84181717"
+                android:maxLines="2"
+                android:ellipsize="end"
+                android:text="我有5只老虎，因为要出去旅游，所以需要人帮忙照看下老虎233333333333333333333333333333333333333"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+        <View
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="#f0f0f0"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp" />
 
-    </RelativeLayout>
+        <!--这是标签栏和价格栏-->
+        <RelativeLayout
+            android:orientation="horizontal"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <!--标签图标-->
+            <ImageView
+                android:visibility="gone"
+                android:id="@+id/help_label_image"
+                android:src="@drawable/help_animal_label"
+                android:layout_marginTop="5dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                />
+            <!--用户定义的价钱-->
+            <TextView
+                android:layout_centerVertical="true"
+                android:textStyle="bold"
+                android:id="@+id/help_price"
+                android:textSize="20sp"
+                android:textColor="#f9a420"
+                android:text="10.00"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/help_label"
+                android:layout_alignParentRight="true" />
 
-</LinearLayout>
+            <ImageView
+                android:visibility="gone"
+                android:layout_centerInParent="true"
+                android:layout_margin="1dp"
+                android:background="#f0f0f0"
+                android:layout_width="0.5dp"
+                android:layout_height="24dp" />
+            <!--宠物标签-->
+            <TextView
+                android:visibility="gone"
+                android:id="@+id/help_label"
+                android:layout_gravity="center"
+                android:textSize="12sp"
+                android:text="动物/宠物用品/代看"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_marginStart="12dp"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/help_label_image"
+                android:layout_toEndOf="@+id/help_label_image" />
 
-    <!--price : 价格-->
-    <!--label ：标签-->
+        </RelativeLayout>
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>

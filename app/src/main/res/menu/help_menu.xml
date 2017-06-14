@@ -30,7 +30,6 @@
         <!--help_setting 个人设置-->
     </group>
 
-
     <group
         android:id="@+id/group_myself">
         <item
@@ -40,7 +39,6 @@
             android:title="个人认证" />
 
     </group>
-
 
 </menu>
 
