@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="#fff"
+    android:layout_height="match_parent">
+
+    <View
+        android:layout_above="@+id/view_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:background="#fff"/>
+
+    <View
+        android:id="@+id/view_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="0.1dp"
+        android:layout_above="@+id/bottom_layout"
+        android:background="@color/viewBackColor"/>
+
+    <LinearLayout
+        android:id="@+id/bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+        <TextView
+            android:id="@+id/restart"
+            android:padding="10dp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="重置"
+            android:textColor="#000"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:layout_weight="1"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="确定"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:textColor="#fff"
+            android:id="@+id/sure"
+            android:background="@color/colorPrimary"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/topTitle"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/title_status">
+        </LinearLayout>
+        <LinearLayout
+            android:padding="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#000"
+                android:text="服务区域"
+                android:textSize="16sp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:text="四川新华电脑学校"
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/fontColor"/>
+        </LinearLayout>
+
+        <TextView
+            android:textColor="#5e5e5e"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:layout_marginBottom="10dp"
+            android:text="报酬区间"/>
+
+        <LinearLayout
+            android:padding="10dp"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginBottom="20dp"
+            android:layout_height="wrap_content">
+            <EditText
+                android:inputType="number"
+                android:maxLines="1"
+                android:textColor="@color/fontsColor"
+                android:maxLength="8"
+                android:padding="8dp"
+                android:textColorHint="@color/rightLayout_editHint"
+                android:gravity="center"
+                android:hint="起步报酬"
+                android:textSize="14sp"
+                android:id="@+id/start_money"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/rightLayout_editBack"/>
+
+            <View
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:background="@color/viewBackColor"
+                android:layout_gravity="center"
+                android:layout_width="10dp"
+                android:layout_height="0.1dp"/>
+            <EditText
+                android:inputType="number"
+                android:textColor="@color/fontsColor"
+                android:maxLength="8"
+                android:maxLines="1"
+                android:textColorHint="@color/rightLayout_editHint"
+                android:textSize="14sp"
+                android:padding="8dp"
+                android:gravity="center"
+                android:hint="最高报酬"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/end_money"
+                android:background="@color/rightLayout_editBack"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:background="#fff"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:background="@color/viewBackColor"/>
+
+        <LinearLayout
+            android:background="@drawable/help_class_selector"
+            android:id="@+id/help_class"
+            android:padding="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:textColor="#5e5e5e"
+                android:textSize="13sp"
+                android:layout_gravity="center_vertical"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="帮助类型"/>
+            <TextView
+                android:id="@+id/selectorClassName"
+                android:gravity="right"
+                android:textColor="#adadad"
+                android:textSize="13sp"
+                android:layout_width="0dp"
+                android:layout_gravity="center_vertical"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="全部"/>
+            <ImageView
+                android:layout_gravity="center_vertical"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:src="@drawable/help_open"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:background="@color/viewBackColor"/>
+
+
+    </LinearLayout>
+    <View
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/isShow"
+        android:background="@color/openBack">
+    </View>
+
+</RelativeLayout>
+

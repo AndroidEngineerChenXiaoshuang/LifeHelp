@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">LifeHelp</string>
+    <string name="wallet_name">我的钱包</string>
+    <string name="my_Order">帮助的订单</string>
+    <string name="help_Order">发布的订单</string>
+    <string name="thing_name">我的礼包</string>
+    <string name="setting_name">设置</string>
+    <string name="sure">确定</string>
+    <string name="cancle">取消</string>
+    <string name="helpMoney_SizeWarn">金额格式输入错误!</string>
+
+</resources>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/help_daohang2" android:state_pressed="true"/>
+    <item android:drawable="@drawable/help_daohang" android:state_pressed="false"/>
+</selector>
+<!--该drawable文件是用来配置当导航被点击后的效果-->

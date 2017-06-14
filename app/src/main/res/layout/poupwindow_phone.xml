@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:background="#00100303"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/popupWindow_phone">
+
+    <RelativeLayout
+        android:id="@+id/rela_test"
+        android:visibility="visible"
+        android:layout_width="300dp"
+        android:layout_height="200dp"
+        android:background="@drawable/shape_background_corners_pop">
+        <Button
+            android:id="@+id/phone_popup_delete"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="7dp"
+            android:background="@drawable/popup_delete"
+            android:layout_width="18dp"
+            android:layout_height="18dp" />
+
+        <Button
+            android:background="@drawable/shape_next_radio_two"
+            android:text="下一步"
+            android:textColor="#969393"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:id="@+id/window_user_btn_next" />
+
+        <LinearLayout
+            android:id="@+id/linearLayout_edit"
+            android:orientation="horizontal"
+            android:layout_width="300dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true">
+            <ImageView
+                android:layout_marginLeft="20dp"
+                android:layout_centerVertical="true"
+                android:id="@+id/phone_china"
+                android:src="@drawable/ic_svg_china"
+                android:layout_width="30dp"
+                android:layout_height="30dp" />
+            <TextView
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="-8dp"
+                android:layout_marginBottom="100dp"
+                android:gravity="center"
+                android:id="@+id/phone_head"
+                android:text="+86"
+                android:layout_width="30dp"
+                android:layout_height="30dp" />
+
+            <EditText
+                android:maxLength="13"
+                android:imeOptions="actionDone"
+                android:id="@+id/user_phone_number"
+                android:background="#ffffff"
+                android:layout_marginLeft="15dp"
+                android:inputType="number"
+                android:layout_marginTop="-5dp"
+                android:hint="请输入手机号"
+                android:textColor="#605e5e"
+                android:textColorHint="#c8c9c9"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                />
+
+        </LinearLayout>
+        <View
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_below="@id/linearLayout_edit"
+            android:background="#cacaca"
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"/>
+
+        <TextView
+            android:text="登陆"
+            android:textSize="25sp"
+            android:textColor="#000000"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:id="@+id/textView" />
+    </RelativeLayout>
+
+</RelativeLayout>

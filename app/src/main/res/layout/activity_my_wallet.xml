@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <include layout="@layout/activity_user_head"/>
+    <ImageView
+        android:layout_marginTop="90dp"
+        android:src="@drawable/ic_coin_wallet"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:id="@+id/image_wallet"
+        android:layout_centerHorizontal="true" />
+    <TextView
+        android:textColor="#393939"
+        android:layout_marginTop="20dp"
+        android:id="@+id/text_rmb"
+        android:text="我的零钱"
+        android:textSize="18sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/image_wallet"
+        android:layout_centerHorizontal="true"/>
+    <TextView
+        android:textColor="#030303"
+        android:layout_marginTop="10dp"
+        android:id="@+id/wallet_rmb_num"
+        android:text="¥ 250.5"
+        android:textSize="32sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/text_rmb"
+        android:layout_centerHorizontal="true"/>
+    <Button
+        android:textColor="#fafafa"
+        android:layout_marginTop="20dp"
+        style="?android:attr/borderlessButtonStyle"
+        android:textSize="18sp"
+        android:text="充 值"
+        android:background="@drawable/ontouch_anim_blue"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_below="@id/wallet_rmb_num"
+        android:id="@+id/wallet_Recharge"
+        android:layout_width="match_parent"
+        android:layout_height="40dp" />
+    <Button
+        style="?android:attr/borderlessButtonStyle"
+        android:textSize="18sp"
+        android:text="提 现"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/ontouch_anim"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_below="@id/wallet_Recharge"
+        android:id="@+id/wallet_cash"
+        android:layout_width="match_parent"
+        android:layout_height="40dp" />
+
+</RelativeLayout>

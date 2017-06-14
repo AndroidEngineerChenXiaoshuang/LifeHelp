@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="#fff"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <TimePicker
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:id="@+id/setTimer"
+        android:timePickerMode="spinner">
+    </TimePicker>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/viewBackColor"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="50dp">
+        <Button
+            android:id="@+id/setTimer_cancle"
+            android:layout_width="0dp"
+            android:text="@string/cancle"
+            android:textColor="@color/fontsColor"
+            android:textSize="15sp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#fff"/>
+
+        <View
+            android:layout_width="0.5dp"
+            android:layout_height="match_parent"
+            android:background="@color/viewBackColor"/>
+        <Button
+            android:id="@+id/setTimer_sure"
+            android:layout_width="0dp"
+            android:text="@string/sure"
+            android:textColor="@color/fontsColor"
+            android:textSize="15sp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#fff"/>
+    </LinearLayout>
+</LinearLayout>

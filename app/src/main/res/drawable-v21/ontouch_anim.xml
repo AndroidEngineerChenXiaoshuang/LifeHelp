@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="#9c9c9c">
+    <item>
+        <selector>
+            <item android:state_pressed="false"
+                android:drawable="@drawable/shape_normal_wallet_"/>
+            <item android:state_pressed="true"
+                android:drawable="@drawable/shape_normal_wallet_"/>
+        </selector>
+    </item>
+</ripple>

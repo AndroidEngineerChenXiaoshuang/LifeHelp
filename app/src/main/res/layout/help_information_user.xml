@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <!--这是顶部按钮和标题内容-->
+    <RelativeLayout
+        android:textColor="#fff"
+        android:textSize="22sp"
+        android:background="#01a2df"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:id="@+id/textView2">
+        <!--这是取消按钮-->
+        <Button
+            android:id="@+id/user_btn_quxiao"
+            android:layout_marginTop="13dp"
+            android:layout_marginLeft="15dp"
+            android:background="@drawable/user_quxiao"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+             />
+        <!--这是更多按钮-->
+        <Button
+            android:id="@+id/user_btn_gengduo"
+            android:layout_marginTop="12dp"
+            android:layout_marginRight="14dp"
+            android:background="@drawable/user_gengduo"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+        <!--这是内容标题-->
+        <TextView
+            android:layout_marginTop="55dp"
+            android:id="@+id/user_title_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:textSize="20sp"
+            android:text="血花啤酒，开飞买，不撒旦顶顶方地方地顶顶顶顶顶"
+            android:textColor="#fff"
+            android:ellipsize="end"
+            android:maxLength="32"
+            android:maxLines="2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+             />
+
+    </RelativeLayout>
+
+    <!--这是底部按钮-->
+    <RelativeLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <View
+            android:background="#dedfdf"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"/>
+        <!--开始接单的按钮-->
+        <Button
+            android:id="@+id/user_btn_kaishi"
+            android:layout_margin="10dp"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="开始接单"
+            android:background="#00000000"
+            android:textSize="20sp"
+            android:textColor="#b6c0c4"
+            android:drawableLeft="@drawable/user_dindan"
+            android:drawablePadding="-20dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true">
+        </Button>
+
+        <ImageView
+            android:layout_margin="10dp"
+            android:background="#dedfdf"
+            android:layout_width="0.5dp"
+            android:layout_height="45dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/imageView3" />
+        <!--这是联系按钮-->
+        <Button
+            android:id="@+id/user_btn_lianxi"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:text="联系询问"
+            android:textSize="20sp"
+            android:textColor="#b6c0c4"
+            android:background="#00000000"
+            android:drawableLeft="@drawable/user_liaotian"
+            android:drawablePadding="-20dp"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/imageView3"
+            android:layout_toStartOf="@+id/imageView3" />
+    </RelativeLayout>
+
+
+
+    <!--这是用户自己写的内容-->
+    <TextView
+        android:id="@+id/user_content"
+        android:textSize="15dp"
+        android:textColor="#424242"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:text="血花啤酒，开飞机出去买，不要被发现了爱上的第三名撒旦的非穆斯林肯定顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶顶"
+        android:layout_marginTop="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/relativeLayout"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+    <!--这是用户定义的时间和赏金-->
+    <RelativeLayout
+        android:layout_marginRight="6dp"
+        android:layout_marginLeft="6dp"
+        android:background="@drawable/shape_label_orange"
+        android:layout_marginTop="120dp"
+        android:elevation="1.4dp"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:id="@+id/relativeLayout"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true">
+
+        <View
+            android:layout_gravity=""
+            android:background="#fbf1f1f1"
+            android:layout_width="1dp"
+            android:layout_height="30dp"
+            android:layout_centerInParent="true"
+
+            android:id="@+id/view" />
+
+        <ImageView
+            android:id="@+id/image_jizai"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="13dp"
+            android:src="@drawable/user_time_icon"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+             />
+        <!--这是剩余时间文字显示-->
+        <TextView
+            android:id="@+id/user_content_time"
+            android:layout_marginLeft="8dp"
+            android:layout_gravity="center"
+            android:textSize="16dp"
+            android:text="30分钟内完成"
+            android:textColor="#01a2df"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/image_jizai"
+            android:layout_toEndOf="@+id/image_jizai" />
+
+        <ImageView
+            android:id="@+id/image_rmb"
+            android:layout_marginLeft="40dp"
+            android:src="@drawable/user_rmb_icon"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_alignTop="@+id/image_jizai"
+            android:layout_toRightOf="@+id/view"
+            android:layout_toEndOf="@+id/view" />
+        <!--这是悬赏金-->
+        <TextView
+            android:layout_marginTop="17dp"
+            android:id="@+id/user_content_rmb"
+            android:layout_marginLeft="7dp"
+            android:textSize="15sp"
+            android:text="80.00"
+            android:layout_centerVertical="true"
+            android:textColor="#01a2df"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+
+            android:layout_toRightOf="@+id/image_rmb"
+            android:layout_toEndOf="@+id/image_rmb" />
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -1,0 +1,116 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/user_phone_back"
+    android:background="@drawable/lifehelp_background">
+    <View
+        android:layout_marginRight="55dp"
+        android:layout_marginLeft="55dp"
+        android:background="#dbdddd"
+        android:layout_width="match_parent"
+        android:layout_height="0.7dp"
+        android:layout_marginTop="5dp"
+        android:layout_below="@+id/linearLayout"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/view" />
+    <!--这是手机图片-->
+    <ImageView
+        android:src="@drawable/ic_svg_phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="78dp" />
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:textSize="20sp"
+        android:text="请输入手机号"
+        android:textColor="#4a5058"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:id="@+id/textView2"
+        android:layout_below="@+id/imageView"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:text="为了让帮友更好的帮助你，请输入手机号"
+        android:textColor="#848e9c"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView2"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/textView3" />
+    <!--这是手机输入区域-->
+    <LinearLayout
+        android:layout_marginTop="25dp"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/linearLayout"
+        android:layout_below="@+id/textView3"
+        android:layout_centerHorizontal="true">
+        <!--国家图标-->
+        <ImageView
+            android:layout_marginTop="5dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_svg_china"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            />
+        <!--中国号码区号-->
+        <TextView
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:text="+86"
+            android:layout_width="40dp"
+            android:layout_height="30dp"
+            android:id="@+id/textView"/>
+        <!--这是手机输入editText-->
+        <EditText
+            android:maxLength="13"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/user_edit_phone"
+            android:layout_marginTop="10dp"
+            android:background="#00ffffff"
+            android:gravity="left"
+            android:inputType="number"
+            android:maxLines="1"
+            android:saveEnabled="true"
+            android:layout_width="160dp"
+            android:textSize="20sp"
+            android:layout_height="35dp"
+            android:ems="10" />
+    </LinearLayout>
+
+    <!--这是跳过按钮-->
+    <Button
+        android:id="@+id/user_btn_skip"
+        android:textColor="#a6a1a1"
+        android:text="跳过"
+        android:background="#00ffffff"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+         />
+
+    <!--这是下一步按钮-->
+    <Button
+        android:layout_marginTop="20dp"
+        android:background="#00ffffff"
+        android:text="下一步"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#c1c0be"
+        android:layout_below="@+id/view"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/user_btn_next" />
+
+
+</RelativeLayout>
+    <!--skip跳过-->

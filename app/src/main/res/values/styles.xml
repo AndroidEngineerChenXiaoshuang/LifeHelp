@@ -1,0 +1,64 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@android:color/black</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+
+    <style name="layout_input_amount_style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="btn_input_amount_style">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textSize">25sp</item>
+        <item name="android:textColor">#333333</item>
+        <item name="android:background">#fff</item>
+    </style>
+    <style name="btn_input_amount_style_black">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textSize">25sp</item>
+        <item name="android:textColor">#333333</item>
+        <item name="android:background">#a39e9e</item>
+    </style>
+
+    <!--这里是弹窗动画-->
+    <style name="popwindow_anim_style">
+        <item name="android:windowEnterAnimation">@anim/popup_show</item>
+    </style>
+
+
+    <style name="StartSetTimerAniamtion" parent="@android:style/Animation.Activity">
+        <item name="android:windowEnterAnimation">@anim/start_popwindow_translate</item>
+        <item name="android:windowExitAnimation">@anim/exit_popwindow_translate</item>
+    </style>
+
+    <style name="StartSetSaveWindow" parent="@android:style/Animation.Activity">
+        <item name="android:windowEnterAnimation">@anim/start_scaleanimation</item>
+        <item name="android:windowExitAnimation">@anim/exit_scaleanimation</item>
+    </style>
+
+    <style name="StartDownloadAnimation" parent="@android:style/Animation.Activity">
+        <item name="android:windowEnterAnimation">@anim/start_scaleanimation</item>
+        <item name="android:windowExitAnimation">@anim/exit_scaleanimation</item>
+    </style>
+
+    <!-- Activity主题 -->
+    <style name="activityTheme" parent="@android:style/Theme">
+        <!--<item name="android:windowIsTranslucent">true</item>-->
+        <!--<item name="android:windowDisablePreview">true</item>-->
+    </style>
+
+</resources>

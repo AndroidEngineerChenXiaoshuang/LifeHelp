@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_toRightOf="@+id/photo_root"
+    android:layout_width="87.5dp"
+    android:layout_marginRight="10dp"
+    android:layout_height="97.5dp">
+
+    <ImageView
+        android:scaleType="centerCrop"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_width="75dp"
+        android:layout_height="85dp"
+        android:id="@+id/user_image"/>
+
+    <ImageView
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/help_dismss"
+        android:id="@+id/dismss"
+        android:scaleType="centerCrop"/>
+
+</RelativeLayout>

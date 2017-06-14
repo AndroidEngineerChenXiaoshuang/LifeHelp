@@ -1,0 +1,125 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/lifehelp_background">
+
+    <ImageButton
+        android:id="@+id/returnPhone"
+        android:background="@drawable/ic_chevron_left_black_24dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp" />
+
+    <!--这是手机图标-->
+    <ImageView
+        android:src="@drawable/ic_svg_phone"
+        android:layout_width="100dp"
+        android:layout_height="80dp"
+        android:id="@+id/server_Verification"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="85dp" />
+
+    <!--这是验证码或者密码输入区域-->
+    <RelativeLayout
+        android:layout_below="@+id/user_end_time"
+        android:layout_marginTop="15dp"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <EditText
+
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:maxLength="1"
+            android:gravity="center"
+            android:layout_marginLeft="60dp"
+            android:background="@drawable/shape_kuang_pop"
+            android:id="@+id/edit_two"
+            android:layout_width="48dp"
+            android:layout_height="48dp" />
+
+        <EditText
+            android:maxLength="1"
+            android:gravity="center"
+            android:layout_marginLeft="120dp"
+            android:background="@drawable/shape_kuang_pop"
+            android:id="@+id/edit_three"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            />
+        <EditText
+            android:maxLength="1"
+            android:gravity="center"
+            android:layout_marginLeft="180dp"
+            android:background="@drawable/shape_kuang_pop"
+            android:id="@+id/edit_fore"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            />
+
+        <EditText
+            android:maxLength="1"
+            android:gravity="center"
+            android:background="@drawable/shape_kuang_pop"
+            android:id="@+id/edit_one"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            >
+            <requestFocus/>
+        </EditText>
+    </RelativeLayout>
+
+
+    <!--这是倒计时区域-->
+    <TextView
+        android:layout_marginTop="15dp"
+        android:textSize="20sp"
+        android:text="验证你的身份"
+        android:id="@+id/user_end_time"
+        android:textColor="#212121"
+        android:layout_marginLeft="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/server_Verification"
+        android:layout_centerHorizontal="true"/>
+    <Button
+        android:background="#00ffffff"
+        android:gravity="center"
+        android:layout_marginTop="14dp"
+        android:textSize="15sp"
+        android:text="换一换"
+        android:id="@+id/aginRequest"
+        android:textColor="#e96f13"
+        android:layout_marginLeft="4dp"
+        android:layout_width="70dp"
+        android:layout_height="30dp"
+        android:layout_below="@+id/server_Verification"
+        android:layout_centerHorizontal="true"
+        android:layout_toRightOf="@id/user_end_time"/>
+    <!--这是用户输入的手机号-->
+
+
+    <include
+        android:id="@+id/keyboard"
+        layout="@layout/user_phone_keyboard"
+        android:visibility="gone"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"/>
+
+    <Button
+        android:visibility="gone"
+        android:layout_marginTop="-3dp"
+        android:background="@drawable/shape_kuang_pop"
+        android:text="点击重新发送"
+        android:id="@+id/user_end_time_button"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_below="@+id/textView2"
+        android:layout_alignLeft="@+id/user_end_time"
+        android:layout_alignStart="@+id/user_end_time" />
+
+
+</RelativeLayout>

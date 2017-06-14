@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:background="#fff"
+    android:padding="10dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+        <!-- 表示用户头像 -->
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/help_user_icon"
+            android:layout_width="60dp"
+            android:src="@drawable/ic_user"
+            android:layout_height="60dp"
+            android:layout_marginBottom="5dp"
+            android:layout_centerHorizontal="true"/>
+        <!-- 表示用户实名认证V标志 -->
+        <ImageView
+            android:layout_marginRight="-7dp"
+            android:layout_alignBottom="@+id/help_user_icon"
+            android:layout_alignRight="@+id/help_user_icon"
+            android:id="@+id/help_credit_icon"
+            android:src="@drawable/ic_svg_verify_no"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <!--用户昵称-->
+        <TextView
+            android:layout_marginTop="5dp"
+            android:id="@+id/user_name"
+            android:text="开发人员"
+            android:typeface="monospace"
+            android:textSize="18sp"
+            android:textColor="#4b4646"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/help_user_icon"/>
+
+        <LinearLayout
+            android:layout_centerHorizontal="true"
+            android:id="@+id/help_credit_layout"
+            android:layout_below="@+id/user_name"
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <!-- 表示为第1颗星星 -->
+            <ImageView
+                android:id="@+id/help_credit_1"
+                android:src="@drawable/ic_svg_credit"
+                android:layout_width="30dp"
+                android:layout_height="30dp"/>
+            <!-- 表示为第2颗星星 -->
+            <ImageView
+                android:id="@+id/help_credit_2"
+                android:src="@drawable/ic_svg_credit"
+                android:layout_width="30dp"
+                android:layout_height="30dp"/>
+            <!-- 表示为第3颗星星 -->
+            <ImageView
+                android:id="@+id/help_credit_3"
+                android:src="@drawable/ic_svg_credit"
+                android:layout_width="30dp"
+                android:layout_height="30dp"/>
+            <!-- 表示为第4颗星星 -->
+            <ImageView
+                android:id="@+id/help_credit_4"
+                android:src="@drawable/ic_svg_credit"
+                android:layout_width="30dp"
+                android:layout_height="30dp"/>
+        </LinearLayout>
+        <!-- help_credit_num 表示用户信用分 -->
+        <TextView
+            android:layout_marginTop="10dp"
+            android:layout_alignTop="@+id/help_credit_layout"
+            android:layout_toRightOf="@+id/help_credit_layout"
+            android:textSize="15sp"
+            android:text="4.21"
+            android:textColor="#fcde00"
+            android:id="@+id/help_credit_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </RelativeLayout>
+
+</RelativeLayout>
+
+
+<!--这是左边滑动的顶部-->

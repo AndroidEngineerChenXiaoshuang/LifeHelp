@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--appbar的color-->
+    <color name="colorPrimary">#02a1df</color>
+    <!--顶部color-->
+
+    <color name="colorPrimaryDark">#000000</color>
+    <!--很多系统控件都会默认使用到的颜色,默认和appbar颜色一样,这样可以统一风格-->
+    <color name="colorAccent">#02a1df</color>
+    <!--这是搜索框的颜色-->
+    <color name="serchColor">#aeecff</color>
+    <!--主界面的背景颜色-->
+    <color name="MainctivityBack">#ecf3f6</color>
+
+    <color name="fontColor">#02a1df</color>
+    <!--主界面右边的侧滑布局中的editText的背景颜色-->
+    <color name="rightLayout_editBack">#f6f6f6</color>
+    <!--主界面右侧布局editText的hintColor-->
+    <color name="rightLayout_editHint">#bbc0cf</color>
+    <!--View线条的颜色-->
+    <color name="viewBackColor">#c2c2c2</color>
+    <!--当back被点击选中状态的颜色-->
+    <color name="layoutSelector">#f6f6f6</color>
+    <!--可能会用到的文字颜色-->
+    <color name="fontsColor">#595959</color>
+    <!--当侧滑出来后的阴影颜色-->
+    <color name="openBack">#50000000</color>
+    <!--当点击发布帮助时候显示出来的阴影颜色-->
+    <color name="openBack_two">#b4000000</color>
+    <!--hint文字颜色-->
+    <color name="hintColor">#c0c2c3</color>
+</resources>

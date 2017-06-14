@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/help_myself"
+            android:icon="@drawable/ic_svg_handshake"
+            android:title="@string/my_Order"/>
+        <!--help_myself 帮助的订单-->
+        <item
+            android:id="@+id/help_Release"
+            android:icon="@drawable/ic_svg_invoice"
+            android:title="@string/help_Order"/>
+        <!--help_myself 发布的订单-->
+        <item
+            android:id="@+id/help_wallet"
+            android:icon="@drawable/ic_svg_dollar_symbol"
+            android:title="@string/wallet_name"/>
+        <!--help_wallet 我的钱包-->
+        <item
+            android:id="@+id/help_thing"
+            android:icon="@drawable/ic_svg_supermarket_gift"
+            android:title="@string/thing_name"/>
+        <!--help_thing 我的礼包-->
+        <item
+
+            android:id="@+id/help_setting"
+            android:icon="@drawable/ic_svg_settings"
+            android:title="@string/setting_name"/>
+        <!--help_setting 个人设置-->
+    </group>
+
+    <group
+        android:id="@+id/group_myself">
+        <item
+            android:id="@+id/help_Personal_proof"
+            android:checkable="true"
+            android:icon="@drawable/ic_svg_verify_no"
+            android:title="个人认证" />
+
+    </group>
+
+</menu>
+
+
+

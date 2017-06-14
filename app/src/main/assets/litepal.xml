@@ -1,0 +1,14 @@
+<litepal>
+    <dbname value="life_user_info">
+
+    </dbname>
+
+    <version value="4">
+
+    </version>
+
+    <list>
+        <mapping class="com.example.administrator.lifehelp.db.UserHelpInfo"/>
+    </list>
+
+</litepal>
