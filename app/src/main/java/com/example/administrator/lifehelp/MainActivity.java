@@ -15,6 +15,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -22,6 +23,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.administrator.lifehelp.application.MyApplication;
+import com.example.administrator.lifehelp.db.UserInfo;
 import com.example.administrator.lifehelp.lifefragment.MainFragment;
 import com.example.administrator.lifehelp.service.DownloadService;
 import com.example.administrator.lifehelp.util.AnimationUtil;
@@ -30,8 +32,10 @@ import com.example.administrator.lifehelp.util.SetFouchable;
 import com.example.administrator.lifehelp.util.Utils;
 import com.tencent.TIMManager;
 
+import org.litepal.crud.DataSupport;
 import org.litepal.tablemanager.Connector;
 import java.io.File;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -42,6 +46,7 @@ import java.util.TimerTask;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     //该booealn类型用于判断Drawer是否打开,打开时为true,关闭为false,该boolean类型是针对左边的侧滑
+    public boolean isLogin = false;
     public boolean isOpenDrawer = false;
     public boolean isOpenDrawerOfRight = false;
     public PopupWindowUtil popupWindowUtil;
@@ -61,7 +66,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean isClose;
     //用于控制判断是否打开了下载管理器
     public boolean downloadRunning = false;
-
 
 
     @Override
@@ -179,17 +183,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (item.getItemId()){
             //当用户点击我的钱包
             case R.id.help_wallet:
-                mainFragment.windowBack2.setVisibility(View.VISIBLE);
-                AlphaAnimation alphaAnimation = (AlphaAnimation) AnimationUtils.loadAnimation(this,R.anim.show_window_back);
-                mainFragment.windowBack2.startAnimation(alphaAnimation);
-                popupWindowUtil = new PopupWindowUtil(MainActivity.this);
-                popupWindowUtil.show(1);
-                closeDrawer();
+                List<UserInfo> userInfo = DataSupport.findAll(UserInfo.class);
+                for (UserInfo user : userInfo){
+                    if (user.getMessage() != null){
+                        isLogin = true;
+                        Log.i("jsone", "onCreate: " + user.getMessage());
+                        closeDrawer();
+                       Intent intent = new Intent(MainActivity.this,MyWallet.class);
+                        startActivity(intent);
+                    }
+                }
+                if (!isLogin){
+                    mainFragment.windowBack2.setVisibility(View.VISIBLE);
+                    AlphaAnimation alphaAnimation = (AlphaAnimation) AnimationUtils.loadAnimation(this,R.anim.show_window_back);
+                    mainFragment.windowBack2.startAnimation(alphaAnimation);
+                    popupWindowUtil = new PopupWindowUtil(MainActivity.this);
+                    popupWindowUtil.show(1);
+                    closeDrawer();
+                }
                 break;
             //当用户点击我帮助的订单
             case R.id.help_myself:
-                Intent intent = new Intent(MainActivity.this,MyWallet.class);
-                startActivity(intent);
+                closeDrawer();
                 break;
             //当用户点击我的礼包
             case R.id.help_thing:
@@ -205,7 +220,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             //当用户点击个人认证
             case R.id.help_Personal_proof:
-                closeDrawer();
+                Intent intent = new Intent(this,PersonalCertification.class);
+                startActivity(intent);
                 break;
 
         }

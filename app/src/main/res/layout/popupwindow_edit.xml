@@ -85,13 +85,21 @@
             android:id="@+id/textView" />
 
         <ImageView
-            android:layout_marginTop="25dp"
+            android:layout_marginTop="10dp"
             android:src="@drawable/pop_yanzhen"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="38dp"
             android:layout_below="@+id/textView"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:id="@+id/imageView" />
+            android:id="@+id/verification_base64" />
+        <Button
+            android:id="@+id/update_image"
+            android:text="换一换"
+            android:background="#00ffffff"
+            android:layout_centerInParent="true"
+            android:layout_below="@id/verification_base64"
+            android:layout_width="50dp"
+            android:layout_height="30dp" />
     </RelativeLayout>
 </RelativeLayout>

@@ -3,16 +3,12 @@ package com.example.administrator.lifehelp;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
-
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Base64;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -23,24 +19,20 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.administrator.lifehelp.application.MyApplication;
-import com.example.administrator.lifehelp.gson.TokenJson;
+import com.example.administrator.lifehelp.db.UserInfo;
+import com.example.administrator.lifehelp.gson.ParseJson;
 import com.example.administrator.lifehelp.gson.UserActionJson;
 import com.example.administrator.lifehelp.util.HttpRequest;
 import com.example.administrator.lifehelp.util.ToastUtil;
 import com.example.administrator.lifehelp.util.Utils;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.litepal.crud.DataSupport;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -49,7 +41,7 @@ import okhttp3.Response;
 /**
  * 这里是用户输入手机号的界面
  */
-public class UserPhone extends AppCompatActivity{
+public class UserPhone extends AppCompatActivity {
 
     private final static String TAG = "jsone";
 
@@ -91,6 +83,16 @@ public class UserPhone extends AppCompatActivity{
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        List<UserInfo> userInfo = DataSupport.findAll(UserInfo.class);
+        for (UserInfo user : userInfo){
+            Log.i("jsone", "onNavigationItemSelected: ");
+            if (user.getMessage() != null){
+                Log.i(TAG, "onCreate: " + user.getMessage());
+                Intent intent = new Intent(this,MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        }
         setContentView(R.layout.user_phone_first);
         preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
         editor = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext()).edit();
@@ -105,15 +107,13 @@ public class UserPhone extends AppCompatActivity{
     /**
      * 第一次打开客户端
      */
-    private void firstUse() {
+    public void firstUse() {
         onlyPhoneId = Utils.getPhoneId();
-        Log.i(TAG, "onlyPhoneId: " + onlyPhoneId);
-        Log.i(TAG, "onlyPhoneToken: " + onlyPhoneToken);
-        Log.i(TAG, "getTemporaryToken: " + onlyPhoneToken);
         getTemporaryToken();
+        //Log.i(TAG, "onlyPhoneToken:8888 " + onlyPhoneToken);
     }
 
-    private void getTemporaryToken() {
+    public void getTemporaryToken() {
 
         HttpRequest.request(MyApplication.ServerUrl.LIFEHELP_SERVER_URL + "v1/Signature/" + onlyPhoneId, new Callback() {
             @Override
@@ -124,28 +124,18 @@ public class UserPhone extends AppCompatActivity{
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String temToken = response.body().string();
-                //editor.putString("onlyPhoneToken",getParseServer(temToken));
-                onlyPhoneToken = getParseServer(temToken);
-                //editor.apply();
+                //onlyPhoneToken = UserLangUtil.getParseServer(temToken);
+                onlyPhoneToken = ParseJson.getOnlyPhoneToken(temToken);
                 Log.i(TAG, "onlyPhoneToken: " + onlyPhoneToken);
             }
         });
 
     }
 
-    //解析出服务器返回的临时token
-    public String getParseServer(String onlyPhoneTokent) {
-        Gson gson = new Gson();
-        TokenJson token = gson.fromJson(onlyPhoneTokent,TokenJson.class);
-        String tok = token.getToken();
-        Log.i(TAG, "parseJSONByGSON: ." + token.getToken());
-        return tok;
-    }
-
     /**
      * 对输入的手机号格式进行判断
      */
-    private void userPhoneFormat() {
+    public void userPhoneFormat() {
         user_edit_phone.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -158,40 +148,16 @@ public class UserPhone extends AppCompatActivity{
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int i2) {
                 textLength = s;
-                if (s == null || s.length() == 0){
-                    phone_num = s.length();
-                    if (phone_num == 11){
-                        Toast.makeText(UserPhone.this,"phone",Toast.LENGTH_LONG).show();
-                    }
-                    return;
-                }
                 StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < s.length(); i++) {
-                    if (i != 3 && i != 8 && s.charAt(i) == ' ') {
-                        continue;
-                    } else {
                         sb.append(s.charAt(i));
                         if ((sb.length() == 4 || sb.length() == 9)
                                 && sb.charAt(sb.length() - 1) != ' ') {
                             sb.insert(sb.length() - 1, ' ');
+                            String temp = s.toString();
+                            user_edit_phone.setText(sb.toString());
+                            user_edit_phone.setSelection(temp.length() +1);
                         }
-                    }
-                }
-                if (!sb.toString().equals(s.toString())) {
-                    int index = start + 1;
-                    if (sb.charAt(start) == ' ') {
-                        if (before == 0) {
-                            index++;
-                        } else {
-                            index--;
-                        }
-                    } else {
-                        if (before == 1) {
-                            index--;
-                        }
-                    }
-                    user_edit_phone.setText(sb.toString());
-                    user_edit_phone.setSelection(index);
                 }
             }
 
@@ -217,7 +183,7 @@ public class UserPhone extends AppCompatActivity{
                     user_edit_phone.clearFocus();
                     user_edit_phone.setFocusable(false);
                     //让键盘消失
-                    InputMethodManager imm = (InputMethodManager)MyApplication.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    InputMethodManager imm = (InputMethodManager) MyApplication.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(user_edit_phone.getWindowToken(),0);
                     //改变按钮为高亮
                     user_btn_next.setTextColor(Color.rgb(231, 188, 17));
@@ -231,6 +197,9 @@ public class UserPhone extends AppCompatActivity{
                                 ToastUtil.showToast(MyApplication.getContext(),"你输入的格式错误",3000);
                             }else {
                                 userPhone = user_edit_phone.getText().toString();
+                                //String test = UserLangUtil.serverRequest(onlyPhoneToken,getPhoneNumber(userPhone),onlyPhoneId);
+                                //Log.i(TAG, "test++++++++: " + test);
+                                //judgeStartActivity(UserLangUtil.serverRequest(onlyPhoneToken,getPhoneNumber(userPhone),onlyPhoneId));
                                 serverRequest();
                             }
                         }
@@ -249,11 +218,16 @@ public class UserPhone extends AppCompatActivity{
 
         Intent intent = new Intent(UserPhone.this,UserVerification.class);
         Intent PicIntent = new Intent(UserPhone.this,UserPicVerification.class);
-
+        Log.i(TAG, "VerifyImgBase64: " + userActionJson.getVerifyImg());
+        String base64 = userActionJson.getVerifyImg();
+        //intent.putExtra("verifyImgBase64",base64);
         intent.putExtra("user_phone",userPhone);
-        intent.putExtra("userPhoneNumber",getPhoneNumber(userPhone));
+        intent.putExtra("userPhoneNumber", Utils.getPhoneNumber(userPhone));
         intent.putExtra("temporaryToken",onlyPhoneToken);
-        intent.putExtra("VerifyImgBase64",userActionJson.getVerifyImg());
+        PicIntent.putExtra("verifyImgBase64",base64);
+        PicIntent.putExtra("user_phone",userPhone);
+        PicIntent.putExtra("userPhoneNumber", Utils.getPhoneNumber(userPhone));
+        PicIntent.putExtra("temporaryToken",onlyPhoneToken);
         //服务器维护中，
         if (judgeCode == 1021 ){
             startActivity(intent);
@@ -261,10 +235,20 @@ public class UserPhone extends AppCompatActivity{
         }else if (judgeCode == 1588){
             startActivity(PicIntent);
             //finish();
+        }else if (judgeCode == 1023){
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ToastUtil.showToast(UserPhone.this,"请求登陆验证太频繁，请60秒后重试",3000);
+                }
+            });
         }else if (judgeCode == 1024){
-            //startActivity(PicIntent);
-        }else if (judgeCode == 1588){
-
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ToastUtil.showToast(UserPhone.this,"你今天登陆已上限，请24小时后重试",3000);
+                }
+            });
         }
         Log.i(TAG, "parmes tianhuan: " + userActionJson.getMessage());
         Log.i(TAG, "parmes tianhuan: " + userActionJson.getStatus());
@@ -273,29 +257,30 @@ public class UserPhone extends AppCompatActivity{
         Log.i(TAG, "parmes tianhuan: " + userActionJson.getVerifyImg());
     }
 
-    //将字符串转换为手机号
-    private String getPhoneNumber(String userPhone) {
-        String userPhoneNumber;
-        String regEx="[^0-9]";
-        Pattern p   =   Pattern.compile(regEx);
-        Matcher m   =   p.matcher(userPhone);
-        userPhoneNumber = m.replaceAll("").trim();
-        return userPhoneNumber;
-    }
+//    //将字符串转换为手机号
+//    public String getPhoneNumber(String userPhone) {
+//        String userPhoneNumber;
+//        String regEx="[^0-9]";
+//        Pattern p   =   Pattern.compile(regEx);
+//        Matcher m   =   p.matcher(userPhone);
+//        userPhoneNumber = m.replaceAll("").trim();
+//        return userPhoneNumber;
+//    }
 
     /**
      * 手机号输入完成之后，，
      * 在这里请求服务器并获取返回的数据
      */
-    private void serverRequest() {
+    public void serverRequest() {
         if (onlyPhoneToken == null) {
             getTemporaryToken();
+            //onlyPhoneToken = UserLangUtil.getTemporaryToken(onlyPhoneId);
         }
 
         Log.i(TAG,"serverUrl: " + MyApplication.ServerUrl.LIFEHELP_SERVER_URL +
-                "v1/UserAction/inorup/" + getPhoneNumber(userPhone) + "/" + onlyPhoneToken);
+                "v1/UserAction/inorup/" + Utils.getPhoneNumber(userPhone) + "/" + onlyPhoneToken);
         HttpRequest.request(MyApplication.ServerUrl.LIFEHELP_SERVER_URL +
-                "v1/UserAction/inorup/" + getPhoneNumber(userPhone) + "/" + onlyPhoneToken, new Callback() {
+                "v1/UserAction/inorup/" + Utils.getPhoneNumber(userPhone) + "/" + onlyPhoneToken, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.i(TAG, "Internet: " + "没有网络");
@@ -304,6 +289,7 @@ public class UserPhone extends AppCompatActivity{
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String serverReponse = response.body().string();
+                Log.i(TAG, "onResponse:onResponseonResponse " + serverReponse);
                 judgeStartActivity(serverReponse);
             }
         });
@@ -313,7 +299,6 @@ public class UserPhone extends AppCompatActivity{
      * 初始化控件
      */
     private void initControl() {
-
 
         user_phone_back = (RelativeLayout) findViewById(R.id.user_phone_back);
         //跳过按钮

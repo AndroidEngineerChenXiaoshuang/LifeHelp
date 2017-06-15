@@ -1,16 +1,12 @@
 package com.example.administrator.lifehelp;
 
 import android.app.Activity;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import okhttp3.Request;
-import okhttp3.RequestBody;
 
 /**
  * 用户钱包界面
@@ -19,7 +15,7 @@ public class MyWallet extends Activity implements View.OnClickListener{
 
     private final static String rmb = "¥";
     //显示用户余额
-    public double userWalletBalance = 0.0;
+    public double userWalletBalance = 88.88;
     //返回按钮
     public ImageButton walletReturn;
     //标题名称
@@ -67,7 +63,7 @@ public class MyWallet extends Activity implements View.OnClickListener{
             //返回按钮
             case R.id.title_return:
                 finish();
-                overridePendingTransition(0,R.anim.fragment_left_exit);
+                overridePendingTransition(0, R.anim.fragment_left_exit);
                 break;
         }
     }
@@ -76,7 +72,7 @@ public class MyWallet extends Activity implements View.OnClickListener{
     public void onBackPressed() {
         if (!this.isFinishing()){
             finish();
-            overridePendingTransition(0,R.anim.walletactivity_left_exit);
+            overridePendingTransition(0, R.anim.walletactivity_left_exit);
         }
     }
 }
