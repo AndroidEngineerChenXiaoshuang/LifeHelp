@@ -1,11 +1,11 @@
 package com.example.administrator.lifehelp.util;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.CountDownTimer;
-import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -22,59 +22,71 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.administrator.lifehelp.MainActivity;
 import com.example.administrator.lifehelp.R;
 import com.example.administrator.lifehelp.application.MyApplication;
+import com.example.administrator.lifehelp.db.UserInfo;
+import com.example.administrator.lifehelp.gson.LoginAndRegisterJson;
+import com.example.administrator.lifehelp.gson.ParseJson;
+import com.example.administrator.lifehelp.gson.UserActionJson;
+import com.example.administrator.lifehelp.gson.VerficationJson;
+import com.google.gson.Gson;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 
-public class PopupWindowUtil implements View.OnClickListener,View.OnKeyListener{
+public class PopupWindowUtil extends Activity implements View.OnClickListener,View.OnKeyListener{
 
 
+    public final static String TAG = "jsone";
     //判断用户是否输入完成手机号
-    private boolean Fourteen = false;
-
+    public boolean Fourteen = false;
+    //是否开启倒计时
+    public boolean isCountdown = false;
     //判断点击
-    private int isOpen = 0;
-    private int phoneIsOpen = 0;
-    private int editPhoneIsOpen = 0;
+    public int isOpen = 0;
+    public int phoneIsOpen = 0;
+    public int editPhoneIsOpen = 0;
     //手机号码格式
-    private String telRegex = "[1][34578][0-9][ ]\\d{4}[ ]\\d{4}" ;
+    public String telRegex = "[1][34578][0-9][ ]\\d{4}[ ]\\d{4}" ;
     //删除以及返回按钮
-    private Button phone_popup_delete;
-    private Button edit_popup_return;
-    private Button edit_popup_delete;
-    private Button edit_phone_popup_return;
-    private Button edit_phone_popup_delete;
+    public Button phone_popup_delete;
+    public Button edit_popup_return;
+    public Button edit_popup_delete;
+    public Button edit_phone_popup_return;
+    public Button edit_phone_popup_delete;
     //内存存放手机号码
-    private SharedPreferences preferences;
-    private SharedPreferences.Editor editor;
+    public SharedPreferences preferences;
+    public SharedPreferences.Editor editor;
     //用于二次注册的popup窗口
-    private PopupWindow popupWindowPhone;
-    private PopupWindow popupWindowEdit;
-    private PopupWindow popupWindowPhoneEdit;
+    public PopupWindow popupWindowPhone;
+    public PopupWindow popupWindowEdit;
+    public PopupWindow popupWindowPhoneEdit;
     //这是3个弹窗加载的界面
-    private View editView;
-    private View phoneView;
-    private View editPhoneView;
+    public View editView;
+    public View phoneView;
+    public View editPhoneView;
     //记录用户手机号
     private String user_phone_number;
     //存在内存的手机号，用于判断
     private String shared_phone;
     //服务器发送来的验证码
-    public String server_number = "4322";
+    public String server_number = "1234";
     //验证码输入的4个edit 以及获取4个按钮的输入内容
     private EditText edit_one;
     private EditText edit_two;
     private EditText edit_three;
     private EditText edit_fore;
     //这是随机验证码
-    private String edit_yanzhen = "gfae";
-    //只需要用户输入一次验证码
-    private int yanzhenPD = 0;
+    public String edit_yanzhen = "1234";
     //下一步按钮
     private Button window_user_btn_next;
     //输入区域
@@ -83,47 +95,55 @@ public class PopupWindowUtil implements View.OnClickListener,View.OnKeyListener{
     private CharSequence textLength;
     private TextView viewCount_Down;
     //倒计时结束后出现按钮选择
-    private Button first_count_down;
+    public Button first_count_down;
+    public ImageView verification_base64;
     //这里是对手机验证码界面的控件
-    private View view_one;
-    private View view_two;
-    private View view_three;
-    private View view_fore;
+    public View view_one;
+    public View view_two;
+    public View view_three;
+    public View view_fore;
 
-    private TextView view_text_1;
-    private TextView view_text_2;
-    private TextView view_text_3;
-    private TextView view_text_4;
+    public TextView view_text_1;
+    public TextView view_text_2;
+    public TextView view_text_3;
+    public TextView view_text_4;
 
-    private Button keyBoard1;
-    private Button keyBoard2;
-    private Button keyBoard3;
-    private Button keyBoard4;
-    private Button keyBoard5;
-    private Button keyBoard6;
-    private Button keyBoard7;
-    private Button keyBoard8;
-    private Button keyBoard9;
-    private Button keyBoard0;
-    private ImageButton keyBoard_delete;
-    private ImageButton user_btn_return;
+    public Button update_image;
+
+    public Button keyBoard1;
+    public Button keyBoard2;
+    public Button keyBoard3;
+    public Button keyBoard4;
+    public Button keyBoard5;
+    public Button keyBoard6;
+    public Button keyBoard7;
+    public Button keyBoard8;
+    public Button keyBoard9;
+    public Button keyBoard0;
+    public ImageButton keyBoard_delete;
+    public ImageButton user_btn_return;
     //记录用户输入内容
-    private String user_input;
+    public String user_input;
 
-    private int user_btn_click = 0;
+    public int user_btn_click = 0;
 
-    private View pop_user_phone_keyboard;
+    public View pop_user_phone_keyboard;
 
     //显示内容（验证码已发送至）
-    private TextView text_view_phone;
+    public TextView text_view_phone;
 
     //记录用户输入
-    private int editNum = 0;
+    public int editNum = 0;
     //记录用户输入内容
-    private String edit_user_yanzhen;
-    private MainActivity mainActivity;
+    public String edit_user_yanzhen;
+    public MainActivity mainActivity;
+
+    public String onlyPhoneID;
+    public String onlyPhoneToken;
+    public int interFace;
 
     public PopupWindowUtil(Context context) {
+        firstRegisterID();
         //在这个方法初始化其他控件
         mainActivity = (MainActivity) context;
         editView = LayoutInflater.from(context).inflate(R.layout.popupwindow_edit, null);
@@ -165,26 +185,18 @@ public class PopupWindowUtil implements View.OnClickListener,View.OnKeyListener{
             @Override
             public void onDismiss() {
                 if (isOpen == 0 && editPhoneIsOpen == 0){
-                    AlphaAnimation exitAlpha = (AlphaAnimation) AnimationUtils.loadAnimation(mainActivity,R.anim.exit_window_back);
-                    mainActivity.mainFragment.windowBack2.setAnimation(exitAlpha);
-                    mainActivity.mainFragment.windowBack2.setVisibility(View.GONE);
+                    setBackAnimation();
                 }
-
-
             }
         });
         popupWindowPhoneEdit.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
                 if (phoneIsOpen == 0){
-                    AlphaAnimation exitAlpha = (AlphaAnimation) AnimationUtils.loadAnimation(mainActivity,R.anim.exit_window_back);
-                    mainActivity.mainFragment.windowBack2.setAnimation(exitAlpha);
-                    mainActivity.mainFragment.windowBack2.setVisibility(View.GONE);
+                    setBackAnimation();
                 }
-
             }
         });
-
     }
 
     //这是倒计时方法
@@ -192,19 +204,20 @@ public class PopupWindowUtil implements View.OnClickListener,View.OnKeyListener{
         //60秒钟
         @Override
         public void onTick(long l) {
+            isCountdown = true;
             viewCount_Down.setText((l / 1000) + "秒后重发");
         }
 
         @Override
         public void onFinish() {
+            isCountdown = false;
             viewCount_Down.setVisibility(View.GONE);
             first_count_down.setVisibility(View.VISIBLE);
         }
     };
-    /**
-     * 对popupWindow进行关闭调用
-     */
-     public void dismiss(int i) {
+
+    //对popupWindow进行关闭调用
+    public void dismiss(int i) {
         switch (i) {
             case 1:
                 popupWindowPhone.dismiss();
@@ -215,13 +228,12 @@ public class PopupWindowUtil implements View.OnClickListener,View.OnKeyListener{
             case 3:
                 popupWindowPhoneEdit.dismiss();
                 break;
+
         }
     }
 
-    /**
-     * 对popupWindow进行显示调用
-     */
-   public void show(int i) {
+    //对popupWindow进行显示调用
+    public void show(int i) {
         switch (i){
             case 1:
                 popupWindowPhone.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
@@ -233,8 +245,12 @@ public class PopupWindowUtil implements View.OnClickListener,View.OnKeyListener{
                 popupWindowEdit.setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
                 popupWindowEdit.showAtLocation(editView,Gravity.CENTER,0,0);
                 break;
-
             case 3:
+                edit_one.getText().clear();
+                edit_two.getText().clear();
+                edit_three.getText().clear();
+                edit_fore.getText().clear();
+                editNum = 0;
                 if (user_phone_number != null){
                     text_view_phone.setText("验证码已发送至 " + user_phone_number);
                 }else {
@@ -248,8 +264,9 @@ public class PopupWindowUtil implements View.OnClickListener,View.OnKeyListener{
 
     }
     //初始化控件
-    private void initControl() {
+    public void initControl() {
         //这是返回和关闭按钮
+        update_image = (Button) editView.findViewById(R.id.update_image);
         phone_popup_delete = (Button) phoneView.findViewById(R.id.phone_popup_delete);
         edit_popup_return = (Button) editView.findViewById(R.id.edit_popup_return);
         edit_popup_delete = (Button) editView.findViewById(R.id.edit_popup_delete);
@@ -290,6 +307,8 @@ public class PopupWindowUtil implements View.OnClickListener,View.OnKeyListener{
         edit_two = (EditText) editView.findViewById(R.id.edit_two);
         edit_three = (EditText) editView.findViewById(R.id.edit_three);
         edit_fore = (EditText) editView.findViewById(R.id.edit_fore);
+        //显示base64图片
+        verification_base64 = (ImageView) editView.findViewById(R.id.verification_base64);
         //这是用户进行手机输入的界面
         window_user_btn_next = (Button) phoneView.findViewById(R.id.window_user_btn_next);
         //这是倒计时结束显示的重新发送按钮
@@ -306,8 +325,10 @@ public class PopupWindowUtil implements View.OnClickListener,View.OnKeyListener{
         //在这里为控件进行注册事件
         initControlEvent();
     }
-
-    private void initControlEvent() {
+    //为控件注册事件
+    public void initControlEvent() {
+        //更新图片
+        update_image.setOnClickListener(this);
         //每一个popupWindow的关闭和撤回按钮
         phone_popup_delete.setOnClickListener(this);
         edit_popup_return.setOnClickListener(this);
@@ -348,93 +369,38 @@ public class PopupWindowUtil implements View.OnClickListener,View.OnKeyListener{
         edit_two.setEnabled(false);
         edit_three.setEnabled(false);
         edit_fore.setEnabled(false);
+
     }
 
-
-
     //判断用户是否已经输入过手机号码
-    private void userPhoneCode() {
+    public void userPhoneCode() {
         user_edit_phone = (EditText) phoneView.findViewById(R.id.user_phone_number);
-        //从内存获取数据
-        preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
-        if (preferences != null && preferences.getString("phone","").equals(shared_phone)){
-            final String phone = preferences.getString("phone","");
-            shared_phone = phone;
-            user_edit_phone.setText(phone);
-            window_user_btn_next.setTextColor(Color.rgb(252, 252, 252));
-            window_user_btn_next.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    //手机号码格式
-                    if (user_edit_phone.getText().toString().matches(telRegex)){
-                        ToastUtil.showToast(MyApplication.getContext(),"你输入的格式错误",2000);
-                    }else {
-                        phoneIsOpen = 0;
-                        if (yanzhenPD == 1){
-                            editPhoneIsOpen = 1;
-                            dismiss(1);
-                            show(3);
-                        }else {
-                            show(2);
-                            showEdit();
-                        }
-
-                    }
-
-
-                }
-            });
-        }
         user_edit_phone.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
             }
             @Override
-            /**
-             *这里是手机代码格式例如 158 8888 8888
-             */
+            //对输入的手机号进行格式化888-8888-8888
             public void onTextChanged(CharSequence s, int start, int before, int i2) {
                 textLength = s;
                 StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < s.length(); i++) {
-                    if (i != 3 && i != 8 && s.charAt(i) == ' ') {
-                        continue;
-                    } else {
-                        sb.append(s.charAt(i));
-                        if ((sb.length() == 4 || sb.length() == 9)
-                                && sb.charAt(sb.length() - 1) != ' ') {
-                            sb.insert(sb.length() - 1, ' ');
-                        }
+                    sb.append(s.charAt(i));
+                    if ((sb.length() == 4 || sb.length() == 9)
+                            && sb.charAt(sb.length() - 1) != ' ') {
+                        sb.insert(sb.length() - 1, ' ');
+                        String temp = s.toString();
+                        user_edit_phone.setText(sb.toString());
+                        user_edit_phone.setSelection(temp.length() +1);
                     }
-                }
-                if (!sb.toString().equals(s.toString())) {
-                    int index = start + 1;
-                    if (sb.charAt(start) == ' ') {
-                        if (before == 0) {
-                            index++;
-                        } else {
-                            index--;
-                        }
-                    } else {
-                        if (before == 1) {
-                            index--;
-                        }
-                    }
-                    user_edit_phone.setText(sb.toString());
-                    user_edit_phone.setSelection(index);
                 }
                 //用户手机号码
                 user_phone_number = user_edit_phone.getText().toString();
-
             }
-
-            /**
-             *这里是进行对输入的判断
-             */
+            //*这里是进行对输入的判断
             @Override
             public void afterTextChanged(Editable s) {
-
                 String text = textLength.toString() + ' ';
                 final int phone_length = text.length();
                 if (phone_length == 14) {
@@ -451,10 +417,9 @@ public class PopupWindowUtil implements View.OnClickListener,View.OnKeyListener{
                     /**
                      * 这里让输入完后失去输入焦点
                      */
-
                     user_edit_phone.clearFocus();
                     user_edit_phone.setFocusable(false);
-                    InputMethodManager imm = (InputMethodManager)MyApplication.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    InputMethodManager imm = (InputMethodManager) MyApplication.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(user_edit_phone.getWindowToken(),0);
                     window_user_btn_next.setTextColor(Color.rgb(252, 252, 252));
                     /**
@@ -465,24 +430,19 @@ public class PopupWindowUtil implements View.OnClickListener,View.OnKeyListener{
                         public void onClick(View view) {
                             if ( !user_edit_phone.getText().toString().matches(telRegex) ){
                                 if (!Fourteen)
-                                ToastUtil.showToast(MyApplication.getContext(),"你输入的格式错误",2000);
+                                    ToastUtil.showToast(MyApplication.getContext(),"你输入的格式错误",2000);
                             }else {
                                 phoneIsOpen = 0;
-                                if (yanzhenPD == 1){
-                                    editPhoneIsOpen = 1;
-                                    dismiss(1);
+                                editPhoneIsOpen = 1;
+                                if (!isCountdown){
+                                    serverRequest();
+                                }else if (isCountdown){
                                     show(3);
-                                }else {
-                                    showEdit();
-                                    show(2);
-//                            跳转后自动让第一个edit获取焦点
-                                    edit_one.setFocusable(true);
-                                    edit_one.setFocusableInTouchMode(true);
-                                    edit_one.requestFocus();
-                                    edit_one.findFocus();
+                                    dismiss(1);
                                 }
-                            }
 
+                                findFocusable(edit_one);
+                            }
                         }
                     });
                 }
@@ -494,357 +454,284 @@ public class PopupWindowUtil implements View.OnClickListener,View.OnKeyListener{
             }
         });
     }
+    //将手机号发送给服务器，以服务器传回的数据进行下一步判断
+    public void serverRequest() {
+        //如果第一次启动的时候没联网，那么会再次请求
+        if (onlyPhoneToken == null){
+            firstRegisterID();
+        }else {
+            Log.i("jsone", "serverRequest: " + MyApplication.ServerUrl.LIFEHELP_SERVER_URL +
+                    "v1/UserAction/inorup/" + Utils.getPhoneNumber(user_phone_number) + "/" + onlyPhoneToken);
+            HttpRequest.request(MyApplication.ServerUrl.LIFEHELP_SERVER_URL +
+                    "v1/UserAction/inorup/" + Utils.getPhoneNumber(user_phone_number) + "/" + onlyPhoneToken, new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
 
-    //判断用户是否返回更改上次的输入
-    private void showEdit() {
+                }
 
-            edit_one.getText().clear();
-            edit_two.getText().clear();
-            edit_three.getText().clear();
-            edit_fore.getText().clear();
-            editNum = 0;
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    judgeInterFace(response.body().string());
+                }
+            });
+        }
 
-            edit_two.setFocusable(true);
-            edit_two.setFocusableInTouchMode(true);
-            edit_two.requestFocus();
-            edit_two.findFocus();
-            //
-            edit_three.setFocusable(true);
-            edit_three.setFocusableInTouchMode(true);
-            edit_three.requestFocus();
-            edit_three.findFocus();
-            //
-            edit_fore.setFocusable(true);
-            edit_fore.setFocusableInTouchMode(true);
-            edit_fore.requestFocus();
-            edit_fore.findFocus();
+    }
 
-        edit_one.setFocusable(true);
-        edit_one.setFocusableInTouchMode(true);
-        edit_one.requestFocus();
-        edit_one.findFocus();
+    //用户输入手机号，对之进行判断，是否为重复操作。将进入不同的界面
+    public void judgeInterFace(String string) {
+        Log.i(TAG, "judgeInterFace: judgeInterFacejudgeInterFacejudgeInterFace" + string);
+        Gson gson = new Gson();
+        final UserActionJson userActionJson = gson.fromJson(string,UserActionJson.class);
+        interFace = userActionJson.getCode();
+        Log.i("jsone", "judgeInterFace: " + interFace);
+        Log.i(TAG, "judgeInterFace: " + userActionJson.getMessage());
+        Log.i(TAG, "judgeInterFace: " + userActionJson.getVerifyImg());
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (interFace == 1021){
+                    show(3);
+                    //开启倒计时
+                    timer.start();
+                    dismiss(1);
+                }else if (interFace == 1588){
+                    verification_base64.setImageBitmap(Utils.getStringToBitmap(userActionJson.getVerifyImg()));
+                    show(2);
+                    dismiss(1);
 
-            if (edit_one.length() >= 1){
-                edit_one.clearFocus();
-                edit_one.setFocusable(false);
-
-                edit_two.setFocusable(true);
-                edit_two.setFocusableInTouchMode(true);
-                edit_two.requestFocus();
-                edit_two.findFocus();
-
-                if (edit_two.length()>=1){
-                    edit_two.clearFocus();
-                    edit_two.setFocusable(false);
-
-                    edit_three.setFocusable(true);
-                    edit_three.setFocusableInTouchMode(true);
-                    edit_three.requestFocus();
-                    edit_three.findFocus();
-                    if (edit_three.length()>=1){
-                        edit_three.clearFocus();
-                        edit_three.setFocusable(false);
-
-                        edit_fore.setFocusable(true);
-                        edit_fore.setFocusableInTouchMode(true);
-                        edit_fore.requestFocus();
-                        edit_fore.findFocus();
-                    }
+                }else if (interFace == 1505){
+                    Log.i("jsone", "judgeInterFace: " + interFace);
                 }
             }
+        });
 
+    }
 
-        editor = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext()).edit();
-        editor.putString("phone",user_phone_number);
-        editor.apply();
-        editNum = 0;
+    //第一个打开界面将会获得一个临时token
+    public void firstRegisterID() {
+        onlyPhoneID = Utils.getPhoneId();
+        HttpRequest.request(MyApplication.ServerUrl.LIFEHELP_SERVER_URL + "v1/Signature/" + onlyPhoneID, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                onlyPhoneToken = ParseJson.getOnlyPhoneToken(response.body().string());
+                Log.i("jsone", "onResponse: " + onlyPhoneToken);
+            }
+        });
+    }
+
+    //让editText获取焦点
+    public void findFocusable(EditText editText){
+        editText.setFocusable(true);
+        editText.setFocusableInTouchMode(true);
+        editText.requestFocus();
+        editText.findFocus();
+    }
+    //让editText失去焦点
+    public void clearFocusable(EditText editText){
+        editText.clearFocus();
+        editText.setFocusable(false);
     }
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.fore:
-                pop_user_phone_keyboard.setVisibility(View.VISIBLE);
-                break;
-            case R.id.hour:
-                pop_user_phone_keyboard.setVisibility(View.VISIBLE);
-                break;
-            case R.id.second:
-                pop_user_phone_keyboard.setVisibility(View.VISIBLE);
-                break;
-            case R.id.minute:
-                pop_user_phone_keyboard.setVisibility(View.VISIBLE);
-                break;
-            //键盘按钮
-            case R.id.keyboard1:
-                if (user_btn_click == 0) {
-                    view_text_1.setText("1");
-                    user_input = view_text_1.getText().toString();
-                    user_btn_click++;
-                }else if (user_btn_click == 1){
-                    view_text_2.setText("1");
-                    user_input = user_input + view_text_2.getText().toString();
-                    user_btn_click++;
-                }else if (user_btn_click == 2){
-                    view_text_3.setText("1");
-                    user_input = user_input + view_text_3.getText().toString();
-                    user_btn_click++;
-                }else if (user_btn_click == 3){
-                    view_text_4.setText("1");
-                    user_input = user_input + view_text_4.getText().toString();
-                    user_btn_click++;
-                }
-                break;
-            case R.id.keyboard2:
-                if (user_btn_click == 0) {
-                    view_text_1.setText("2");
-                    user_input = view_text_1.getText().toString();
-                    user_btn_click++;
-                }else if (user_btn_click == 1){
-                    view_text_2.setText("2");
-                    user_input = user_input + view_text_2.getText().toString();
-                    user_btn_click++;
-                }else if (user_btn_click == 2){
-                    view_text_3.setText("2");
-                    user_input = user_input + view_text_3.getText().toString();
-                    user_btn_click++;
-                }else if (user_btn_click == 3){
-                    view_text_4.setText("2");
-                    user_input = user_input + view_text_4.getText().toString();
-                    user_btn_click++;
-                }
-                break;
-            case R.id.keyboard3:
-                if (user_btn_click == 0) {
-                    view_text_1.setText("3");
-                    user_input = view_text_1.getText().toString();
-                    user_btn_click++;
-                }else if (user_btn_click == 1){
-                    view_text_2.setText("3");
-                    user_input = user_input + view_text_2.getText().toString();
-                    user_btn_click++;
-                }else if (user_btn_click == 2){
-                    view_text_3.setText("3");
-                    user_input = user_input + view_text_3.getText().toString();
-                    user_btn_click++;
-                }else if (user_btn_click == 3){
-                    view_text_4.setText("3");
-                    user_input = user_input + view_text_4.getText().toString();
-                    user_btn_click++;
-                }
-                break;
-            case R.id.keyboard4:
-                if (user_btn_click == 0) {
-                    view_text_1.setText("4");
-                    user_input = view_text_1.getText().toString();
-                    user_btn_click++;
-                }else if (user_btn_click == 1){
-                    view_text_2.setText("4");
-                    user_input = user_input + view_text_2.getText().toString();
-                    user_btn_click++;
-                }else if (user_btn_click == 2){
-                    view_text_3.setText("4");
-                    user_input = user_input + view_text_3.getText().toString();
-                    user_btn_click++;
-                }else if (user_btn_click == 3){
-                    view_text_4.setText("4");
-                    user_input = user_input + view_text_4.getText().toString();
-                    user_btn_click++;
-                }
-                break;
-            case R.id.keyboard5:
-                if (user_btn_click == 0) {
-                    view_text_1.setText("5");
-                    user_input = view_text_1.getText().toString();
-                    user_btn_click++;
-                }else if (user_btn_click == 1){
-                    view_text_2.setText("5");
-                    user_input = user_input + view_text_2.getText().toString();
-                    user_btn_click++;
-                }else if (user_btn_click == 2){
-                    view_text_3.setText("5");
-                    user_input = user_input + view_text_3.getText().toString();
-                    user_btn_click++;
-                }else if (user_btn_click == 3){
-                    view_text_4.setText("5");
-                    user_input = user_input + view_text_4.getText().toString();
-                    user_btn_click++;
-                }
-                break;
-            case R.id.keyboard6:
-                if (user_btn_click == 0) {
-                    view_text_1.setText("6");
-                    user_input = view_text_1.getText().toString();
-                    user_btn_click++;
-                }else if (user_btn_click == 1){
-                    view_text_2.setText("6");
-                    user_input = user_input + view_text_2.getText().toString();
-                    user_btn_click++;
-                }else if (user_btn_click == 2){
-                    view_text_3.setText("6");
-                    user_input = user_input + view_text_3.getText().toString();
-                    user_btn_click++;
-                }else if (user_btn_click == 3){
-                    view_text_4.setText("6");
-                    user_input = user_input + view_text_4.getText().toString();
-                    user_btn_click++;
-                }
-                break;
-            case R.id.keyboard7:
-                if (user_btn_click == 0) {
-                    view_text_1.setText("7");
-                    user_input = view_text_1.getText().toString();
-                    user_btn_click++;
-                }else if (user_btn_click == 1){
-                    view_text_2.setText("7");
-                    user_input = user_input + view_text_2.getText().toString();
-                    user_btn_click++;
-                }else if (user_btn_click == 2){
-                    view_text_3.setText("7");
-                    user_input = user_input + view_text_3.getText().toString();
-                    user_btn_click++;
-                }else if (user_btn_click == 3){
-                    view_text_4.setText("7");
-                    user_input = user_input + view_text_4.getText().toString();
-                    user_btn_click++;
-                }
-                break;
-            case R.id.keyboard8:
-                if (user_btn_click == 0) {
-                    view_text_1.setText("8");
-                    user_input = view_text_1.getText().toString();
-                    user_btn_click++;
-                }else if (user_btn_click == 1){
-                    view_text_2.setText("8");
-                    user_input = user_input + view_text_2.getText().toString();
-                    user_btn_click++;
-                }else if (user_btn_click == 2){
-                    view_text_3.setText("8");
-                    user_input = user_input + view_text_3.getText().toString();
-                    user_btn_click++;
-                }else if (user_btn_click == 3){
-                    view_text_4.setText("8");
-                    user_input = user_input + view_text_4.getText().toString();
-                    user_btn_click++;
-                }
-                break;
-            case R.id.keyboard9:
-                if (user_btn_click == 0) {
-                    view_text_1.setText("9");
-                    user_input = view_text_1.getText().toString();
-                    user_btn_click++;
-                }else if (user_btn_click == 1){
-                    view_text_2.setText("9");
-                    user_input = user_input + view_text_2.getText().toString();
-                    user_btn_click++;
-                }else if (user_btn_click == 2){
-                    view_text_3.setText("9");
-                    user_input = user_input + view_text_3.getText().toString();
-                    user_btn_click++;
-                }else if (user_btn_click == 3){
-                    view_text_4.setText("9");
-                    user_input = user_input + view_text_4.getText().toString();
-                    user_btn_click++;
-                }
-                break;
-            case R.id.keyboard0:
-                if (user_btn_click == 0) {
-                    view_text_1.setText("0");
-                    user_input = view_text_1.getText().toString();
-                    user_btn_click++;
-                }else if (user_btn_click == 1){
-                    view_text_2.setText("0");
-                    user_input = user_input + view_text_2.getText().toString();
-                    user_btn_click++;
-                }else if (user_btn_click == 2){
-                    view_text_3.setText("0");
-                    user_input = user_input + view_text_3.getText().toString();
-                    user_btn_click++;
-                }else if (user_btn_click == 3){
-                    view_text_4.setText("0");
-                    user_input = user_input + view_text_4.getText().toString();
-                    user_btn_click++;
-                }
-                break;
-            case R.id.keyboard_delete:
-                if (user_btn_click == 1){
-                    view_text_1.setText(" ");
-                    user_btn_click = 0;
-                }else if (user_btn_click == 2){
-                    view_text_2.setText(" ");
-                    user_btn_click = 1;
-                }else if (user_btn_click == 3){
-                    view_text_3.setText(" ");
-                    user_btn_click = 2;
-                }else if (user_btn_click == 4){
-                    user_btn_click = 3;
-                    view_text_4.setText(" ");
-                }
-                break;
-            case R.id.user_btn_return:
-                pop_user_phone_keyboard.setVisibility(View.GONE);
-                break;
-            //返回关闭按钮
-            case R.id.phone_popup_delete:
-                if(mainActivity!=null){
-                    AlphaAnimation exitAlpha = (AlphaAnimation) AnimationUtils.loadAnimation(mainActivity,R.anim.exit_window_back);
-                    mainActivity.mainFragment.windowBack2.setAnimation(exitAlpha);
-                    mainActivity.mainFragment.windowBack2.setVisibility(View.GONE);
-                }
-                dismiss(1);
-                dismiss(2);
-                dismiss(3);
-                break;
-            case R.id.edit_popup_return:
-                show(1);
-                dismiss(2);
-                break;
-            case R.id.edit_popup_delete:
-                if(mainActivity!=null){
-                    AlphaAnimation exitAlpha = (AlphaAnimation) AnimationUtils.loadAnimation(mainActivity,R.anim.exit_window_back);
-                    mainActivity.mainFragment.windowBack2.setAnimation(exitAlpha);
-                    mainActivity.mainFragment.windowBack2.setVisibility(View.GONE);
-                }
-                dismiss(1);
-                dismiss(2);
-                dismiss(3);
-                break;
-            case R.id.edit_phone_popup_return:
-                isOpen = 0;
-                phoneIsOpen = 1;
-                show(1);
-                dismiss(3);
-                break;
-            case R.id.edit_phone_popup_delete:
-                if(mainActivity!=null ){
-                    AlphaAnimation exitAlpha = (AlphaAnimation) AnimationUtils.loadAnimation(mainActivity,R.anim.exit_window_back);
-                    mainActivity.mainFragment.windowBack2.setAnimation(exitAlpha);
-                    mainActivity.mainFragment.windowBack2.setVisibility(View.GONE);
-                }
-                dismiss(3);
-                break;
-        }
+            switch (view.getId()){
+                case R.id.fore:
+                    pop_user_phone_keyboard.setVisibility(View.VISIBLE);
+                    break;
+                case R.id.hour:
+                    pop_user_phone_keyboard.setVisibility(View.VISIBLE);
+                    break;
+                case R.id.second:
+                    pop_user_phone_keyboard.setVisibility(View.VISIBLE);
+                    break;
+                case R.id.minute:
+                    pop_user_phone_keyboard.setVisibility(View.VISIBLE);
+                    break;
+                case R.id.keyboard1:
+                    getTextViewContext(view_text_1,view_text_2,view_text_3,view_text_4,"1");
+                    break;
+                case R.id.keyboard2:
+                    getTextViewContext(view_text_1,view_text_2,view_text_3,view_text_4,"2");
+                    break;
+                case R.id.keyboard3:
+                    getTextViewContext(view_text_1,view_text_2,view_text_3,view_text_4,"3");
+                    break;
+                case R.id.keyboard4:
+                    getTextViewContext(view_text_1,view_text_2,view_text_3,view_text_4,"4");
+                    break;
+                case R.id.keyboard5:
+                    getTextViewContext(view_text_1,view_text_2,view_text_3,view_text_4,"5");
+                    break;
+                case R.id.keyboard6:
+                    getTextViewContext(view_text_1,view_text_2,view_text_3,view_text_4,"6");
+                    break;
+                case R.id.keyboard7:
+                    getTextViewContext(view_text_1,view_text_2,view_text_3,view_text_4,"7");
+                    break;
+                case R.id.keyboard8:
+                    getTextViewContext(view_text_1,view_text_2,view_text_3,view_text_4,"8");
+                    break;
+                case R.id.keyboard9:
+                    getTextViewContext(view_text_1,view_text_2,view_text_3,view_text_4,"9");
+                    break;
+                case R.id.keyboard0:
+                    getTextViewContext(view_text_1,view_text_2,view_text_3,view_text_4,"0");
+                    break;
+                case R.id.keyboard_delete:
+                    if (user_btn_click == 1){
+                        view_text_1.setText(" ");
+                        user_btn_click = 0;
+                    }else if (user_btn_click == 2){
+                        view_text_2.setText(" ");
+                        user_btn_click = 1;
+                    }else if (user_btn_click == 3){
+                        view_text_3.setText(" ");
+                        user_btn_click = 2;
+                    }else if (user_btn_click == 4){
+                        user_btn_click = 3;
+                        view_text_4.setText(" ");
+                    }
+                    break;
+                case R.id.user_btn_return:
+                    pop_user_phone_keyboard.setVisibility(View.GONE);
+                    break;
+                //返回关闭按钮
+                case R.id.phone_popup_delete:
+                    if(mainActivity!=null){
+                        setBackAnimation();
+                    }
+                    dismiss(1);
+                    dismiss(2);
+                    dismiss(3);
+                    break;
+                case R.id.edit_popup_return:
+                    show(1);
+                    dismiss(2);
+                    break;
+                case R.id.edit_popup_delete:
+                    if(mainActivity!=null){
+                        setBackAnimation();
+                    }
+                    dismiss(1);
+                    dismiss(2);
+                    dismiss(3);
+                    break;
+                case R.id.edit_phone_popup_return:
+                    isOpen = 0;
+                    phoneIsOpen = 1;
+                    show(1);
+                    dismiss(3);
+                    break;
+                case R.id.edit_phone_popup_delete:
+                    if(mainActivity!=null ){
+                        setBackAnimation();
+                    }
+                    dismiss(3);
+                    break;
+                case R.id.update_image:
+                    //更换验证码图片
+                    editNum = 1;
+                    requestVerification();
+            }
         //这里进行判断如果用户输入的验证码正确就注册成功并进入主界面
-        if (user_btn_click == 4 && user_input.equals(server_number)){
-            //让键盘消失。
-            pop_user_phone_keyboard.setVisibility(View.GONE);
-            phoneView.setVisibility(View.GONE);
-            ToastUtil.showToast(MyApplication.getContext(),"验证成功，你以成功注册",3000);
-            AlphaAnimation exitAlpha = (AlphaAnimation) AnimationUtils.loadAnimation(mainActivity,R.anim.exit_window_back);
-            mainActivity.mainFragment.windowBack2.setAnimation(exitAlpha);
-            mainActivity.mainFragment.windowBack2.setVisibility(View.GONE);
-            dismiss(1);
-            dismiss(3);
-        }else if (user_btn_click == 4 && !user_input.equals(server_number) ){
-            view_text_1.setText(" ");
-            view_text_2.setText(" ");
-            view_text_3.setText(" ");
-            view_text_4.setText(" ");
-            user_btn_click = 0;
-            ToastUtil.showToast(MyApplication.getContext(),"您输入错误，请重新输入",2000);
+        if (user_btn_click == 4){
+            loginAndRegisterRequest();
         }
     }
 
+    //登陆和注册请求
+    public void loginAndRegisterRequest() {
+
+        Log.i(TAG, "loginAndRegisterRequest: " + MyApplication.ServerUrl.LIFEHELP_SERVER_URL +
+                "v1/UserAction/verifySMS/" + Utils.getPhoneNumber(user_phone_number) + "/" + user_input + "/" + onlyPhoneToken);
+        HttpRequest.request(MyApplication.ServerUrl.LIFEHELP_SERVER_URL +
+                "v1/UserAction/verifySMS/" + Utils.getPhoneNumber(user_phone_number) + "/" + user_input + "/" + onlyPhoneToken, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String res = response.body().string();
+                Log.i(TAG, "onResponse: " + res);
+                Gson gson = new Gson();
+                LoginAndRegisterJson loginAndRegisterJson = gson.fromJson(res,LoginAndRegisterJson.class);
+                if (loginAndRegisterJson.getCode() == 5854 || loginAndRegisterJson.getCode() == 5754){
+                    UserInfo userInfo = new UserInfo();
+                    userInfo.setStatus(loginAndRegisterJson.getStatus());
+                    userInfo.setMessage(loginAndRegisterJson.getMessage());
+                    userInfo.setCode(loginAndRegisterJson.getCode());
+                    userInfo.setToken(loginAndRegisterJson.getToken());
+                    userInfo.setTlssToken(loginAndRegisterJson.getTlssToken());
+                    userInfo.setNickname(loginAndRegisterJson.getUserinfo().getNickname());
+                    userInfo.setAvatar(loginAndRegisterJson.getUserinfo().getAvatar());
+                    userInfo.setBalance(loginAndRegisterJson.getUserinfo().getBalance());
+                    userInfo.setCredit_grade(loginAndRegisterJson.getUserinfo().getCredit_grade());
+                    userInfo.save();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            //让键盘消失。
+                            pop_user_phone_keyboard.setVisibility(View.GONE);
+                            phoneView.setVisibility(View.GONE);
+                            ToastUtil.showToast(MyApplication.getContext(),"验证成功，你以成功注册",3000);
+                            dismiss(1);
+                            dismiss(3);
+                        }
+                    });
+                }else if (loginAndRegisterJson.getCode() == 5756){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            view_text_1.setText(" ");
+                            view_text_2.setText(" ");
+                            view_text_3.setText(" ");
+                            view_text_4.setText(" ");
+                            user_btn_click = 0;
+                            user_input = null;
+                            ToastUtil.showToast(MyApplication.getContext(),"您输入错误，请重新输入",2000);
+                        }
+                    });
+                }
+            }
+        });
+
+    }
+    //设置一个背景显示已经加载和关闭动画
+    public void setBackAnimation() {
+        AlphaAnimation exitAlpha = (AlphaAnimation) AnimationUtils.loadAnimation(mainActivity, R.anim.exit_window_back);
+        mainActivity.mainFragment.windowBack2.setAnimation(exitAlpha);
+        mainActivity.mainFragment.windowBack2.setVisibility(View.GONE);
+    }
+
+    //判断当前显示为第几个textView并且获取textView显示的内容
+    public void getTextViewContext(TextView view_text_1, TextView view_text_2, TextView view_text_3, TextView view_text_4, String s) {
+        if (user_btn_click == 0){
+            view_text_1.setText(s);
+            user_input =view_text_1.getText().toString();
+            user_btn_click++;
+        }else if (user_btn_click == 1){
+            view_text_2.setText(s);
+            user_input = user_input + view_text_2.getText().toString();
+            user_btn_click++;
+        }else if (user_btn_click == 2){
+            view_text_3.setText(s);
+            user_input = user_input + view_text_3.getText().toString();
+            user_btn_click++;
+        }else if (user_btn_click == 3){
+            view_text_4.setText(s);
+            user_input = user_input + view_text_4.getText().toString();
+            user_btn_click++;
+        }
+        Log.i(TAG, "getTextViewContext: " + user_input);
+    }
     //对editText的删除按键进行监听
     @Override
     public boolean onKey(View view, int i, KeyEvent keyEvent) {
@@ -857,37 +744,28 @@ public class PopupWindowUtil implements View.OnClickListener,View.OnKeyListener{
                 break;
             case R.id.edit_two:
                 if (i == KeyEvent.KEYCODE_DEL && keyEvent.getAction() == KeyEvent.ACTION_DOWN){
-                    edit_two.setFocusable(false);
+                    clearFocusable(edit_two);
                     edit_two.getText().clear();
                     edit_one.getText().clear();
-                    edit_one.setFocusable(true);
-                    edit_one.setFocusableInTouchMode(true);
-                    edit_one.requestFocus();
-                    edit_one.findFocus();
+                    findFocusable(edit_one);
                     return true;
                 }
                 break;
             case R.id.edit_three:
                 if (i == KeyEvent.KEYCODE_DEL && keyEvent.getAction() == KeyEvent.ACTION_DOWN){
                     edit_three.getText().clear();
-                    edit_three.setFocusable(false);
+                    clearFocusable(edit_three);
                     edit_two.getText().clear();
-                    edit_two.setFocusable(true);
-                    edit_two.setFocusableInTouchMode(true);
-                    edit_two.requestFocus();
-                    edit_two.findFocus();
+                    findFocusable(edit_two);
                     return true;
                 }
                 break;
             case R.id.edit_fore:
                 if (i == KeyEvent.KEYCODE_DEL && keyEvent.getAction() == KeyEvent.ACTION_DOWN){
-                    edit_fore.setFocusable(false);
-                    edit_fore.getText().clear();
                     edit_three.getText().clear();
-                    edit_three.setFocusable(true);
-                    edit_three.setFocusableInTouchMode(true);
-                    edit_three.requestFocus();
-                    edit_three.findFocus();
+                    clearFocusable(edit_fore);
+                    edit_fore.getText().clear();
+                    findFocusable(edit_three);
                     return true;
                 }
                 break;
@@ -895,127 +773,117 @@ public class PopupWindowUtil implements View.OnClickListener,View.OnKeyListener{
         return false;
     }
 
-    //对内容进行监听
+    //验证码输入的editText对内容进行监听
     private class TextChange implements TextWatcher{
 
         @Override
         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
         }
 
         @Override
         public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
         }
 
         @Override
         public void afterTextChanged(Editable editable) {
             if (edit_one.length() >= 1){
-                edit_one.clearFocus();
-                edit_one.setFocusable(false);
-
                 edit_two.setEnabled(true);
-                edit_two.setFocusable(true);
-                edit_two.setFocusableInTouchMode(true);
-                edit_two.requestFocus();
-                edit_two.findFocus();
-
+                clearFocusable(edit_one);
+                findFocusable(edit_two);
                 if (edit_two.length()>=1){
-                    edit_two.clearFocus();
-                    edit_two.setFocusable(false);
-
                     edit_three.setEnabled(true);
-                    edit_three.setFocusable(true);
-                    edit_three.setFocusableInTouchMode(true);
-                    edit_three.requestFocus();
-                    edit_three.findFocus();
+                    clearFocusable(edit_two);
+                    findFocusable(edit_three);
                     if (edit_three.length()>=1){
-                        edit_three.clearFocus();
-                        edit_three.setFocusable(false);
-
                         edit_fore.setEnabled(true);
-                        edit_fore.setFocusable(true);
-                        edit_fore.setFocusableInTouchMode(true);
-                        edit_fore.requestFocus();
-                        edit_fore.findFocus();
-                        if (edit_fore.length() >= 1){
-                            editNum = 1;
-                        }
+                        clearFocusable(edit_three);
+                        findFocusable(edit_fore);
+
                     }
                 }
             }
 
             edit_user_yanzhen = edit_one.getText().toString() + edit_two.getText().toString()
                     + edit_three.getText().toString() + edit_fore.getText().toString();
-            if (editNum == 1){
-                if (edit_user_yanzhen.equals(edit_yanzhen)){
-                    timer.start();
-                    yanzhenPD = 1;
+            Log.i(TAG, "afterTextChanged: " + edit_user_yanzhen.length());
+            if (edit_user_yanzhen.length() == 4){
                     isOpen = 1;
-                    dismiss(1);
-                    dismiss(2);
-                    show(3);
-                }else{
-                    editNum = 0;
-                    edit_one.getText().clear();
-                    edit_two.getText().clear();
-                    edit_three.getText().clear();
-                    edit_fore.getText().clear();
-                    edit_two.setEnabled(false);
-                    edit_three.setEnabled(false);
-                    edit_fore.setEnabled(false);
-                    //
-                    edit_two.setFocusable(true);
-                    edit_two.setFocusableInTouchMode(true);
-                    edit_two.requestFocus();
-                    edit_two.findFocus();
-                    //
-                    edit_three.setFocusable(true);
-                    edit_three.setFocusableInTouchMode(true);
-                    edit_three.requestFocus();
-                    edit_three.findFocus();
-                    //
-                    edit_fore.setFocusable(true);
-                    edit_fore.setFocusableInTouchMode(true);
-                    edit_fore.requestFocus();
-                    edit_fore.findFocus();
+                    //当验证码输入正确之后，再次请求服务器
+                    Log.i(TAG, "afterTextChanged: " + MyApplication.ServerUrl.LIFEHELP_SERVER_URL +
+                            "v1/UserAction/inorup/" + Utils.getPhoneNumber(user_phone_number) +"/"+ onlyPhoneToken +"/"+ edit_user_yanzhen);
 
-                    edit_one.setFocusable(true);
-                    edit_one.setFocusableInTouchMode(true);
-                    edit_one.requestFocus();
-                    edit_one.findFocus();
-                    if (edit_one.length() >= 1){
-                        edit_one.clearFocus();
-                        edit_one.setFocusable(false);
-
-                        edit_two.setFocusable(true);
-                        edit_two.setFocusableInTouchMode(true);
-                        edit_two.requestFocus();
-                        edit_two.findFocus();
-
-                        if (edit_two.length()>=1){
-                            edit_two.clearFocus();
-                            edit_two.setFocusable(false);
-
-                            edit_three.setFocusable(true);
-                            edit_three.setFocusableInTouchMode(true);
-                            edit_three.requestFocus();
-                            edit_three.findFocus();
-                            if (edit_three.length()>=1){
-                                edit_three.clearFocus();
-                                edit_three.setFocusable(false);
-
-                                edit_fore.setFocusable(true);
-                                edit_fore.setFocusableInTouchMode(true);
-                                edit_fore.requestFocus();
-                                edit_fore.findFocus();
-                            }
-                        }
-                    }
-                    ToastUtil.showToast(MyApplication.getContext(),"请重新输入验证码",3000);
-                }
+                requestVerification();
             }
         }
     }
+    //将输入的验证码发送给服务器判断正确，否则重新输入输入并且更新验证码
+    public void requestVerification() {
+        HttpRequest.request(MyApplication.ServerUrl.LIFEHELP_SERVER_URL +
+                "v1/UserAction/inorup/" + Utils.getPhoneNumber(user_phone_number)
+                +"/"+ onlyPhoneToken +"/"+ edit_user_yanzhen, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
 
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String res = response.body().string();
+                Log.i(TAG, "error: " + res);
+                Gson gson = new Gson();
+                final VerficationJson verficationJson = gson.fromJson(res,VerficationJson.class);
+                String status = verficationJson.getStatus();
+                Log.i(TAG, "run: " + verficationJson.getVerifyImg());
+                int code = verficationJson.getCode();
+                Log.i(TAG, "code: " + status);
+                if (code == 5754 || code == 5854 || code == 1021){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.i(TAG, "run: " );
+                            timerStart();
+                        }
+                    });
+                }else {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Log.i(TAG, "run: " + verficationJson.getVerifyImg());
+                            verification_base64.setImageBitmap(Utils.getStringToBitmap(verficationJson.getVerifyImg()));
+                           requestError();
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    public void requestError() {
+        edit_one.getText().clear();
+        edit_two.getText().clear();
+        edit_three.getText().clear();
+        edit_fore.getText().clear();
+        edit_two.setEnabled(false);
+        edit_three.setEnabled(false);
+        edit_fore.setEnabled(false);
+        findFocusable(edit_two);
+        findFocusable(edit_three);
+        findFocusable(edit_fore);
+        findFocusable(edit_one);
+        if (editNum == 0){
+            ToastUtil.showToast(MyApplication.getContext(),"请重新输入验证码",3000);
+        }
+        editNum = 0;
+    }
+    //启动倒计时
+    public void timerStart() {
+        dismiss(1);
+        dismiss(2);
+        show(3);
+        timer.start();
+        //将textView显示出来
+        viewCount_Down.setVisibility(View.VISIBLE);
+        //将button隐藏掉
+        first_count_down.setVisibility(View.GONE);
+    }
 }

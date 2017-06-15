@@ -3,9 +3,12 @@ package com.example.administrator.lifehelp.util;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Base64;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +23,8 @@ import com.example.administrator.lifehelp.lifefragment.MainFragment;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 设置顶部color
@@ -235,4 +240,25 @@ public class Utils {
         return (int)(Math.random()*(max-min)+min);
     }
 
+    //将字符串转换为纯数字手机号
+    public static String getPhoneNumber(String userPhone) {
+        String userPhoneNumber;
+        String regEx="[^0-9]";
+        Pattern p = Pattern.compile(regEx);
+        Matcher m = p.matcher(userPhone);
+        userPhoneNumber = m.replaceAll("").trim();
+        return userPhoneNumber;
+    }
+
+    //将传来的字符串转换成Bitmap类型
+    public static Bitmap getStringToBitmap(String verifyImg) {
+        Bitmap bitmap = null;
+        try {
+            byte[]bitmapArray = Base64.decode(verifyImg, Base64.DEFAULT);
+            bitmap= BitmapFactory.decodeByteArray(bitmapArray, 0, bitmapArray.length);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return bitmap;
+    }
 }

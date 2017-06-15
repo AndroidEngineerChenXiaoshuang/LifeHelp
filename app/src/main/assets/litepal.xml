@@ -3,12 +3,13 @@
 
     </dbname>
 
-    <version value="4">
+    <version value="6">
 
     </version>
 
     <list>
-        <mapping class="com.example.administrator.lifehelp.db.UserHelpInfo"/>
+        <mapping class="com.example.administrator.lifehelp.db.UserHelpInfo"> </mapping>
+        <mapping class="com.example.administrator.lifehelp.db.UserInfo"> </mapping>
     </list>
 
 </litepal>

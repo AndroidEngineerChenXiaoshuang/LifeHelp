@@ -90,6 +90,9 @@
             android:enabled="true"
             android:exported="false">
         </activity>
+        <activity android:name=".PersonalCertification">
+
+        </activity>
 
         <!--以下是腾讯云需要用到的系统组件-->
 
