@@ -74,8 +74,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //用于控制判断是否打开了下载管理器
     public boolean downloadRunning = false;
 
-<<<<<<< HEAD
-
     //动画主体是否打开
     public boolean main_isRunning = false;
     //动画是否正在运行
@@ -145,8 +143,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public int fragmentstate = 1;
 
 
-=======
->>>>>>> 1e8afae8667fd05628f0fa0b0223a5784835c85c
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -335,21 +331,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             //当用户点击我的钱包
             case R.id.help_wallet:
                 List<UserInfo> userInfo = DataSupport.findAll(UserInfo.class);
-                for (UserInfo user : userInfo) {
-                    if (user.getMessage() != null) {
-                        isLogin = true;
-                        Log.i("jsone", "onCreate: " + user.getMessage());
-                        closeDrawer();
-                        Intent intent = new Intent(MainActivity.this, MyWallet.class);
-                        startActivity(intent);
-                    }
-                }
-                if (!isLogin) {
-                    windowBack2.setVisibility(View.VISIBLE);
-                    AlphaAnimation alphaAnimation = (AlphaAnimation) AnimationUtils.loadAnimation(this, R.anim.show_window_back);
-                    windowBack2.startAnimation(alphaAnimation);
-                    popupWindowUtil = new PopupWindowUtil(MainActivity.this);
-                    popupWindowUtil.show(1);
                 for (UserInfo user : userInfo){
                     Log.i("jsone", "onNavigationItemSelected: ");
                     if (user.getUsername() != null){
@@ -360,9 +341,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 }
                 if (!isLogin){
-                    mainFragment.windowBack2.setVisibility(View.VISIBLE);
+                    windowBack2.setVisibility(View.VISIBLE);
                     AlphaAnimation alphaAnimation = (AlphaAnimation) AnimationUtils.loadAnimation(this,R.anim.show_window_back);
-                    mainFragment.windowBack2.startAnimation(alphaAnimation);
+                    windowBack2.startAnimation(alphaAnimation);
                     PopupWindowUtil.showPopupwindow(MainActivity.this,1);
                     closeDrawer();
                 }

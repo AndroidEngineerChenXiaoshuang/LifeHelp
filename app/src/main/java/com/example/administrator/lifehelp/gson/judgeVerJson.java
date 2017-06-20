@@ -4,7 +4,7 @@ package com.example.administrator.lifehelp.gson;
  * Created by zzz on 2017/6/19.
  */
 
-public class judgeVerJson {
+public class JudgeVerJson {
 
     /**
      * Message : 当前IP不需要进行验证

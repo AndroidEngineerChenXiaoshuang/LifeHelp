@@ -102,10 +102,6 @@ public class UserPhone extends AppCompatActivity {
         //String str = string.substring(string.indexOf("\\W") + 1,string.indexOf("."));
     }
 
-<<<<<<< HEAD
-
-
-=======
     /**
      * 第一次打开客户端
      */
@@ -135,7 +131,6 @@ public class UserPhone extends AppCompatActivity {
         });
 
     }
->>>>>>> 1e8afae8667fd05628f0fa0b0223a5784835c85c
 
     /**
      * 对输入的手机号格式进行判断
@@ -285,20 +280,14 @@ public class UserPhone extends AppCompatActivity {
      * 在这里请求服务器并获取返回的数据
      */
     public void serverRequest() {
-<<<<<<< HEAD
         if (onlyPhoneToken == null) {
             //onlyPhoneToken = UserLangUtil.getTemporaryToken(onlyPhoneId);
         }
 
-        Log.i(TAG,"serverUrl: " + MyApplication.ServerUrl.LIFEHELP_SERVER_URL +
-                "v1/UserAction/inorup/" + Utils.getPhoneNumber(userPhone) + "/" + onlyPhoneToken);
-        HttpRequest.request(MyApplication.ServerUrl.LIFEHELP_SERVER_URL +
-                "v1/UserAction/inorup/" + Utils.getPhoneNumber(userPhone) + "/" + onlyPhoneToken, new Callback() {
-=======
+
+
         String url = MyApplication.ServerUrl.TIANHUAN_TEST_URL + "requestMax/" + Utils.getPhoneNumber(userPhone);
-        Log.i(TAG, "serverRequest: " + url);
         HttpRequest.request(url, new Callback() {
->>>>>>> 1e8afae8667fd05628f0fa0b0223a5784835c85c
             @Override
             public void onFailure(Call call, IOException e) {
                 Message message = new Message();
