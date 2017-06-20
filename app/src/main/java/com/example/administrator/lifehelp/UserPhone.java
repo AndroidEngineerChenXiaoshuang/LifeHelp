@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -20,6 +22,7 @@ import android.widget.Toast;
 
 import com.example.administrator.lifehelp.application.MyApplication;
 import com.example.administrator.lifehelp.db.UserInfo;
+import com.example.administrator.lifehelp.gson.JudgeVerJson;
 import com.example.administrator.lifehelp.gson.ParseJson;
 import com.example.administrator.lifehelp.gson.UserActionJson;
 import com.example.administrator.lifehelp.util.HttpRequest;
@@ -27,6 +30,7 @@ import com.example.administrator.lifehelp.util.ToastUtil;
 import com.example.administrator.lifehelp.util.Utils;
 import com.google.gson.Gson;
 
+import org.apache.http.params.HttpParams;
 import org.litepal.crud.DataSupport;
 
 import java.io.IOException;
@@ -44,18 +48,13 @@ import okhttp3.Response;
 public class UserPhone extends AppCompatActivity {
 
     private final static String TAG = "jsone";
+    private final static int SHOWINTERNET = 1;
 
-    private SharedPreferences preferences;
-    private SharedPreferences.Editor editor;
-
-    //判断用户操作
-    public int judgeCode;
-
+    public boolean t = true;
     //手机唯一ID
     public String onlyPhoneId;
     //将json字符存在内存中
     public String onlyPhoneToken;
-
     //手机号码格式
     private String telRegex = "[1][34578][0-9][ ]\\d{4}[ ]\\d{4}";
     //下一步按钮
@@ -65,20 +64,18 @@ public class UserPhone extends AppCompatActivity {
     //判断长度
     private CharSequence textLength;
     private int phone_num;
-
     //跳过按钮
     private Button user_btn_skip;
-
     //判断当前状态
-    private boolean isOpen;
-
-    private Toast toast;
+    public boolean isOpen;
+    public Toast toast;
     //判断在那个页面
     public boolean isEdit = true;
-
     public RelativeLayout user_phone_back;
     //拥挤手机号
     public String userPhone;
+
+    public HandlerInfo handlerInfo = new HandlerInfo();
 
     public void onCreate(Bundle savedInstanceState)
     {
@@ -86,22 +83,23 @@ public class UserPhone extends AppCompatActivity {
         List<UserInfo> userInfo = DataSupport.findAll(UserInfo.class);
         for (UserInfo user : userInfo){
             Log.i("jsone", "onNavigationItemSelected: ");
-            if (user.getMessage() != null){
-                Log.i(TAG, "onCreate: " + user.getMessage());
+            if (user.getUsername() != null){
+                Log.i(TAG, "onCreate: " + user.getToken_base64());
+                Log.i(TAG, "onCreate: " + user.getUsername());
                 Intent intent = new Intent(this,MainActivity.class);
                 startActivity(intent);
                 finish();
             }
         }
         setContentView(R.layout.user_phone_first);
-        preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
-        editor = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext()).edit();
         //当第一次打开app时，会获取一个唯一ID
         firstUse();
         //初始化控件
         initControl();
         //用户手机格式
         userPhoneFormat();
+        //截取英文开头到.的字符串
+        //String str = string.substring(string.indexOf("\\W") + 1,string.indexOf("."));
     }
 
     /**
@@ -109,12 +107,11 @@ public class UserPhone extends AppCompatActivity {
      */
     public void firstUse() {
         onlyPhoneId = Utils.getPhoneId();
-        getTemporaryToken();
+        // getTemporaryToken(true);
         //Log.i(TAG, "onlyPhoneToken:8888 " + onlyPhoneToken);
     }
 
-    public void getTemporaryToken() {
-
+    public void getTemporaryToken(final boolean noting) {
         HttpRequest.request(MyApplication.ServerUrl.LIFEHELP_SERVER_URL + "v1/Signature/" + onlyPhoneId, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -127,6 +124,9 @@ public class UserPhone extends AppCompatActivity {
                 //onlyPhoneToken = UserLangUtil.getParseServer(temToken);
                 onlyPhoneToken = ParseJson.getOnlyPhoneToken(temToken);
                 Log.i(TAG, "onlyPhoneToken: " + onlyPhoneToken);
+                if (!noting){
+                    serverRequest();
+                }
             }
         });
 
@@ -150,14 +150,14 @@ public class UserPhone extends AppCompatActivity {
                 textLength = s;
                 StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < s.length(); i++) {
-                        sb.append(s.charAt(i));
-                        if ((sb.length() == 4 || sb.length() == 9)
-                                && sb.charAt(sb.length() - 1) != ' ') {
-                            sb.insert(sb.length() - 1, ' ');
-                            String temp = s.toString();
-                            user_edit_phone.setText(sb.toString());
-                            user_edit_phone.setSelection(temp.length() +1);
-                        }
+                    sb.append(s.charAt(i));
+                    if ((sb.length() == 4 || sb.length() == 9)
+                            && sb.charAt(sb.length() - 1) != ' ') {
+                        sb.insert(sb.length() - 1, ' ');
+                        String temp = s.toString();
+                        user_edit_phone.setText(sb.toString());
+                        user_edit_phone.setSelection(temp.length() +1);
+                    }
                 }
             }
 
@@ -197,10 +197,16 @@ public class UserPhone extends AppCompatActivity {
                                 ToastUtil.showToast(MyApplication.getContext(),"你输入的格式错误",3000);
                             }else {
                                 userPhone = user_edit_phone.getText().toString();
-                                //String test = UserLangUtil.serverRequest(onlyPhoneToken,getPhoneNumber(userPhone),onlyPhoneId);
-                                //Log.i(TAG, "test++++++++: " + test);
-                                //judgeStartActivity(UserLangUtil.serverRequest(onlyPhoneToken,getPhoneNumber(userPhone),onlyPhoneId));
+                                //如果第一次启动没有网络，没有获得token，将会重新请求。
+                                //if (onlyPhoneToken == null){
+                                //getTemporaryToken(false);
+                                //}else {
+                                //如果有token则直接进行下一步token
+                                t = true;
                                 serverRequest();
+                                judgeActivity();
+
+                                //}
                             }
                         }
                     });
@@ -209,87 +215,86 @@ public class UserPhone extends AppCompatActivity {
         });
     }
 
-    //解析数据并且判断用户是否频繁操作
-    private void judgeStartActivity(String reponse) {
-        Log.i(TAG, "judgeStartActivity: String reponse" + reponse);
-        Gson gson = new Gson();
-        UserActionJson userActionJson = gson.fromJson(reponse,UserActionJson.class);
-        judgeCode = userActionJson.getCode();
+    private void judgeActivity() {
+        HttpRequest.request(MyApplication.ServerUrl.TIANHUAN_TEST_URL + "verifyIP", new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Message message = new Message();
+                message.obj = "你没有网络";
+                message.what = SHOWINTERNET;
+                handlerInfo.sendMessage(message);
+            }
 
-        Intent intent = new Intent(UserPhone.this,UserVerification.class);
-        Intent PicIntent = new Intent(UserPhone.this,UserPicVerification.class);
-        Log.i(TAG, "VerifyImgBase64: " + userActionJson.getVerifyImg());
-        String base64 = userActionJson.getVerifyImg();
-        //intent.putExtra("verifyImgBase64",base64);
-        intent.putExtra("user_phone",userPhone);
-        intent.putExtra("userPhoneNumber", Utils.getPhoneNumber(userPhone));
-        intent.putExtra("temporaryToken",onlyPhoneToken);
-        PicIntent.putExtra("verifyImgBase64",base64);
-        PicIntent.putExtra("user_phone",userPhone);
-        PicIntent.putExtra("userPhoneNumber", Utils.getPhoneNumber(userPhone));
-        PicIntent.putExtra("temporaryToken",onlyPhoneToken);
-        //服务器维护中，
-        if (judgeCode == 1021 ){
-            startActivity(intent);
-            finish();
-        }else if (judgeCode == 1588){
-            startActivity(PicIntent);
-            //finish();
-        }else if (judgeCode == 1023){
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    ToastUtil.showToast(UserPhone.this,"请求登陆验证太频繁，请60秒后重试",3000);
-                }
-            });
-        }else if (judgeCode == 1024){
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    ToastUtil.showToast(UserPhone.this,"你今天登陆已上限，请24小时后重试",3000);
-                }
-            });
-        }
-        Log.i(TAG, "parmes tianhuan: " + userActionJson.getMessage());
-        Log.i(TAG, "parmes tianhuan: " + userActionJson.getStatus());
-        Log.i(TAG, "parmes tianhuan: " + userActionJson.getCode());
-        Log.i(TAG, "parmes tianhuan: " + userActionJson.getTime());
-        Log.i(TAG, "parmes tianhuan: " + userActionJson.getVerifyImg());
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String res = response.body().string();
+                Log.i(TAG, "verifyIP " + res);
+                judgeStartActivity(res);
+            }
+        });
     }
 
-//    //将字符串转换为手机号
-//    public String getPhoneNumber(String userPhone) {
-//        String userPhoneNumber;
-//        String regEx="[^0-9]";
-//        Pattern p   =   Pattern.compile(regEx);
-//        Matcher m   =   p.matcher(userPhone);
-//        userPhoneNumber = m.replaceAll("").trim();
-//        return userPhoneNumber;
-//    }
+    //解析数据并且判断用户是否频繁操作
+    private void judgeStartActivity(String judgeOne) {
+        Intent intent = new Intent(UserPhone.this,UserVerification.class);
+        Intent picIntent = new Intent(UserPhone.this,UserPicVerification.class);
+        Gson gson = new Gson();
+        JudgeVerJson judgeVerJson = gson.fromJson(judgeOne,JudgeVerJson.class);
+        int judgeCode = judgeVerJson.getCode();
+        Log.i(TAG, "judgeJsone " + judgeVerJson.getMessage() +"||"+ judgeCode);
+        intent.putExtra("user_phone",userPhone);
+        intent.putExtra("userPhoneNumber", Utils.getPhoneNumber(userPhone));
+        //intent.putExtra("temporaryToken",onlyPhoneToken);
+        picIntent.putExtra("user_phone",userPhone);
+        picIntent.putExtra("userPhoneNumber", Utils.getPhoneNumber(userPhone));
+        //PicIntent.putExtra("temporaryToken",onlyPhoneToken);
+        if (judgeCode == 1001 || judgeCode == 1002 ){
+            Log.i(TAG, "judgeStartActivity: " + "test");
+            if (t){
+                startActivity(intent);
+                finish();
+            }else {
+                UiThread("你的手机号已上限，请明日再试");
+            }
+        }else if (judgeCode == 1013 || judgeCode == 1011){
+            Log.i(TAG, "手机请求正常" + judgeCode);
+        }else if (judgeCode == 1000){
+            if (t){
+                startActivity(picIntent);
+                finish();
+            }else {
+                UiThread("你的手机号已上限，请明日再试");
+            }
+        }else if (judgeCode == 1014){
+            t = false;
+            UiThread("你的手机号已上限，请明日再试");
+        }else if (judgeCode == 1012 || judgeCode == 1003){
+            UiThread("天欢的服务器炸了");
+        }else {
+            UiThread("请求登陆验证太频繁，请稍候再试");
+        }
+    }
 
     /**
      * 手机号输入完成之后，，
      * 在这里请求服务器并获取返回的数据
      */
     public void serverRequest() {
-        if (onlyPhoneToken == null) {
-            getTemporaryToken();
-            //onlyPhoneToken = UserLangUtil.getTemporaryToken(onlyPhoneId);
-        }
-
-        Log.i(TAG,"serverUrl: " + MyApplication.ServerUrl.LIFEHELP_SERVER_URL +
-                "v1/UserAction/inorup/" + Utils.getPhoneNumber(userPhone) + "/" + onlyPhoneToken);
-        HttpRequest.request(MyApplication.ServerUrl.LIFEHELP_SERVER_URL +
-                "v1/UserAction/inorup/" + Utils.getPhoneNumber(userPhone) + "/" + onlyPhoneToken, new Callback() {
+        String url = MyApplication.ServerUrl.TIANHUAN_TEST_URL + "requestMax/" + Utils.getPhoneNumber(userPhone);
+        Log.i(TAG, "serverRequest: " + url);
+        HttpRequest.request(url, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.i(TAG, "Internet: " + "没有网络");
+                Message message = new Message();
+                message.obj = "你没有网络";
+                message.what = SHOWINTERNET;
+                handlerInfo.sendMessage(message);
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String serverReponse = response.body().string();
-                Log.i(TAG, "onResponse:onResponseonResponse " + serverReponse);
+                Log.i(TAG, "requestMax " + serverReponse);
                 judgeStartActivity(serverReponse);
             }
         });
@@ -322,20 +327,36 @@ public class UserPhone extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-            //证明用户第一次点击处于栈顶,并且第一次或者状态消灭时点击
-            if(!isOpen){
-                isOpen = true;
-                Utils.setToastDuration(3000,toast,this);
-                new Timer().schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        isOpen = false;
-                    }
-                },3500);
+        //证明用户第一次点击处于栈顶,并且第一次或者状态消灭时点击
+        if(!isOpen){
+            isOpen = true;
+            Utils.setToastDuration(3000,toast,this);
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    isOpen = false;
+                }
+            },3500);
 
-            }else{
-                toast.cancel();
-                finish();
+        }else{
+            toast.cancel();
+            finish();
+        }
+    }
+    public class HandlerInfo extends Handler{
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case SHOWINTERNET : ToastUtil.showToast(UserPhone.this,(String) msg.obj,3000);
             }
+        }
+    }
+    public  void UiThread(final String toastString){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ToastUtil.showToast(UserPhone.this,toastString,3000);
+            }
+        });
     }
 }

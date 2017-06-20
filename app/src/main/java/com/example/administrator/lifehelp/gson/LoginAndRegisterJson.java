@@ -8,112 +8,105 @@ public class LoginAndRegisterJson {
 
 
     /**
-     * Status : SignIn_Success
-     * message : 注册成功,userinfo中是用户信息
-     * Code : 5854
-     * token : ewoiZ3JhZGUiOiAiMiIsCiJzdGFydF90aW1lIjogIjE0OTcyMjk3MzkiLAoiZXhwX3RpbWUiOiAiMTQ5ODUyNTczOSIsCiJpcCI6ICIxOTIuMTY4LjQzLjg1IiwKInVzZXJuYW1lIjogIjE4MTgxODE4MTgxIiwKInVzZXJfaWQiOiAiMyIsCiJwcmltYXJ5X2tleSI6ICI0NzQ3NDMyOTciLAoic2lnbmF0dXJlX3NlcnZlciI6ICJodHRwOi8vMTkyLjE2OC40My42NyIKfQ==.f7dd98b84508860b2281c031dedb3a7a9407b9cd31d0850fe4f36e2f9bd3af18
-     * TlssToken : eJxNjVFvgjAUhf8Lr1tmWwRliU-qFoemEXCExKQpUPA6LV2pE7Lsv4*hbst9*75zzv20omX4wLOsOknDTKuE9Wgh677HkAtpoAChO4jHv3fVXCnIGTfM1vm-Vp2-sV79lIYIIZu47k2KRoEWjBfmMuo4DukiV-shdA2V7ARB2MHERuhPGjiKftIbEeKNbO-2D8oOr*ab6WI9bQNainOstoMknftjXVDcxOFhJnfeUcZh06azJosONHCj9aJ8TeC52PFNUQW0Bj9cnvZPMHxB9M5-T6MEZ6p09*ftQK4Umlhf36GmWeg_
-     * userinfo : {"nickname":"myb_h6yfi","avatar":6,"balance":0,"credit_grade":4.5}
+     * token_base64 : ewoiZ3JhZGUiOiAiMiIsCiJzdGFydF90aW1lIjogIjE0OTc4NzMyNzgiLAoiZXhwX3RpbWUiOiAiMTQ5OTE2OTI3OCIsCiJpcCI6ICIxOTIuMTY4LjQzLjg1IiwKInVzZXJuYW1lIjogIjE4ODg4ODg4ODg4IiwKInVzZXJfaWQiOiAiMyIsCiJwcmltYXJ5X2tleSI6ICItNTIwMTg2ODU5IiwKInNpZ25hdHVyZV9zZXJ2ZXIiOiAiaHR0cDovLzE5Mi4xNjguNDMuNjciLAoiVGVuQ2VudFRva2VuIjogImVKeE5qVjFQZ3pBWWhmOUxielhhai1FeGsxMHd3YmxzWElnRXBqRnBHbHBxUjJTMTFKWEYqTjlGdHFudjVmT2NjOTVQa0s4ZnIxaFY3VDVhUyoxQkMzQURJTGdjc2VLaXRhcFd3Z3dRaGI5MzBreHJ4U216bEJqKnI5WHhobzdxcHpTQkVCTHMqMmNwZXEyTW9LeTJ4MUhQOC1BUU9kbTlNSjNhdFlQQUVIa0lFd2otcEZWdllweWNCbUZBY0JDYy15azU0RFI1dUYxR3IyV3o2T0hFcGVqbCp2NDVRY3daWHZTWlcyRzhLQzgyMi16SkZLVWZhdW0ya1pvbjgxWnJNMTFsMXEtaTktVmQxWFdreVBaeEwyVjhnTDdvOGhvdm15aVZrWnZOd05jM0dwUll2QV9fIgp9.fd5e91639240c438e105c3f34dbba75a4b2b2634b06e9f7ade343e137e003012
+     * grade : 2
+     * start_time : 1497873278
+     * exp_time : 1499169278
+     * ip : 192.168.43.85
+     * username : 18888888888
+     * user_id : 3
+     * primary_key : -520186859
+     * signature_server : http://192.168.43.67
+     * TenCentToken : eJxNjV1PgzAYhf9LbzXaj-Exk10wwblsXIgEpjFpGlpqR2S11JXF*N9Ftqnv5fOcc95PkK8fr1hV7T5aS*1BC3ADILgcseKitapWwgwQhb930kxrxSmzlBj*r9Xxho7qpzSBEBLs*2cpeq2MoKy2x1HP8-AQOdm9MJ3atYPAEHkIEwj-pFVvYpycBmFAcBCc-yk54DR5uF1Gr2Wz6OHEpejl*v45QcwZXvSZW2G8KC822-zJFKUfaum2kZon81ZrM11l1q-i9-Vd1XWkyPZxL2V8gL7o8hovmyiVkZvNwNc3GpRYvA__
      */
+    private String token_base64;
+    private String grade;
+    private String start_time;
+    private String exp_time;
+    private String ip;
+    private String username;
+    private String user_id;
+    private String primary_key;
+    private String signature_server;
+    private String TenCentToken;
 
-    private String Status;
-    private String message;
-    private int Code;
-    private String token;
-    private String TlssToken;
-    private UserinfoBean userinfo;
-
-    public String getStatus() {
-        return Status;
+    public String getToken_base64() {
+        return token_base64;
     }
 
-    public void setStatus(String Status) {
-        this.Status = Status;
+    public void setToken_base64(String token_base64) {
+        this.token_base64 = token_base64;
     }
 
-    public String getMessage() {
-        return message;
+    public String getGrade() {
+        return grade;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setGrade(String grade) {
+        this.grade = grade;
     }
 
-    public int getCode() {
-        return Code;
+    public String getStart_time() {
+        return start_time;
     }
 
-    public void setCode(int Code) {
-        this.Code = Code;
+    public void setStart_time(String start_time) {
+        this.start_time = start_time;
     }
 
-    public String getToken() {
-        return token;
+    public String getExp_time() {
+        return exp_time;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setExp_time(String exp_time) {
+        this.exp_time = exp_time;
     }
 
-    public String getTlssToken() {
-        return TlssToken;
+    public String getIp() {
+        return ip;
     }
 
-    public void setTlssToken(String TlssToken) {
-        this.TlssToken = TlssToken;
+    public void setIp(String ip) {
+        this.ip = ip;
     }
 
-    public UserinfoBean getUserinfo() {
-        return userinfo;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserinfo(UserinfoBean userinfo) {
-        this.userinfo = userinfo;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public static class UserinfoBean {
-        /**
-         * nickname : myb_h6yfi
-         * avatar : 6
-         * balance : 0
-         * credit_grade : 4.5
-         */
+    public String getUser_id() {
+        return user_id;
+    }
 
-        private String nickname;
-        private String avatar;
-        private double balance;
-        private double credit_grade;
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
+    }
 
-        public String getNickname() {
-            return nickname;
-        }
+    public String getPrimary_key() {
+        return primary_key;
+    }
 
-        public void setNickname(String nickname) {
-            this.nickname = nickname;
-        }
+    public void setPrimary_key(String primary_key) {
+        this.primary_key = primary_key;
+    }
 
-        public String getAvatar() {
-            return avatar;
-        }
+    public String getSignature_server() {
+        return signature_server;
+    }
 
-        public void setAvatar(String avatar) {
-            this.avatar = avatar;
-        }
+    public void setSignature_server(String signature_server) {
+        this.signature_server = signature_server;
+    }
 
-        public double getBalance() {
-            return balance;
-        }
+    public String getTenCentToken() {
+        return TenCentToken;
+    }
 
-        public void setBalance(double balance) {
-            this.balance = balance;
-        }
-
-        public double getCredit_grade() {
-            return credit_grade;
-        }
-
-        public void setCredit_grade(double credit_grade) {
-            this.credit_grade = credit_grade;
-        }
+    public void setTenCentToken(String TenCentToken) {
+        this.TenCentToken = TenCentToken;
     }
 }

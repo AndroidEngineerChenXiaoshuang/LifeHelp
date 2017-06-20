@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.example.administrator.lifehelp.application.MyApplication;
 import com.example.administrator.lifehelp.db.UserInfo;
+import com.example.administrator.lifehelp.gson.JudgeVerJson;
 import com.example.administrator.lifehelp.gson.LoginAndRegisterJson;
 import com.example.administrator.lifehelp.util.HttpRequest;
 import com.example.administrator.lifehelp.util.ToastUtil;
@@ -81,6 +82,9 @@ public class UserVerification extends AppCompatActivity implements View.OnClickL
 
     public Toast toast;
 
+    public String LoginOrRegister;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,9 +93,56 @@ public class UserVerification extends AppCompatActivity implements View.OnClickL
         Intent intent = getIntent();
         user_phone = intent.getStringExtra("user_phone");
         userPhoneNumber = intent.getStringExtra("userPhoneNumber");
-        mTemporaryToken = intent.getStringExtra("temporaryToken");
+        mTemporaryToken = intent.getStringExtra("VerifyToken");
         Log.i(TAG, "userPhoneNumber: " + userPhoneNumber + user_phone + mTemporaryToken);
         initControl();
+        getJudgeLoginOrRegister();
+    }
+
+    public void getJudgeLoginOrRegister() {
+        HttpRequest.request(MyApplication.ServerUrl.TIANHUAN_TEST_URL + "inorup/" + userPhoneNumber, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String res = response.body().string();
+                Log.i(TAG, "onResponse: 1021为登陆验证"  + res);
+                Gson gson = new Gson();
+                JudgeVerJson judgeVerJson = gson.fromJson(res,JudgeVerJson.class);
+                //1021为登陆验证
+                if (judgeVerJson.getCode() == 1021){
+                    judgeLoginOrRegister("signIn");
+                }else if (judgeVerJson.getCode() == 1022){
+                    judgeLoginOrRegister("signUp");
+                }
+            }
+        });
+    }
+
+    public void judgeLoginOrRegister(String sign) {
+        String url;
+        if (mTemporaryToken != null){
+            url = MyApplication.ServerUrl.TIANHUAN_TEST_URL + sign +"/"+ userPhoneNumber + "/" + mTemporaryToken;
+        }else {
+            url = MyApplication.ServerUrl.TIANHUAN_TEST_URL + sign +"/"+ userPhoneNumber;
+        }
+        Log.i(TAG, "judgeLoginOrRegister: " + MyApplication.ServerUrl.TIANHUAN_TEST_URL +
+                sign +"/"+ userPhoneNumber);
+        HttpRequest.request(url, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String res = response.body().string();
+                Log.i(TAG, "onResponse: " + res);
+            }
+        });
     }
 
     /**
@@ -171,10 +222,12 @@ public class UserVerification extends AppCompatActivity implements View.OnClickL
             user_end_time_button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    loginAndRegisterRequest();
-                    user_end_time_button.setVisibility(View.GONE);
-                    txtView.setVisibility(View.VISIBLE);
-                    timers.start();
+                    //.setVisibility(View.GONE);
+                    //txtView.setVisibility(View.VISIBLE);
+                    //timers.start();
+                    Intent intent = new Intent(UserVerification.this,UserPhone.class);
+                    startActivity(intent);
+                    finish();
                 }
             });
         }
@@ -257,10 +310,10 @@ public class UserVerification extends AppCompatActivity implements View.OnClickL
      }
     //登陆和注册请求
     public void loginAndRegisterRequest() {
-        Log.i(TAG, "httpUrl: " + MyApplication.ServerUrl.LIFEHELP_SERVER_URL +
-                "v1/UserAction/verifySMS/" + userPhoneNumber +"/"+ user_input +"/"+ mTemporaryToken);
-        HttpRequest.request(MyApplication.ServerUrl.LIFEHELP_SERVER_URL +
-                "v1/UserAction/verifySMS/" + userPhoneNumber +"/"+ user_input +"/"+ mTemporaryToken, new Callback() {
+        Log.i(TAG, "httpUrl: " + MyApplication.ServerUrl.TIANHUAN_TEST_URL +
+                "verifySMS/" + userPhoneNumber +"/"+user_input );
+        HttpRequest.request(MyApplication.ServerUrl.TIANHUAN_TEST_URL +
+                "verifySMS/" + userPhoneNumber +"/"+ user_input , new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
 
@@ -271,42 +324,53 @@ public class UserVerification extends AppCompatActivity implements View.OnClickL
                 String res = response.body().string();
                 Log.i(TAG, "onResponse: " + res);
                 Gson gson = new Gson();
-                LoginAndRegisterJson loginAndRegisterJson = gson.fromJson(res,LoginAndRegisterJson.class);
-                if (loginAndRegisterJson.getCode() == 5854 || loginAndRegisterJson.getCode() == 5754){
+                if (res.substring(1,2).equals("e")){
+                    String json = Utils.base64ToString(res.substring(res.indexOf("\\w")+1,res.indexOf(".")));
+                    LoginAndRegisterJson loginAndRegisterJson = gson.fromJson(json,LoginAndRegisterJson.class);
                     UserInfo userInfo = new UserInfo();
-                    userInfo.setStatus(loginAndRegisterJson.getStatus());
-                    userInfo.setMessage(loginAndRegisterJson.getMessage());
-                    userInfo.setCode(loginAndRegisterJson.getCode());
-                    userInfo.setToken(loginAndRegisterJson.getToken());
-                    userInfo.setTlssToken(loginAndRegisterJson.getTlssToken());
-                    userInfo.setNickname(loginAndRegisterJson.getUserinfo().getNickname());
-                    userInfo.setAvatar(loginAndRegisterJson.getUserinfo().getAvatar());
-                    userInfo.setBalance(loginAndRegisterJson.getUserinfo().getBalance());
-                    userInfo.setCredit_grade(loginAndRegisterJson.getUserinfo().getCredit_grade());
+                    userInfo.setExp_time(loginAndRegisterJson.getExp_time());
+                    userInfo.setGrade(loginAndRegisterJson.getGrade());
+                    userInfo.setIp(loginAndRegisterJson.getIp());
+                    userInfo.setSignature_server(loginAndRegisterJson.getSignature_server());
+                    userInfo.setStart_time(loginAndRegisterJson.getStart_time());
+                    userInfo.setTenCentToken(loginAndRegisterJson.getTenCentToken());
+                    userInfo.setUsername(loginAndRegisterJson.getUsername());
+                    userInfo.setPrimary_key(loginAndRegisterJson.getPrimary_key());
+                    userInfo.setToken_base64(res);
                     userInfo.save();
-                    //让键盘消失。
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            include.setVisibility(View.GONE);
-                            ToastUtil.showToast(MyApplication.getContext(),"验证成功，你以成功注册",3000);
-                            Intent intent = new Intent(UserVerification.this,MainActivity.class);
-                            startActivity(intent);
-                            finish();
-                        }
-                    });
-                }else if (loginAndRegisterJson.getCode() == 5756){
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            view_text_1.setText(" ");
-                            view_text_2.setText(" ");
-                            view_text_3.setText(" ");
-                            view_text_4.setText(" ");
-                            user_btn_click = 0;
-                            ToastUtil.showToast(MyApplication.getContext(),"您输入错误，请重新输入",3000);
-                        }
-                    });
+                    Intent intent = new Intent(UserVerification.this,MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                }else {
+                    JudgeVerJson judgeVerJson = gson.fromJson(res,JudgeVerJson.class);
+                    if (judgeVerJson.getCode() == 2010 || judgeVerJson.getCode() == 2020){
+                        //让键盘消失。
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ToastUtil.showToast(MyApplication.getContext(),"验证码已过期，请重新发送",3000);
+                            }
+                        });
+                    }else if (judgeVerJson.getCode() == 2011){
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                view_text_1.setText(" ");
+                                view_text_2.setText(" ");
+                                view_text_3.setText(" ");
+                                view_text_4.setText(" ");
+                                user_btn_click = 0;
+                                ToastUtil.showToast(MyApplication.getContext(),"您输入错误，请重新输入",3000);
+                            }
+                        });
+                    }else if (judgeVerJson.getCode() == 2015){
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                ToastUtil.showToast(MyApplication.getContext(),"阿里云已经炸掉",3000);
+                            }
+                        });
+                    }
                 }
             }
         });
@@ -350,6 +414,7 @@ public class UserVerification extends AppCompatActivity implements View.OnClickL
             toast.cancel();
             finish();
         }
-
     }
+
 }
+
