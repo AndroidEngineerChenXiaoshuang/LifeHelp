@@ -9,11 +9,11 @@
         android:layout_width="50dp"
         android:layout_height="50dp" />
 
-    <!--这是手机图标-->
+    <!--这是验证码-->
     <ImageView
         android:src="@drawable/ic_svg_phone"
-        android:layout_width="100dp"
-        android:layout_height="80dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/server_Verification"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"

@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.example.administrator.lifehelp.application.MyApplication;
 import com.example.administrator.lifehelp.gson.VerficationJson;
 import com.example.administrator.lifehelp.util.HttpRequest;
@@ -33,10 +34,12 @@ public class UserPicVerification extends AppCompatActivity implements View.OnKey
     //判断用户是否输入完成
     public int editNum;
 
+    public String VerifyToken;
+
     public String userEditVer;
-
+    //返回到上一个界面
     public ImageButton returnPhone;
-
+    //再次请求验证码
     public Button aginRequest;
 
     public String serverVerification = "1234";
@@ -65,13 +68,31 @@ public class UserPicVerification extends AppCompatActivity implements View.OnKey
         mTemporaryToken = intent.getStringExtra("temporaryToken");
         VerifyImgString = intent.getStringExtra("verifyImgBase64");
         Log.i(TAG, "onCreate: " + userPhone + mTemporaryToken );
-
-//        Log.i(TAG, "afterTextChanged: "+intent.getStringExtra("user_phone"));
-//        Log.i(TAG, "afterTextChanged: "+intent.getStringExtra("userPhoneNumber"));
-//        Log.i(TAG, "afterTextChanged: "+intent.getStringExtra("temporaryToken"));
         Log.i(TAG, "VerifyImgString: " + VerifyImgString);
         //初始化控件
         initControl();
+        getVerifylImg();
+    }
+
+    public void getVerifylImg() {
+        HttpRequest.request(MyApplication.ServerUrl.TIANHUAN_TEST_URL + "getVerifyImg", new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.i(TAG, "onFailure: " + "th is died");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                final String res = response.body().string();
+                Log.i(TAG, "onResponse: " + res);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        serverVerificationImgae.setImageBitmap(Utils.getStringToBitmap(res));
+                    }
+                });
+            }
+        });
     }
 
     private void initControl() {
@@ -212,11 +233,9 @@ public class UserPicVerification extends AppCompatActivity implements View.OnKey
     /**
      * 对频繁操作的用户进行验证码判断
      */
-    private void verificationRequest() {
-        Log.i(TAG, "response verificationRequest Url: " + MyApplication.ServerUrl.LIFEHELP_SERVER_URL +
-                "v1/UserAction/inorup/" + userPhone +"/"+ mTemporaryToken +"/"+ userEditVer);
-        HttpRequest.request(MyApplication.ServerUrl.LIFEHELP_SERVER_URL +
-                "v1/UserAction/inorup/" + userPhone +"/"+ mTemporaryToken +"/"+ userEditVer, new Callback() {
+    public void verificationRequest() {
+        Log.i(TAG, "response verificationRequest Url: " + MyApplication.ServerUrl.TIANHUAN_TEST_URL + "verifyImgNum/" + userEditVer);
+        HttpRequest.request(MyApplication.ServerUrl.TIANHUAN_TEST_URL + "verifyImgNum/" + userEditVer, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
 
@@ -230,9 +249,11 @@ public class UserPicVerification extends AppCompatActivity implements View.OnKey
                 final VerficationJson verficationJson = gson.fromJson(res,VerficationJson.class);
                 int code = verficationJson.getCode();
                 Log.i(TAG, "onResponse: " + code);
-                if (code == 1021){
+                if (code == 1006){
+                    VerifyToken = verficationJson.getVerifyToken();
                     timerStart();
-                }else {
+
+                }else if (code == 1007){
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -244,7 +265,6 @@ public class UserPicVerification extends AppCompatActivity implements View.OnKey
                 }
             }
         });
-
     }
     //让editText获取焦点
     public void findFocusable(EditText editText){
@@ -283,9 +303,15 @@ public class UserPicVerification extends AppCompatActivity implements View.OnKey
         Intent intent = getIntent();
         intentVerification.putExtra("user_phone",intent.getStringExtra("user_phone"));
         intentVerification.putExtra("userPhoneNumber",intent.getStringExtra("userPhoneNumber"));
-        intentVerification.putExtra("temporaryToken",intent.getStringExtra("temporaryToken"));
+        intentVerification.putExtra("VerifyToken",VerifyToken);
         startActivity(intentVerification);
         finish();
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(UserPicVerification.this,UserPhone.class);
+        startActivity(intent);
+        finish();
+    }
 }

@@ -86,7 +86,7 @@
 
         <ImageView
             android:layout_marginTop="10dp"
-            android:src="@drawable/pop_yanzhen"
+            android:src="@drawable/ic_svg_loading"
             android:layout_width="match_parent"
             android:layout_height="38dp"
             android:layout_below="@+id/textView"

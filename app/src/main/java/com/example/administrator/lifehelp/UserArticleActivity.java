@@ -124,8 +124,7 @@ public class UserArticleActivity extends AppCompatActivity implements View.OnCli
                 String tlsToken = cursor.getString(cursor.getColumnIndex("tlsstoken"));
                 cursor.close();
             }else{
-                PopupWindowUtil popupWindowUtil = new PopupWindowUtil(this);
-                popupWindowUtil.show(1);
+                PopupWindowUtil.showPopupwindow(this,1);
             }
         }
     }

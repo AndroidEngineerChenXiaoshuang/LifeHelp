@@ -2,6 +2,7 @@ package com.example.administrator.lifehelp.util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -28,8 +29,10 @@ import android.widget.TextView;
 
 import com.example.administrator.lifehelp.MainActivity;
 import com.example.administrator.lifehelp.R;
+import com.example.administrator.lifehelp.UserVerification;
 import com.example.administrator.lifehelp.application.MyApplication;
 import com.example.administrator.lifehelp.db.UserInfo;
+import com.example.administrator.lifehelp.gson.JudgeVerJson;
 import com.example.administrator.lifehelp.gson.LoginAndRegisterJson;
 import com.example.administrator.lifehelp.gson.ParseJson;
 import com.example.administrator.lifehelp.gson.UserActionJson;
@@ -45,6 +48,8 @@ import okhttp3.Response;
 
 public class PopupWindowUtil extends Activity implements View.OnClickListener,View.OnKeyListener{
 
+
+    public boolean t = true;
 
     public final static String TAG = "jsone";
     //判断用户是否输入完成手机号
@@ -67,24 +72,24 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
     public SharedPreferences preferences;
     public SharedPreferences.Editor editor;
     //用于二次注册的popup窗口
-    public PopupWindow popupWindowPhone;
-    public PopupWindow popupWindowEdit;
-    public PopupWindow popupWindowPhoneEdit;
+    public static PopupWindow popupWindowPhone;
+    public static PopupWindow popupWindowEdit;
+    public static PopupWindow popupWindowPhoneEdit;
     //这是3个弹窗加载的界面
-    public View editView;
-    public View phoneView;
-    public View editPhoneView;
+    public static View editView;
+    public static View phoneView;
+    public static View editPhoneView;
     //记录用户手机号
-    private String user_phone_number;
+    private static String user_phone_number;
     //存在内存的手机号，用于判断
-    private String shared_phone;
+    private static String shared_phone;
     //服务器发送来的验证码
     public String server_number = "1234";
     //验证码输入的4个edit 以及获取4个按钮的输入内容
-    private EditText edit_one;
-    private EditText edit_two;
-    private EditText edit_three;
-    private EditText edit_fore;
+    private static EditText edit_one;
+    private static EditText edit_two;
+    private static EditText edit_three;
+    private static EditText edit_fore;
     //这是随机验证码
     public String edit_yanzhen = "1234";
     //下一步按钮
@@ -130,10 +135,10 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
     public View pop_user_phone_keyboard;
 
     //显示内容（验证码已发送至）
-    public TextView text_view_phone;
+    public static TextView text_view_phone;
 
     //记录用户输入
-    public int editNum = 0;
+    public static int editNum = 0;
     //记录用户输入内容
     public String edit_user_yanzhen;
     public MainActivity mainActivity;
@@ -141,10 +146,12 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
     public String onlyPhoneID;
     public String onlyPhoneToken;
     public int interFace;
+    private String VerifyToken;
 
     public PopupWindowUtil(Context context) {
-        firstRegisterID();
+        //firstRegisterID();
         //在这个方法初始化其他控件
+
         mainActivity = (MainActivity) context;
         editView = LayoutInflater.from(context).inflate(R.layout.popupwindow_edit, null);
         editPhoneView = LayoutInflater.from(context).inflate(R.layout.popopwindow_edit_phone,null);
@@ -217,7 +224,7 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
     };
 
     //对popupWindow进行关闭调用
-    public void dismiss(int i) {
+    private static void dismiss(int i) {
         switch (i) {
             case 1:
                 popupWindowPhone.dismiss();
@@ -228,12 +235,25 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
             case 3:
                 popupWindowPhoneEdit.dismiss();
                 break;
-
+            case 0:
+                popupWindowPhone.dismiss();
+                popupWindowEdit.dismiss();
+                popupWindowPhoneEdit.dismiss();
+                break;
         }
     }
+    //对外暴露一个popupwindow显示方法
+    public static void showPopupwindow(Context context,int i){
+        PopupWindowUtil popupWindowUtil = new PopupWindowUtil(context);
+        switch (i){
+            case 1:
+                show(1);
+                break;
+    }
+    }
 
-    //对popupWindow进行显示调用
-    public void show(int i) {
+    //内部对popupWindow进行显示调用
+    private static void show(int i) {
         switch (i){
             case 1:
                 popupWindowPhone.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
@@ -315,11 +335,8 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
         first_count_down.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //这里重新发送
-                first_count_down.setVisibility(View.GONE);
-                //开始倒计时线程
-                viewCount_Down.setVisibility(View.VISIBLE);
-                timer.start();
+                show(1);
+                dismiss(3);
             }
         });
         //在这里为控件进行注册事件
@@ -435,7 +452,9 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
                                 phoneIsOpen = 0;
                                 editPhoneIsOpen = 1;
                                 if (!isCountdown){
+                                    t = true;
                                     serverRequest();
+                                    judgeActivity();
                                 }else if (isCountdown){
                                     show(3);
                                     dismiss(1);
@@ -454,16 +473,24 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
             }
         });
     }
+    public void judgeActivity() {
+        HttpRequest.request(MyApplication.ServerUrl.TIANHUAN_TEST_URL + "verifyIP", new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String res = response.body().string();
+                Log.i(TAG, "verifyIP " + res);
+                judgeInterFace(res);
+            }
+        });
+    }
     //将手机号发送给服务器，以服务器传回的数据进行下一步判断
     public void serverRequest() {
-        //如果第一次启动的时候没联网，那么会再次请求
-        if (onlyPhoneToken == null){
-            firstRegisterID();
-        }else {
-            Log.i("jsone", "serverRequest: " + MyApplication.ServerUrl.LIFEHELP_SERVER_URL +
-                    "v1/UserAction/inorup/" + Utils.getPhoneNumber(user_phone_number) + "/" + onlyPhoneToken);
-            HttpRequest.request(MyApplication.ServerUrl.LIFEHELP_SERVER_URL +
-                    "v1/UserAction/inorup/" + Utils.getPhoneNumber(user_phone_number) + "/" + onlyPhoneToken, new Callback() {
+        String url = MyApplication.ServerUrl.TIANHUAN_TEST_URL + "requestMax/" + Utils.getPhoneNumber(user_phone_number);
+            HttpRequest.request(url, new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
 
@@ -474,37 +501,48 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
                     judgeInterFace(response.body().string());
                 }
             });
-        }
-
     }
 
     //用户输入手机号，对之进行判断，是否为重复操作。将进入不同的界面
     public void judgeInterFace(String string) {
-        Log.i(TAG, "judgeInterFace: judgeInterFacejudgeInterFacejudgeInterFace" + string);
         Gson gson = new Gson();
-        final UserActionJson userActionJson = gson.fromJson(string,UserActionJson.class);
-        interFace = userActionJson.getCode();
-        Log.i("jsone", "judgeInterFace: " + interFace);
-        Log.i(TAG, "judgeInterFace: " + userActionJson.getMessage());
-        Log.i(TAG, "judgeInterFace: " + userActionJson.getVerifyImg());
+        JudgeVerJson judgeVerJson = gson.fromJson(string,JudgeVerJson.class);
+        final int judgeCode = judgeVerJson.getCode();
+        Log.i(TAG, "judgeJsone " + judgeVerJson.getMessage() +"||"+ judgeCode);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (interFace == 1021){
-                    show(3);
-                    //开启倒计时
-                    timer.start();
-                    dismiss(1);
-                }else if (interFace == 1588){
-                    verification_base64.setImageBitmap(Utils.getStringToBitmap(userActionJson.getVerifyImg()));
-                    show(2);
-                    dismiss(1);
-
-                }else if (interFace == 1505){
-                    Log.i("jsone", "judgeInterFace: " + interFace);
+                if (judgeCode == 1001 || judgeCode == 1002 ){
+                    Log.i(TAG, "judgeStartActivity: " + "test");
+                    if (t){
+                        timer.start();
+                        getJudgeLoginOrRegister();
+                        show(3);
+                        dismiss(1);
+                    }else {
+                        UiThread("你的手机号已上限，请明日再试");
+                    }
+                }else if (judgeCode == 1013 || judgeCode == 1011){
+                    Log.i(TAG, "手机请求正常" + judgeCode);
+                }else if (judgeCode == 1000){
+                    if (t){
+                        getVerifylImg();
+                        show(2);
+                        dismiss(1);
+                    }else {
+                        UiThread("你的手机号已上限，请明日再试");
+                    }
+                }else if (judgeCode == 1014){
+                    t = false;
+                    UiThread("你的手机号已上限，请明日再试");
+                }else if (judgeCode == 1012 || judgeCode == 1003){
+                    UiThread("天欢的服务器炸了");
+                }else {
+                    UiThread("请求登陆验证太频繁，请稍候再试");
                 }
             }
         });
+
 
     }
 
@@ -606,9 +644,7 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
                     if(mainActivity!=null){
                         setBackAnimation();
                     }
-                    dismiss(1);
-                    dismiss(2);
-                    dismiss(3);
+                    dismiss(0);
                     break;
                 case R.id.edit_popup_return:
                     show(1);
@@ -618,9 +654,7 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
                     if(mainActivity!=null){
                         setBackAnimation();
                     }
-                    dismiss(1);
-                    dismiss(2);
-                    dismiss(3);
+                    dismiss(0);
                     break;
                 case R.id.edit_phone_popup_return:
                     isOpen = 0;
@@ -637,21 +671,66 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
                 case R.id.update_image:
                     //更换验证码图片
                     editNum = 1;
-                    requestVerification();
+                    verificationRequest();
             }
         //这里进行判断如果用户输入的验证码正确就注册成功并进入主界面
         if (user_btn_click == 4){
             loginAndRegisterRequest();
         }
     }
+    public void getJudgeLoginOrRegister() {
+        HttpRequest.request(MyApplication.ServerUrl.TIANHUAN_TEST_URL + "inorup/" + Utils.getPhoneNumber(user_phone_number), new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String res = response.body().string();
+                Log.i(TAG, "onResponse: 1021为登陆验证"  + res);
+                Gson gson = new Gson();
+                JudgeVerJson judgeVerJson = gson.fromJson(res,JudgeVerJson.class);
+                //1021为登陆验证
+                if (judgeVerJson.getCode() == 1021){
+                    judgeLoginOrRegister("signIn");
+                }else if (judgeVerJson.getCode() == 1022){
+                    judgeLoginOrRegister("signUp");
+                }
+            }
+        });
+    }
+    public void judgeLoginOrRegister(String sign) {
+        String url;
+        if (VerifyToken != null){
+            url = MyApplication.ServerUrl.TIANHUAN_TEST_URL + sign +"/"+ Utils.getPhoneNumber(user_phone_number) + "/" + VerifyToken;
+        }else {
+            url = MyApplication.ServerUrl.TIANHUAN_TEST_URL + sign +"/"+ Utils.getPhoneNumber(user_phone_number);
+        }
+        Log.i(TAG, "judgeLoginOrRegister: " + MyApplication.ServerUrl.TIANHUAN_TEST_URL +
+                sign +"/"+ Utils.getPhoneNumber(user_phone_number));
+        HttpRequest.request(url, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String res = response.body().string();
+                Log.i(TAG, "onResponse: " + res);
+            }
+        });
+    }
+
 
     //登陆和注册请求
     public void loginAndRegisterRequest() {
 
-        Log.i(TAG, "loginAndRegisterRequest: " + MyApplication.ServerUrl.LIFEHELP_SERVER_URL +
-                "v1/UserAction/verifySMS/" + Utils.getPhoneNumber(user_phone_number) + "/" + user_input + "/" + onlyPhoneToken);
-        HttpRequest.request(MyApplication.ServerUrl.LIFEHELP_SERVER_URL +
-                "v1/UserAction/verifySMS/" + Utils.getPhoneNumber(user_phone_number) + "/" + user_input + "/" + onlyPhoneToken, new Callback() {
+        Log.i(TAG, "httpUrl: " + MyApplication.ServerUrl.TIANHUAN_TEST_URL +
+                "verifySMS/" + Utils.getPhoneNumber(user_phone_number) +"/"+ user_input );
+        HttpRequest.request(MyApplication.ServerUrl.TIANHUAN_TEST_URL +
+                "verifySMS/" + Utils.getPhoneNumber(user_phone_number) +"/"+ user_input , new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
 
@@ -662,43 +741,46 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
                 String res = response.body().string();
                 Log.i(TAG, "onResponse: " + res);
                 Gson gson = new Gson();
-                LoginAndRegisterJson loginAndRegisterJson = gson.fromJson(res,LoginAndRegisterJson.class);
-                if (loginAndRegisterJson.getCode() == 5854 || loginAndRegisterJson.getCode() == 5754){
+                if (res.substring(1,2).equals("e")){
+                    String json = Utils.base64ToString(res.substring(res.indexOf("\\w")+1,res.indexOf(".")));
+                    LoginAndRegisterJson loginAndRegisterJson = gson.fromJson(json,LoginAndRegisterJson.class);
                     UserInfo userInfo = new UserInfo();
-                    userInfo.setStatus(loginAndRegisterJson.getStatus());
-                    userInfo.setMessage(loginAndRegisterJson.getMessage());
-                    userInfo.setCode(loginAndRegisterJson.getCode());
-                    userInfo.setToken(loginAndRegisterJson.getToken());
-                    userInfo.setTlssToken(loginAndRegisterJson.getTlssToken());
-                    userInfo.setNickname(loginAndRegisterJson.getUserinfo().getNickname());
-                    userInfo.setAvatar(loginAndRegisterJson.getUserinfo().getAvatar());
-                    userInfo.setBalance(loginAndRegisterJson.getUserinfo().getBalance());
-                    userInfo.setCredit_grade(loginAndRegisterJson.getUserinfo().getCredit_grade());
+                    userInfo.setExp_time(loginAndRegisterJson.getExp_time());
+                    userInfo.setGrade(loginAndRegisterJson.getGrade());
+                    userInfo.setIp(loginAndRegisterJson.getIp());
+                    userInfo.setSignature_server(loginAndRegisterJson.getSignature_server());
+                    userInfo.setStart_time(loginAndRegisterJson.getStart_time());
+                    userInfo.setTenCentToken(loginAndRegisterJson.getTenCentToken());
+                    userInfo.setUsername(loginAndRegisterJson.getUsername());
+                    userInfo.setPrimary_key(loginAndRegisterJson.getPrimary_key());
+                    userInfo.setToken_base64(res);
                     userInfo.save();
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            //让键盘消失。
-                            pop_user_phone_keyboard.setVisibility(View.GONE);
-                            phoneView.setVisibility(View.GONE);
-                            ToastUtil.showToast(MyApplication.getContext(),"验证成功，你以成功注册",3000);
-                            dismiss(1);
-                            dismiss(3);
+                            dismiss(0);
                         }
                     });
-                }else if (loginAndRegisterJson.getCode() == 5756){
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            view_text_1.setText(" ");
-                            view_text_2.setText(" ");
-                            view_text_3.setText(" ");
-                            view_text_4.setText(" ");
-                            user_btn_click = 0;
-                            user_input = null;
-                            ToastUtil.showToast(MyApplication.getContext(),"您输入错误，请重新输入",2000);
-                        }
-                    });
+                }else {
+                    JudgeVerJson judgeVerJson = gson.fromJson(res,JudgeVerJson.class);
+                    if (judgeVerJson.getCode() == 2010 || judgeVerJson.getCode() == 2020){
+                        UiThread("验证码已过期，请重新发送");
+                    }else if (judgeVerJson.getCode() == 2011){
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                view_text_1.setText(" ");
+                                view_text_2.setText(" ");
+                                view_text_3.setText(" ");
+                                view_text_4.setText(" ");
+                                user_btn_click = 0;
+                                user_input = null;
+                                ToastUtil.showToast(MyApplication.getContext(),"您输入错误，请重新输入",3000);
+                            }
+                        });
+                    }else if (judgeVerJson.getCode() == 2015){
+                        UiThread("阿里云已经炸掉");
+                    }
                 }
             }
         });
@@ -809,18 +891,13 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
             if (edit_user_yanzhen.length() == 4){
                     isOpen = 1;
                     //当验证码输入正确之后，再次请求服务器
-                    Log.i(TAG, "afterTextChanged: " + MyApplication.ServerUrl.LIFEHELP_SERVER_URL +
-                            "v1/UserAction/inorup/" + Utils.getPhoneNumber(user_phone_number) +"/"+ onlyPhoneToken +"/"+ edit_user_yanzhen);
-
-                requestVerification();
+                verificationRequest();
             }
         }
     }
-    //将输入的验证码发送给服务器判断正确，否则重新输入输入并且更新验证码
-    public void requestVerification() {
-        HttpRequest.request(MyApplication.ServerUrl.LIFEHELP_SERVER_URL +
-                "v1/UserAction/inorup/" + Utils.getPhoneNumber(user_phone_number)
-                +"/"+ onlyPhoneToken +"/"+ edit_user_yanzhen, new Callback() {
+    public void verificationRequest() {
+        Log.i(TAG, "response verificationRequest Url: " + MyApplication.ServerUrl.TIANHUAN_TEST_URL + "verifyImgNum/" + edit_user_yanzhen);
+        HttpRequest.request(MyApplication.ServerUrl.TIANHUAN_TEST_URL + "verifyImgNum/" + edit_user_yanzhen, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
 
@@ -829,31 +906,50 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String res = response.body().string();
-                Log.i(TAG, "error: " + res);
+                Log.i(TAG, "onResponse: " + res);
                 Gson gson = new Gson();
                 final VerficationJson verficationJson = gson.fromJson(res,VerficationJson.class);
-                String status = verficationJson.getStatus();
-                Log.i(TAG, "run: " + verficationJson.getVerifyImg());
                 int code = verficationJson.getCode();
-                Log.i(TAG, "code: " + status);
-                if (code == 5754 || code == 5854 || code == 1021){
+                Log.i(TAG, "onResponse: " + code);
+                if (code == 1006){
+                    VerifyToken = verficationJson.getVerifyToken();
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Log.i(TAG, "run: " );
                             timerStart();
                         }
                     });
-                }else {
+                }else if (code == 1007){
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Log.i(TAG, "run: " + verficationJson.getVerifyImg());
                             verification_base64.setImageBitmap(Utils.getStringToBitmap(verficationJson.getVerifyImg()));
-                           requestError();
+                            requestError();
                         }
                     });
+
                 }
+            }
+        });
+    }
+    //将输入的验证码发送给服务器判断正确，否则重新输入输入并且更新验证码
+    public void getVerifylImg() {
+        HttpRequest.request(MyApplication.ServerUrl.TIANHUAN_TEST_URL + "getVerifyImg", new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.i(TAG, "onFailure: " + "th is died");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                final String res = response.body().string();
+                Log.i(TAG, "onResponse: " + res);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        verification_base64.setImageBitmap(Utils.getStringToBitmap(res));
+                    }
+                });
             }
         });
     }
@@ -877,6 +973,7 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
     }
     //启动倒计时
     public void timerStart() {
+        getJudgeLoginOrRegister();
         dismiss(1);
         dismiss(2);
         show(3);
@@ -885,5 +982,13 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
         viewCount_Down.setVisibility(View.VISIBLE);
         //将button隐藏掉
         first_count_down.setVisibility(View.GONE);
+    }
+    public  void UiThread(final String toastString){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ToastUtil.showToast(MyApplication.getContext(),toastString,3000);
+            }
+        });
     }
 }
