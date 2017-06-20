@@ -7,98 +7,107 @@ import org.litepal.crud.DataSupport;
  */
 
 public class UserInfo extends DataSupport {
+
     /**
-     * Status : SignIn_Success
-     * message : 登陆成功,userinfo中是用户信息
-     * Code : 5754
-     * token : ewoiZ3JhZGUiOiAiMiIsCiJzdGFydF90aW1lIjogIjE0OTcyNTM1NjUiLAoiZXhwX3RpbWUiOiAiMTQ5ODU0OTU2NSIsCiJpcCI6ICIxOTIuMTY4LjQzLjg1IiwKInVzZXJuYW1lIjogIjE1MTUxNTE1MTUxIiwKInVzZXJfaWQiOiAiMiIsCiJwcmltYXJ5X2tleSI6ICI4MDM2MTkzNjQiLAoic2lnbmF0dXJlX3NlcnZlciI6ICJodHRwOi8vMTkyLjE2OC40My42NyIKfQ==.05760e3bf450236a12a82bc66ea38a8b7f7fea284abb904069faefa4b6e7c0bd
-     * TlssToken : eJxNjVFPgzAUhf9Ln42U1jLnG0wMDdNZx4IYkqZAuzVmrLIOUON-FwlTc9**755zPkGyXF*Ksjycasvtu5HgBkBwMWJdydpqpWUzQJf83qSFMbriwnLcVP9Sx*qVj*ondAUhxMjzzlL2RjeSC2WnUkLQ8DLZVjZHfagHgeCwgzCEf9LqvRwr5zNEMPHIeU9vB3wfZgvKbq8zm7plESR7OKdp7kTdE0tyJ0gTsgq9VnW587ZZ03DbqnjB6M5f7cpl-IC7njzXPmMfsZmFhYg2d1qdCtZHkvpu4Gbi8cWAr29lpVho
-     * userinfo : {"nickname":"myb_nq8i5","avatar":"8","balance":0,"credit_grade":"4.50"}
-     * nickname : myb_nq8i5
-     * avatar : 8
-     * balance : 0
-     * credit_grade : 4.50
+     * token_base64 : ewoiZ3JhZGUiOiAiMiIsCiJzdGFydF90aW1lIjogIjE0OTc4NzMyNzgiLAoiZXhwX3RpbWUiOiAiMTQ5OTE2OTI3OCIsCiJpcCI6ICIxOTIuMTY4LjQzLjg1IiwKInVzZXJuYW1lIjogIjE4ODg4ODg4ODg4IiwKInVzZXJfaWQiOiAiMyIsCiJwcmltYXJ5X2tleSI6ICItNTIwMTg2ODU5IiwKInNpZ25hdHVyZV9zZXJ2ZXIiOiAiaHR0cDovLzE5Mi4xNjguNDMuNjciLAoiVGVuQ2VudFRva2VuIjogImVKeE5qVjFQZ3pBWWhmOUxielhhai1FeGsxMHd3YmxzWElnRXBqRnBHbHBxUjJTMTFKWEYqTjlGdHFudjVmT2NjOTVQa0s4ZnIxaFY3VDVhUyoxQkMzQURJTGdjc2VLaXRhcFd3Z3dRaGI5MzBreHJ4U216bEJqKnI5WHhobzdxcHpTQkVCTHMqMmNwZXEyTW9LeTJ4MUhQOC1BUU9kbTlNSjNhdFlQQUVIa0lFd2otcEZWdllweWNCbUZBY0JDYy15azU0RFI1dUYxR3IyV3o2T0hFcGVqbCp2NDVRY3daWHZTWlcyRzhLQzgyMi16SkZLVWZhdW0ya1pvbjgxWnJNMTFsMXEtaTktVmQxWFdreVBaeEwyVjhnTDdvOGhvdm15aVZrWnZOd05jM0dwUll2QV9fIgp9.fd5e91639240c438e105c3f34dbba75a4b2b2634b06e9f7ade343e137e003012
+     * grade : 2
+     * start_time : 1497873278
+     * exp_time : 1499169278
+     * ip : 192.168.43.85
+     * username : 18888888888
+     * user_id : 3
+     * primary_key : -520186859
+     * signature_server : http://192.168.43.67
+     * TenCentToken : eJxNjV1PgzAYhf9LbzXaj-Exk10wwblsXIgEpjFpGlpqR2S11JXF*N9Ftqnv5fOcc95PkK8fr1hV7T5aS*1BC3ADILgcseKitapWwgwQhb930kxrxSmzlBj*r9Xxho7qpzSBEBLs*2cpeq2MoKy2x1HP8-AQOdm9MJ3atYPAEHkIEwj-pFVvYpycBmFAcBCc-yk54DR5uF1Gr2Wz6OHEpejl*v45QcwZXvSZW2G8KC822-zJFKUfaum2kZon81ZrM11l1q-i9-Vd1XWkyPZxL2V8gL7o8hovmyiVkZvNwNc3GpRYvA__
      */
+    private String token_base64;
+    private String grade;
+    private String start_time;
+    private String exp_time;
+    private String ip;
+    private String username;
+    private String user_id;
+    private String primary_key;
+    private String signature_server;
+    private String TenCentToken;
 
-    private String Status;
-    private String message;
-    private int Code;
-    private String token;
-    private String TlssToken;
-    private String nickname;
-    private String avatar;
-    private double balance;
-    private double credit_grade;
-
-    public String getStatus() {
-        return Status;
+    public String getToken_base64() {
+        return token_base64;
     }
 
-    public void setStatus(String Status) {
-        this.Status = Status;
+    public void setToken_base64(String token_base64) {
+        this.token_base64 = token_base64;
     }
 
-    public String getMessage() {
-        return message;
+    public String getGrade() {
+        return grade;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setGrade(String grade) {
+        this.grade = grade;
     }
 
-    public int getCode() {
-        return Code;
+    public String getStart_time() {
+        return start_time;
     }
 
-    public void setCode(int Code) {
-        this.Code = Code;
+    public void setStart_time(String start_time) {
+        this.start_time = start_time;
     }
 
-    public String getToken() {
-        return token;
+    public String getExp_time() {
+        return exp_time;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setExp_time(String exp_time) {
+        this.exp_time = exp_time;
     }
 
-    public String getTlssToken() {
-        return TlssToken;
+    public String getIp() {
+        return ip;
     }
 
-    public void setTlssToken(String TlssToken) {
-        this.TlssToken = TlssToken;
+    public void setIp(String ip) {
+        this.ip = ip;
     }
 
-    public String getNickname() {
-        return nickname;
+    public String getUsername() {
+        return username;
     }
 
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public String getAvatar() {
-        return avatar;
+    public String getUser_id() {
+        return user_id;
     }
 
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
     }
 
-    public double getBalance() {
-        return balance;
+    public String getPrimary_key() {
+        return primary_key;
     }
 
-    public void setBalance(double balance) {
-        this.balance = balance;
+    public void setPrimary_key(String primary_key) {
+        this.primary_key = primary_key;
     }
 
-    public double getCredit_grade() {
-        return credit_grade;
+    public String getSignature_server() {
+        return signature_server;
     }
 
-    public void setCredit_grade(double credit_grade) {
-        this.credit_grade = credit_grade;
+    public void setSignature_server(String signature_server) {
+        this.signature_server = signature_server;
+    }
+
+    public String getTenCentToken() {
+        return TenCentToken;
+    }
+
+    public void setTenCentToken(String TenCentToken) {
+        this.TenCentToken = TenCentToken;
     }
 }

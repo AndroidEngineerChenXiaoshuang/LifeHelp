@@ -3,11 +3,12 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
     <Button
+        style="?android:attr/borderlessButtonStyle"
         android:textColor="#fafafa"
         android:textSize="18sp"
         android:text="开始认证"
         android:layout_margin="25dp"
-        android:background="@drawable/shape_wallet_btn_color_blue"
+        android:background="@drawable/ontouch_anim_blue"
         android:id="@+id/begin_Authentication"
         android:layout_width="match_parent"
         android:layout_height="40dp"

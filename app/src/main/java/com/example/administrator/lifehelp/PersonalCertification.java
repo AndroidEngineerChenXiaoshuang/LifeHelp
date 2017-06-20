@@ -100,12 +100,12 @@ public class PersonalCertification extends AppCompatActivity implements View.OnC
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.begin_Authentication:
-                viewPager.setCurrentItem(1);
+                viewPager.setCurrentItem(1,false);
                 judgeInterface = 1;
                 break;
             case R.id.title_return:
                 if (judgeInterface == 1){
-                    viewPager.setCurrentItem(0);
+                    viewPager.setCurrentItem(0,false);
                     judgeInterface = 0;
                 }else {
                     finish();

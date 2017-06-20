@@ -6,34 +6,25 @@ package com.example.administrator.lifehelp.gson;
 
 public class VerficationJson {
 
+
     /**
-     * Status : error
-     * Code : 1588
-     * Message : 当前IP请求次数过多,需要验证码
-     * verifyImg : 携带base64的字符编码
-     * time : 1496799530
+     * Message : 验证码正确,并返回验证码Token
+     * VerifyToken : 192-168-43-85-VerifyToken-feQaGfwhGtYc
+     * Code : 1006
+     * VerifyImg ：ew
      */
 
-    private String Status;
-    private int Code;
+    private String VerifyImg;
     private String Message;
-    private String verifyImg;
-    private int time;
+    private String VerifyToken;
+    private int Code;
 
-    public String getStatus() {
-        return Status;
+    public String getVerifyImg() {
+        return VerifyImg;
     }
 
-    public void setStatus(String Status) {
-        this.Status = Status;
-    }
-
-    public int getCode() {
-        return Code;
-    }
-
-    public void setCode(int Code) {
-        this.Code = Code;
+    public void setVerifyImg(String VerifyImg) {
+        this.VerifyImg = VerifyImg;
     }
 
     public String getMessage() {
@@ -44,19 +35,19 @@ public class VerficationJson {
         this.Message = Message;
     }
 
-    public String getVerifyImg() {
-        return verifyImg;
+    public String getVerifyToken() {
+        return VerifyToken;
     }
 
-    public void setVerifyImg(String verifyImg) {
-        this.verifyImg = verifyImg;
+    public void setVerifyToken(String VerifyToken) {
+        this.VerifyToken = VerifyToken;
     }
 
-    public int getTime() {
-        return time;
+    public int getCode() {
+        return Code;
     }
 
-    public void setTime(int time) {
-        this.time = time;
+    public void setCode(int Code) {
+        this.Code = Code;
     }
 }

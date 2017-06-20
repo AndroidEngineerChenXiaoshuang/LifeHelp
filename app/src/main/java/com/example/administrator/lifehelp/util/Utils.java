@@ -261,4 +261,9 @@ public class Utils {
         }
         return bitmap;
     }
+    //将base64转换为字符串
+    public static String base64ToString(String string){
+        byte[]bytes = Base64.decode(string,Base64.DEFAULT);
+        return new String(bytes);
+    }
 }
