@@ -707,8 +707,8 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
     //设置一个背景显示已经加载和关闭动画
     public void setBackAnimation() {
         AlphaAnimation exitAlpha = (AlphaAnimation) AnimationUtils.loadAnimation(mainActivity, R.anim.exit_window_back);
-        mainActivity.mainFragment.windowBack2.setAnimation(exitAlpha);
-        mainActivity.mainFragment.windowBack2.setVisibility(View.GONE);
+        mainActivity.windowBack2.setAnimation(exitAlpha);
+        mainActivity.windowBack2.setVisibility(View.GONE);
     }
 
     //判断当前显示为第几个textView并且获取textView显示的内容

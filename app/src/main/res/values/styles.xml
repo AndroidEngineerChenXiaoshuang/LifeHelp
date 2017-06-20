@@ -60,5 +60,8 @@
         <!--<item name="android:windowIsTranslucent">true</item>-->
         <!--<item name="android:windowDisablePreview">true</item>-->
     </style>
+    <style name="ProgressBarLarge" parent="@android:style/Widget.ProgressBar.Small">
+        <item name="android:indeterminateDrawable">@drawable/large_progressbar</item>
+    </style>
 
 </resources>

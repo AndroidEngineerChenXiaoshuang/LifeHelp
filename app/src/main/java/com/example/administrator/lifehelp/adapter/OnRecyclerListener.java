@@ -52,7 +52,7 @@ public class OnRecyclerListener extends RecyclerView.OnScrollListener {
                 if(verticalScrollExtent+verticalScrollOffset>=verticalScrollRange){
                     mainActivity.mainFragment.swipeRefreshLayout.setRefreshing(true);//显示swipeRefresh
                     StringBuilder stringBuilder = new StringBuilder();
-                    stringBuilder.append("http://192.168.43.67/v1/articles/getarticle/");
+                    stringBuilder.append("http://192.168.43.67/v1/ArticleOperation/getarticle/");
                     stringBuilder.append(initArticles.size());
                     stringBuilder.append("/10");
                     HttpRequest.request(stringBuilder.toString(), new Callback() {

@@ -9,9 +9,6 @@ import com.google.gson.Gson;
  */
 
 public class ParseJson {
-
-
-
     public final static String TAG = "jsone";
 
     public static UserActionJson userActionJson;

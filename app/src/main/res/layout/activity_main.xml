@@ -7,20 +7,132 @@
     android:id="@+id/drawerLayout"
     android:layout_height="match_parent"
     tools:openDrawer="start">
-    <FrameLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/mainFragment">
-    </FrameLayout>
-    <android.support.design.widget.NavigationView
-        android:id="@+id/help_navView"
-        android:background="#fff"
-        android:layout_gravity="start"
-        android:overScrollMode="never"
-        android:layout_width="230dp"
-        android:layout_height="match_parent"
-        app:menu="@menu/help_menu"
-        app:headerLayout="@layout/help_header"/>
+        android:layout_height="match_parent">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/mainFragment">
+        </FrameLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:layout_above="@+id/bottom"
+            android:background="@color/viewBackColor"/>
+        <RelativeLayout
+            android:layout_alignParentBottom="true"
+            android:id="@+id/bottom"
+            android:layout_width="match_parent"
+            android:background="#fff"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_alignParentLeft="true"
+                android:padding="5dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:id="@+id/icon_item1"
+                android:scaleType="centerCrop"
+                android:src="@drawable/help_bottom_item1_selector"/>
+            <ImageView
+                android:layout_width="50dp"
+                android:id="@+id/icon_item3"
+                android:layout_height="50dp"
+                android:layout_alignParentRight="true"
+                android:padding="5dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/help_speak"/>
+        </RelativeLayout>
+        <View
+            android:visibility="gone"
+            android:id="@+id/windowBack"
+            android:background="@color/openBack_two"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+        <ImageView
+            android:visibility="gone"
+            android:layout_width="60dp"
+            android:id="@+id/quick_write"
+            android:layout_height="60dp"
+            android:src="@drawable/info_write"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="5dp"
+            android:scaleType="centerCrop"/>
+        <ImageView
+            android:visibility="gone"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/write_quick"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:scaleType="centerCrop"
+            android:layout_marginBottom="5dp"
+            android:id="@+id/write_info"/>
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:scaleType="centerCrop"
+            android:id="@+id/icon_item2"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="5dp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/help_info_add"/>
+        <TextView
+            android:id="@+id/textInfo_commit"
+            android:textSize="14sp"
+            android:text="提交发布"
+            android:visibility="gone"
+            android:layout_marginRight="10dp"
+            android:layout_width="78dp"
+            android:gravity="center"
+            android:textColor="#ededed"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@+id/icon_item2"
+            android:layout_marginBottom="25dp"
+            android:layout_toLeftOf="@+id/icon_item2"/>
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/textInfo_quick"
+            android:textSize="14sp"
+            android:text="新手发布"
+            android:layout_marginLeft="10dp"
+            android:layout_width="78dp"
+            android:gravity="center"
+            android:textColor="#ededed"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@+id/icon_item2"
+            android:layout_marginBottom="25dp"
+            android:layout_toRightOf="@+id/icon_item2"/>
+        <View
+            android:visibility="gone"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="#00ffffff"
+            android:id="@+id/lisenter1"
+            android:layout_toLeftOf="@+id/icon_item2"
+            android:layout_above="@+id/icon_item2"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="45dp"/>
+        <View
+            android:visibility="gone"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:id="@+id/lisenter2"
+            android:background="#00ffffff"
+            android:layout_above="@+id/icon_item2"
+            android:layout_marginBottom="45dp"
+            android:layout_toRightOf="@+id/icon_item2"
+            android:layout_marginLeft="10dp"/>
+    </RelativeLayout>
+
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -31,6 +143,25 @@
             android:layout_height="match_parent"
             android:id="@+id/right_layout"/>
     </FrameLayout>
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/help_navView"
+        android:background="#fff"
+        android:layout_gravity="start"
+        android:overScrollMode="never"
+        android:layout_width="230dp"
+        android:layout_height="match_parent"
+        app:menu="@menu/help_menu"
+        app:headerLayout="@layout/help_header"/>
+
+    <View
+        android:visibility="gone"
+        android:id="@+id/windowBack2"
+        android:background="@color/openBack_two"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+
 
 </android.support.v4.widget.DrawerLayout>
 

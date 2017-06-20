@@ -1,7 +1,5 @@
 package com.example.administrator.lifehelp.gson;
 
-import com.google.gson.annotations.SerializedName;
-
 /**
  * Created by Jam
  */

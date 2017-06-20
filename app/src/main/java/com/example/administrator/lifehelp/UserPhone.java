@@ -97,40 +97,15 @@ public class UserPhone extends AppCompatActivity {
         preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext());
         editor = PreferenceManager.getDefaultSharedPreferences(MyApplication.getContext()).edit();
         //当第一次打开app时，会获取一个唯一ID
-        firstUse();
+
         //初始化控件
         initControl();
         //用户手机格式
         userPhoneFormat();
     }
 
-    /**
-     * 第一次打开客户端
-     */
-    public void firstUse() {
-        onlyPhoneId = Utils.getPhoneId();
-        getTemporaryToken();
-        //Log.i(TAG, "onlyPhoneToken:8888 " + onlyPhoneToken);
-    }
 
-    public void getTemporaryToken() {
 
-        HttpRequest.request(MyApplication.ServerUrl.LIFEHELP_SERVER_URL + "v1/Signature/" + onlyPhoneId, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.i(TAG, "Internet: " + "没有网络");
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String temToken = response.body().string();
-                //onlyPhoneToken = UserLangUtil.getParseServer(temToken);
-                onlyPhoneToken = ParseJson.getOnlyPhoneToken(temToken);
-                Log.i(TAG, "onlyPhoneToken: " + onlyPhoneToken);
-            }
-        });
-
-    }
 
     /**
      * 对输入的手机号格式进行判断
@@ -273,7 +248,6 @@ public class UserPhone extends AppCompatActivity {
      */
     public void serverRequest() {
         if (onlyPhoneToken == null) {
-            getTemporaryToken();
             //onlyPhoneToken = UserLangUtil.getTemporaryToken(onlyPhoneId);
         }
 
