@@ -335,7 +335,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             //当用户点击我的钱包
             case R.id.help_wallet:
                 List<UserInfo> userInfo = DataSupport.findAll(UserInfo.class);
-<<<<<<< HEAD
                 for (UserInfo user : userInfo) {
                     if (user.getMessage() != null) {
                         isLogin = true;
@@ -351,7 +350,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     windowBack2.startAnimation(alphaAnimation);
                     popupWindowUtil = new PopupWindowUtil(MainActivity.this);
                     popupWindowUtil.show(1);
-=======
                 for (UserInfo user : userInfo){
                     Log.i("jsone", "onNavigationItemSelected: ");
                     if (user.getUsername() != null){
@@ -366,7 +364,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     AlphaAnimation alphaAnimation = (AlphaAnimation) AnimationUtils.loadAnimation(this,R.anim.show_window_back);
                     mainFragment.windowBack2.startAnimation(alphaAnimation);
                     PopupWindowUtil.showPopupwindow(MainActivity.this,1);
->>>>>>> 1e8afae8667fd05628f0fa0b0223a5784835c85c
                     closeDrawer();
                 }
                 break;
