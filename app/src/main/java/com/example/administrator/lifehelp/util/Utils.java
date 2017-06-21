@@ -117,8 +117,8 @@ public class Utils {
             @Override
             public void onDismiss() {
                 if(mainFragment!=null){
-                    mainFragment.windowBack2.startAnimation(AnimationUtils.loadAnimation(activity,R.anim.exit_activity_animation_alph));
-                    mainFragment.windowBack2.setVisibility(View.GONE);
+                    mainFragment.mainActivity.windowBack2.startAnimation(AnimationUtils.loadAnimation(activity,R.anim.exit_activity_animation_alph));
+                    mainFragment.mainActivity.windowBack2.setVisibility(View.GONE);
                 }else{
                     throw new NullPointerException("mainFragment is not null Reason code need MainFragment.WindowBack2");
                 }

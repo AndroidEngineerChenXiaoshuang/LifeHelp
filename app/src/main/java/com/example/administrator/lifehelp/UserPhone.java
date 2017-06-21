@@ -93,7 +93,7 @@ public class UserPhone extends AppCompatActivity {
         }
         setContentView(R.layout.user_phone_first);
         //当第一次打开app时，会获取一个唯一ID
-        firstUse();
+
         //初始化控件
         initControl();
         //用户手机格式
@@ -131,7 +131,6 @@ public class UserPhone extends AppCompatActivity {
         });
 
     }
-
     /**
      * 对输入的手机号格式进行判断
      */
@@ -283,6 +282,10 @@ public class UserPhone extends AppCompatActivity {
         String url = MyApplication.ServerUrl.TIANHUAN_TEST_URL + "requestMax/" + Utils.getPhoneNumber(userPhone);
         Log.i(TAG, "serverRequest: " + url);
         HttpRequest.request(url, new Callback() {
+
+
+
+
             @Override
             public void onFailure(Call call, IOException e) {
                 Message message = new Message();

@@ -1,5 +1,8 @@
 package com.example.administrator.lifehelp.db;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.litepal.crud.DataSupport;
 import java.io.Serializable;
 
@@ -14,8 +17,6 @@ public class UserHelpInfo extends DataSupport implements Serializable{
     public String user_img;
     public String user_timer;
     public int id;
-
-
 
     public void setUser_title(String user_title){
         this.user_title = user_title;

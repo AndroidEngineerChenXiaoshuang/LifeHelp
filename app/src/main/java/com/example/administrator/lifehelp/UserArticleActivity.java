@@ -4,18 +4,25 @@ import android.Manifest;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.administrator.lifehelp.db.UserInfo;
+import com.example.administrator.lifehelp.util.PopupWindowUtil;
+
+import org.litepal.crud.DataSupport;
 
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -111,7 +118,14 @@ public class UserArticleActivity extends AppCompatActivity implements View.OnCli
 
     public void startWork(View view) {
         if(view.getId() == R.id.startWork_btn){
-
+            Cursor cursor = DataSupport.findBySQL("select token,TlssToken from userinfo;");
+            if(cursor.moveToNext()){
+                String token = cursor.getString(cursor.getColumnIndex("token"));
+                String tlsToken = cursor.getString(cursor.getColumnIndex("tlsstoken"));
+                cursor.close();
+            }else{
+                PopupWindowUtil.showPopupwindow(this,1);
+            }
         }
     }
 

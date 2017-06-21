@@ -36,7 +36,7 @@ public class OnRefreshListener implements SwipeRefreshLayout.OnRefreshListener {
         this.context = context;
         this.initArticles = initArticles;
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("http://192.168.43.67/v1/articles/getarticle/");
+        stringBuilder.append("http://192.168.43.67/v1/ArticleOperation/getarticle/");
         stringBuilder.append("0/");
         stringBuilder.append(10);
         url = stringBuilder.toString();

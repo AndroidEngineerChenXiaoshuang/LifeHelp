@@ -64,6 +64,7 @@ public class RightLayoutFragment extends Fragment implements View.OnClickListene
             root.findViewById(R.id.title_status).setLayoutParams(layoutParams);
             root.findViewById(R.id.title_status).setBackgroundColor(0xFFBABABA);
         }
+        root.setOnClickListener(this);
         className = (TextView) root.findViewById(R.id.selectorClassName);
         startMoney = (EditText) root.findViewById(R.id.start_money);
         //监听焦点获取

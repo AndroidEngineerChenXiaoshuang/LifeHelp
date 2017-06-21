@@ -5,7 +5,7 @@
     android:paddingLeft="10dp"
     android:paddingRight="10dp"
     android:layout_width="match_parent"
-    android:layout_height="?android:attr/actionBarSize">
+    android:layout_height="wrap_content">
 
         <ImageButton
             android:layout_centerVertical="true"
@@ -19,12 +19,11 @@
             android:layout_centerInParent="true"
             android:textColor="#fafafa"
             android:id="@+id/title_name"
-            android:layout_marginLeft="100dp"
-            android:layout_gravity="center"
             android:textSize="18sp"
-            android:text="我的钱包"
+            android:gravity="center"
+            android:text="自定义"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="?android:attr/actionBarSize" />
 
 </RelativeLayout>
 
