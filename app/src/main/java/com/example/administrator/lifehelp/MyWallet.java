@@ -7,6 +7,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.example.administrator.lifehelp.util.PopupWindowUtil;
+
 
 /**
  * 用户钱包界面
@@ -56,6 +58,7 @@ public class MyWallet extends Activity implements View.OnClickListener{
         switch (view.getId()){
             //充值按钮
             case R.id.wallet_Recharge:
+                PopupWindowUtil.showPopupwindow(MainActivity.getMainContext(),1);
                 break;
             //提现按钮
             case R.id.wallet_cash:

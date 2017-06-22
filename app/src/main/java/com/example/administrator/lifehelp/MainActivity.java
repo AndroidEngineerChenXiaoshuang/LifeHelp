@@ -1,5 +1,6 @@
 package com.example.administrator.lifehelp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -74,6 +75,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //用于控制判断是否打开了下载管理器
     public boolean downloadRunning = false;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 9f0ac0023b5eb0887800711452143725bf5e5ffa
     //动画主体是否打开
     public boolean main_isRunning = false;
     //动画是否正在运行
@@ -135,6 +140,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public UserinterfaceFragment userinterfaceFragment;
 
+    public static Context mainContext;
+
     /**
      * framgnet的状态，默认为1
      * 1表示此碎片正处于mainFragment
@@ -143,13 +150,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public int fragmentstate = 1;
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 9f0ac0023b5eb0887800711452143725bf5e5ffa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         Utils.setStatusBarColor(Color.TRANSPARENT, this);
         setContentView(R.layout.activity_main);
         initData();
+        mainContext = MainActivity.this;
     }
+
+
     /**
      * 用于初始化所有控件的方法
      */
@@ -340,11 +355,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         startActivity(intent);
                     }
                 }
+<<<<<<< HEAD
                 if (!isLogin){
                     windowBack2.setVisibility(View.VISIBLE);
                     AlphaAnimation alphaAnimation = (AlphaAnimation) AnimationUtils.loadAnimation(this,R.anim.show_window_back);
                     windowBack2.startAnimation(alphaAnimation);
                     PopupWindowUtil.showPopupwindow(MainActivity.this,1);
+=======
+                if (!isLogin) {
+                    PopupWindowUtil.showPopupwindow(MainActivity.this, 1);
+>>>>>>> 9f0ac0023b5eb0887800711452143725bf5e5ffa
                     closeDrawer();
                 }
                 break;
@@ -623,6 +643,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onAnimationRepeat(Animation animation) {
     }
+    public static Context getMainContext(){
+        return mainContext;
+    }
 
     public class HandlerInfo extends Handler {
         @Override
@@ -642,5 +665,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     break;
             }
         }
+
     }
 }

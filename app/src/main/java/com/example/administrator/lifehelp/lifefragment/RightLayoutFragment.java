@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -18,6 +19,7 @@ import com.example.administrator.lifehelp.MainActivity;
 import com.example.administrator.lifehelp.R;
 import com.example.administrator.lifehelp.application.MyApplication;
 import com.example.administrator.lifehelp.util.AnimationUtil;
+import com.example.administrator.lifehelp.util.PopupWindowUtil;
 import com.example.administrator.lifehelp.util.SetFouchable;
 import com.example.administrator.lifehelp.util.Utils;
 

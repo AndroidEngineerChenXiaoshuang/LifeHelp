@@ -2,12 +2,10 @@ package com.example.administrator.lifehelp;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -23,14 +21,11 @@ import android.widget.Toast;
 import com.example.administrator.lifehelp.application.MyApplication;
 import com.example.administrator.lifehelp.db.UserInfo;
 import com.example.administrator.lifehelp.gson.JudgeVerJson;
-import com.example.administrator.lifehelp.gson.ParseJson;
-import com.example.administrator.lifehelp.gson.UserActionJson;
 import com.example.administrator.lifehelp.util.HttpRequest;
 import com.example.administrator.lifehelp.util.ToastUtil;
 import com.example.administrator.lifehelp.util.Utils;
 import com.google.gson.Gson;
 
-import org.apache.http.params.HttpParams;
 import org.litepal.crud.DataSupport;
 
 import java.io.IOException;
@@ -51,10 +46,6 @@ public class UserPhone extends AppCompatActivity {
     private final static int SHOWINTERNET = 1;
 
     public boolean t = true;
-    //手机唯一ID
-    public String onlyPhoneId;
-    //将json字符存在内存中
-    public String onlyPhoneToken;
     //手机号码格式
     private String telRegex = "[1][34578][0-9][ ]\\d{4}[ ]\\d{4}";
     //下一步按钮
@@ -63,7 +54,6 @@ public class UserPhone extends AppCompatActivity {
     private EditText user_edit_phone;
     //判断长度
     private CharSequence textLength;
-    private int phone_num;
     //跳过按钮
     private Button user_btn_skip;
     //判断当前状态
@@ -76,24 +66,23 @@ public class UserPhone extends AppCompatActivity {
     public String userPhone;
 
     public HandlerInfo handlerInfo = new HandlerInfo();
+    TextChange textChange = new TextChange();
 
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         List<UserInfo> userInfo = DataSupport.findAll(UserInfo.class);
         for (UserInfo user : userInfo){
-            Log.i("jsone", "onNavigationItemSelected: ");
             if (user.getUsername() != null){
                 Log.i(TAG, "onCreate: " + user.getToken_base64());
                 Log.i(TAG, "onCreate: " + user.getUsername());
+                Log.i(TAG, "onCreate: " + user.getUser_id());
                 Intent intent = new Intent(this,MainActivity.class);
                 startActivity(intent);
                 finish();
             }
         }
         setContentView(R.layout.user_phone_first);
-        //当第一次打开app时，会获取一个唯一ID
-
         //初始化控件
         initControl();
         //用户手机格式
@@ -102,6 +91,7 @@ public class UserPhone extends AppCompatActivity {
         //String str = string.substring(string.indexOf("\\W") + 1,string.indexOf("."));
     }
 
+<<<<<<< HEAD
     /**
      * 第一次打开客户端
      */
@@ -132,19 +122,19 @@ public class UserPhone extends AppCompatActivity {
 
     }
 
+=======
+>>>>>>> 9f0ac0023b5eb0887800711452143725bf5e5ffa
     /**
      * 对输入的手机号格式进行判断
      */
     public void userPhoneFormat() {
+        //user_edit_phone.addTextChangedListener(textChange);
         user_edit_phone.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
             }
-
-            /**
-             *这里是手机代码格式例如 888 8888 8888
-             */
+//          这里是手机代码格式例如 888 8888 8888
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int i2) {
                 textLength = s;
@@ -166,6 +156,7 @@ public class UserPhone extends AppCompatActivity {
              */
             @Override
             public void afterTextChanged(Editable s) {
+
                 String text = textLength.toString() + ' ';
                 int phone_length = text.length();
                 if (phone_length == 14) {
@@ -197,16 +188,9 @@ public class UserPhone extends AppCompatActivity {
                                 ToastUtil.showToast(MyApplication.getContext(),"你输入的格式错误",3000);
                             }else {
                                 userPhone = user_edit_phone.getText().toString();
-                                //如果第一次启动没有网络，没有获得token，将会重新请求。
-                                //if (onlyPhoneToken == null){
-                                //getTemporaryToken(false);
-                                //}else {
-                                //如果有token则直接进行下一步token
                                 t = true;
                                 serverRequest();
                                 judgeActivity();
-
-                                //}
                             }
                         }
                     });
@@ -244,10 +228,8 @@ public class UserPhone extends AppCompatActivity {
         Log.i(TAG, "judgeJsone " + judgeVerJson.getMessage() +"||"+ judgeCode);
         intent.putExtra("user_phone",userPhone);
         intent.putExtra("userPhoneNumber", Utils.getPhoneNumber(userPhone));
-        //intent.putExtra("temporaryToken",onlyPhoneToken);
         picIntent.putExtra("user_phone",userPhone);
         picIntent.putExtra("userPhoneNumber", Utils.getPhoneNumber(userPhone));
-        //PicIntent.putExtra("temporaryToken",onlyPhoneToken);
         if (judgeCode == 1001 || judgeCode == 1002 ){
             Log.i(TAG, "judgeStartActivity: " + "test");
             if (t){
@@ -280,6 +262,7 @@ public class UserPhone extends AppCompatActivity {
      * 在这里请求服务器并获取返回的数据
      */
     public void serverRequest() {
+<<<<<<< HEAD
         if (onlyPhoneToken == null) {
             //onlyPhoneToken = UserLangUtil.getTemporaryToken(onlyPhoneId);
         }
@@ -287,6 +270,10 @@ public class UserPhone extends AppCompatActivity {
 
 
         String url = MyApplication.ServerUrl.TIANHUAN_TEST_URL + "requestMax/" + Utils.getPhoneNumber(userPhone);
+=======
+        String url = MyApplication.ServerUrl.TIANHUAN_TEST_URL + "requestMax/" + Utils.getPhoneNumber(userPhone);
+        Log.i(TAG, "serverRequest: " + url);
+>>>>>>> 9f0ac0023b5eb0887800711452143725bf5e5ffa
         HttpRequest.request(url, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -356,7 +343,8 @@ public class UserPhone extends AppCompatActivity {
             }
         }
     }
-    public  void UiThread(final String toastString){
+    //回到主线程，并提示一个toast
+    public void UiThread(final String toastString){
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -364,4 +352,46 @@ public class UserPhone extends AppCompatActivity {
             }
         });
     }
+    private class TextChange implements TextWatcher{
+
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int i, int i1, int i2) {
+           // PhoneNumberUtils.formatNumber()
+            textLength = s;
+            String contents = s.toString();
+            int length = contents.length();
+            if(length == 4){
+                if(contents.substring(3).equals(new String(" "))){ // -
+                    contents = contents.substring(0, 3);
+                    user_edit_phone.setText(contents);
+                    user_edit_phone.setSelection(contents.length());
+                }else{ // +
+                    contents = contents.substring(0, 3) + " " + contents.substring(3);
+                    user_edit_phone.setText(contents);
+                    user_edit_phone.setSelection(contents.length());
+                }
+            }
+            else if(length == 9){
+                if(contents.substring(8).equals(new String(" "))){ // -
+                    contents = contents.substring(0, 8);
+                    user_edit_phone.setText(contents);
+                    user_edit_phone.setSelection(contents.length());
+                }else{// +
+                    contents = contents.substring(0, 8) + " " + contents.substring(8);
+                    user_edit_phone.setText(contents);
+                    user_edit_phone.setSelection(contents.length());
+                }
+            }
+        }
+        @Override
+        public void afterTextChanged(Editable editable) {
+
+        }
+    }
+
 }

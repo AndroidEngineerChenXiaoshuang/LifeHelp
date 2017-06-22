@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -51,7 +53,12 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
 
     public boolean t = true;
 
+    public final static int SHOWINTERNET = 1;
     public final static String TAG = "jsone";
+
+    public final static int SHOW_BACKGROUND = 0;
+    public final static int NO_BACKGROUND = 1;
+
     //判断用户是否输入完成手机号
     public boolean Fourteen = false;
     //是否开启倒计时
@@ -68,9 +75,6 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
     public Button edit_popup_delete;
     public Button edit_phone_popup_return;
     public Button edit_phone_popup_delete;
-    //内存存放手机号码
-    public SharedPreferences preferences;
-    public SharedPreferences.Editor editor;
     //用于二次注册的popup窗口
     public static PopupWindow popupWindowPhone;
     public static PopupWindow popupWindowEdit;
@@ -81,17 +85,12 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
     public static View editPhoneView;
     //记录用户手机号
     private static String user_phone_number;
-    //存在内存的手机号，用于判断
-    private static String shared_phone;
     //服务器发送来的验证码
-    public String server_number = "1234";
     //验证码输入的4个edit 以及获取4个按钮的输入内容
     private static EditText edit_one;
     private static EditText edit_two;
     private static EditText edit_three;
     private static EditText edit_fore;
-    //这是随机验证码
-    public String edit_yanzhen = "1234";
     //下一步按钮
     private Button window_user_btn_next;
     //输入区域
@@ -141,18 +140,14 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
     public static int editNum = 0;
     //记录用户输入内容
     public String edit_user_yanzhen;
-    public MainActivity mainActivity;
-
-    public String onlyPhoneID;
-    public String onlyPhoneToken;
-    public int interFace;
+    public  MainActivity mainActivity;
     private String VerifyToken;
 
-    public PopupWindowUtil(Context context) {
-        //firstRegisterID();
-        //在这个方法初始化其他控件
+    public HandlerInfo handlerInfo = new HandlerInfo();
 
-        mainActivity = (MainActivity) context;
+    public PopupWindowUtil(Context context) {
+        //在这个方法初始化其他控件
+        mainActivity = (MainActivity) MainActivity.mainContext;
         editView = LayoutInflater.from(context).inflate(R.layout.popupwindow_edit, null);
         editPhoneView = LayoutInflater.from(context).inflate(R.layout.popopwindow_edit_phone,null);
         phoneView = LayoutInflater.from(context).inflate(R.layout.poupwindow_phone,null);
@@ -204,6 +199,7 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
                 }
             }
         });
+        setStartAnimation();
     }
 
     //这是倒计时方法
@@ -249,6 +245,9 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
             case 1:
                 show(1);
                 break;
+            case 3:
+                show(3);
+                break;
     }
     }
 
@@ -273,15 +272,12 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
                 editNum = 0;
                 if (user_phone_number != null){
                     text_view_phone.setText("验证码已发送至 " + user_phone_number);
-                }else {
-                    text_view_phone.setText(shared_phone);
                 }
                 popupWindowPhoneEdit.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
                 popupWindowPhoneEdit.setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
                 popupWindowPhoneEdit.showAtLocation(editPhoneView, Gravity.BOTTOM,0,0);
                 break;
         }
-
     }
     //初始化控件
     public void initControl() {
@@ -386,7 +382,6 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
         edit_two.setEnabled(false);
         edit_three.setEnabled(false);
         edit_fore.setEnabled(false);
-
     }
 
     //判断用户是否已经输入过手机号码
@@ -415,7 +410,7 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
                 //用户手机号码
                 user_phone_number = user_edit_phone.getText().toString();
             }
-            //*这里是进行对输入的判断
+            //这里是进行对输入的判断
             @Override
             public void afterTextChanged(Editable s) {
                 String text = textLength.toString() + ' ';
@@ -459,7 +454,6 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
                                     show(3);
                                     dismiss(1);
                                 }
-
                                 findFocusable(edit_one);
                             }
                         }
@@ -544,23 +538,6 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
         });
 
 
-    }
-
-    //第一个打开界面将会获得一个临时token
-    public void firstRegisterID() {
-        onlyPhoneID = Utils.getPhoneId();
-        HttpRequest.request(MyApplication.ServerUrl.LIFEHELP_SERVER_URL + "v1/Signature/" + onlyPhoneID, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                onlyPhoneToken = ParseJson.getOnlyPhoneToken(response.body().string());
-                Log.i("jsone", "onResponse: " + onlyPhoneToken);
-            }
-        });
     }
 
     //让editText获取焦点
@@ -682,7 +659,10 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
         HttpRequest.request(MyApplication.ServerUrl.TIANHUAN_TEST_URL + "inorup/" + Utils.getPhoneNumber(user_phone_number), new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-
+                Message message = new Message();
+                message.obj = "你没有网络";
+                message.what = SHOWINTERNET;
+                handlerInfo.sendMessage(message);
             }
 
             @Override
@@ -712,7 +692,10 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
         HttpRequest.request(url, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-
+                Message message = new Message();
+                message.obj = "你没有网络";
+                message.what = SHOWINTERNET;
+                handlerInfo.sendMessage(message);
             }
 
             @Override
@@ -722,8 +705,6 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
             }
         });
     }
-
-
     //登陆和注册请求
     public void loginAndRegisterRequest() {
 
@@ -733,7 +714,10 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
                 "verifySMS/" + Utils.getPhoneNumber(user_phone_number) +"/"+ user_input , new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-
+                Message message = new Message();
+                message.obj = "你没有网络";
+                message.what = SHOWINTERNET;
+                handlerInfo.sendMessage(message);
             }
 
             @Override
@@ -753,11 +737,13 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
                     userInfo.setTenCentToken(loginAndRegisterJson.getTenCentToken());
                     userInfo.setUsername(loginAndRegisterJson.getUsername());
                     userInfo.setPrimary_key(loginAndRegisterJson.getPrimary_key());
+                    userInfo.setUser_id(loginAndRegisterJson.getUser_id());
                     userInfo.setToken_base64(res);
                     userInfo.save();
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            ToastUtil.showToast(MyApplication.getContext(),"你已经成功登陆",3000);
                             dismiss(0);
                         }
                     });
@@ -788,9 +774,14 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
     }
     //设置一个背景显示已经加载和关闭动画
     public void setBackAnimation() {
-        AlphaAnimation exitAlpha = (AlphaAnimation) AnimationUtils.loadAnimation(mainActivity, R.anim.exit_window_back);
+        AlphaAnimation exitAlpha = (AlphaAnimation) AnimationUtils.loadAnimation(MainActivity.getMainContext(), R.anim.exit_window_back);
         mainActivity.windowBack2.setAnimation(exitAlpha);
         mainActivity.windowBack2.setVisibility(View.GONE);
+    }
+    public void setStartAnimation(){
+        AlphaAnimation start = (AlphaAnimation) AnimationUtils.loadAnimation(MainActivity.getMainContext(), R.anim.show_window_back);
+        mainActivity.windowBack2.setAnimation(start);
+        mainActivity.windowBack2.setVisibility(View.VISIBLE);
     }
 
     //判断当前显示为第几个textView并且获取textView显示的内容
@@ -812,7 +803,6 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
             user_input = user_input + view_text_4.getText().toString();
             user_btn_click++;
         }
-        Log.i(TAG, "getTextViewContext: " + user_input);
     }
     //对editText的删除按键进行监听
     @Override
@@ -900,7 +890,10 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
         HttpRequest.request(MyApplication.ServerUrl.TIANHUAN_TEST_URL + "verifyImgNum/" + edit_user_yanzhen, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-
+                Message message = new Message();
+                message.obj = "你没有网络";
+                message.what = SHOWINTERNET;
+                handlerInfo.sendMessage(message);
             }
 
             @Override
@@ -983,7 +976,9 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
         //将button隐藏掉
         first_count_down.setVisibility(View.GONE);
     }
-    public  void UiThread(final String toastString){
+    //回到主线程，并提示一个toast
+
+    public void UiThread(final String toastString){
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -991,4 +986,14 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
             }
         });
     }
+
+    public class HandlerInfo extends Handler{
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case SHOWINTERNET : ToastUtil.showToast(MyApplication.getContext(),(String) msg.obj,3000);
+            }
+        }
+    }
+
 }
