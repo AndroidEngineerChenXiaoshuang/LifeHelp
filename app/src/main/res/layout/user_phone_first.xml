@@ -71,7 +71,10 @@
             android:id="@+id/textView"/>
         <!--这是手机输入editText-->
         <EditText
+            android:hint="请输入手机号"
+            android:textColorHint="#c8c9c9"
             android:maxLength="13"
+            android:imeOptions="actionDone"
             android:layout_marginLeft="10dp"
             android:id="@+id/user_edit_phone"
             android:layout_marginTop="10dp"
@@ -82,8 +85,9 @@
             android:saveEnabled="true"
             android:layout_width="160dp"
             android:textSize="20sp"
-            android:layout_height="35dp"
-            android:ems="10" />
+            android:layout_height="35dp" />
+
+
     </LinearLayout>
 
     <!--这是跳过按钮-->

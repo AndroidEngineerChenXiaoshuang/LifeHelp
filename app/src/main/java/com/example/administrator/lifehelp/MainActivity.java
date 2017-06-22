@@ -1,5 +1,6 @@
 package com.example.administrator.lifehelp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -136,6 +137,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public UserinterfaceFragment userinterfaceFragment;
 
+    public static Context mainContext;
+
     /**
      * framgnet的状态，默认为1
      * 1表示此碎片正处于mainFragment
@@ -148,10 +151,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         Utils.setStatusBarColor(Color.TRANSPARENT, this);
         setContentView(R.layout.activity_main);
         initData();
+        mainContext = MainActivity.this;
     }
+
+
     /**
      * 用于初始化所有控件的方法
      */
@@ -333,7 +340,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             //当用户点击我的钱包
             case R.id.help_wallet:
                 List<UserInfo> userInfo = DataSupport.findAll(UserInfo.class);
-
                 for (UserInfo user : userInfo){
                     Log.i("jsone", "onNavigationItemSelected: ");
                     if (user.getUsername() != null){
@@ -344,9 +350,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 }
                 if (!isLogin) {
-                    windowBack2.setVisibility(View.VISIBLE);
-                    AlphaAnimation alphaAnimation = (AlphaAnimation) AnimationUtils.loadAnimation(this, R.anim.show_window_back);
-                    windowBack2.startAnimation(alphaAnimation);
                     PopupWindowUtil.showPopupwindow(MainActivity.this, 1);
                     closeDrawer();
                 }
@@ -626,6 +629,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onAnimationRepeat(Animation animation) {
     }
+    public static Context getMainContext(){
+        return mainContext;
+    }
 
     public class HandlerInfo extends Handler {
         @Override
@@ -645,5 +651,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     break;
             }
         }
+
     }
 }
