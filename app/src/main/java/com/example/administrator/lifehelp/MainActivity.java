@@ -259,6 +259,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         findViewById(R.id.bottom).setOnClickListener(this);
 
+
     }
 
     //添加主界面的fragment
@@ -379,7 +380,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void closeDrawer() {
         drawer.closeDrawers();
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

@@ -151,7 +151,6 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
     public PopupWindowUtil(Context context) {
         //firstRegisterID();
         //在这个方法初始化其他控件
-
         mainActivity = (MainActivity) context;
         editView = LayoutInflater.from(context).inflate(R.layout.popupwindow_edit, null);
         editPhoneView = LayoutInflater.from(context).inflate(R.layout.popopwindow_edit_phone,null);

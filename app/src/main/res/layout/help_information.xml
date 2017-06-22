@@ -22,7 +22,6 @@
             android:layout_height="wrap_content">
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:src="@drawable/ic_user"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:id="@+id/user_image"/>
