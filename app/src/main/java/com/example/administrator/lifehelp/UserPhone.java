@@ -91,39 +91,6 @@ public class UserPhone extends AppCompatActivity {
         //String str = string.substring(string.indexOf("\\W") + 1,string.indexOf("."));
     }
 
-<<<<<<< HEAD
-    /**
-     * 第一次打开客户端
-     */
-    public void firstUse() {
-        onlyPhoneId = Utils.getPhoneId();
-        // getTemporaryToken(true);
-        //Log.i(TAG, "onlyPhoneToken:8888 " + onlyPhoneToken);
-    }
-
-    public void getTemporaryToken(final boolean noting) {
-        HttpRequest.request(MyApplication.ServerUrl.LIFEHELP_SERVER_URL + "v1/Signature/" + onlyPhoneId, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.i(TAG, "Internet: " + "没有网络");
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String temToken = response.body().string();
-                //onlyPhoneToken = UserLangUtil.getParseServer(temToken);
-                onlyPhoneToken = ParseJson.getOnlyPhoneToken(temToken);
-                Log.i(TAG, "onlyPhoneToken: " + onlyPhoneToken);
-                if (!noting){
-                    serverRequest();
-                }
-            }
-        });
-
-    }
-
-=======
->>>>>>> 9f0ac0023b5eb0887800711452143725bf5e5ffa
     /**
      * 对输入的手机号格式进行判断
      */
@@ -262,18 +229,8 @@ public class UserPhone extends AppCompatActivity {
      * 在这里请求服务器并获取返回的数据
      */
     public void serverRequest() {
-<<<<<<< HEAD
-        if (onlyPhoneToken == null) {
-            //onlyPhoneToken = UserLangUtil.getTemporaryToken(onlyPhoneId);
-        }
-
-
-
-        String url = MyApplication.ServerUrl.TIANHUAN_TEST_URL + "requestMax/" + Utils.getPhoneNumber(userPhone);
-=======
         String url = MyApplication.ServerUrl.TIANHUAN_TEST_URL + "requestMax/" + Utils.getPhoneNumber(userPhone);
         Log.i(TAG, "serverRequest: " + url);
->>>>>>> 9f0ac0023b5eb0887800711452143725bf5e5ffa
         HttpRequest.request(url, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {

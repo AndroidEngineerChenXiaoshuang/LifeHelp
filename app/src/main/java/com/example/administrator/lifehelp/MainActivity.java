@@ -18,9 +18,13 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.test.suitebuilder.TestSuiteBuilder;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
@@ -29,6 +33,7 @@ import android.view.animation.RotateAnimation;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -75,10 +80,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     //用于控制判断是否打开了下载管理器
     public boolean downloadRunning = false;
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 9f0ac0023b5eb0887800711452143725bf5e5ffa
     //动画主体是否打开
     public boolean main_isRunning = false;
     //动画是否正在运行
@@ -150,14 +151,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public int fragmentstate = 1;
 
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 9f0ac0023b5eb0887800711452143725bf5e5ffa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         Utils.setStatusBarColor(Color.TRANSPARENT, this);
         setContentView(R.layout.activity_main);
         initData();
@@ -274,6 +270,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         findViewById(R.id.bottom).setOnClickListener(this);
 
+
     }
 
     //添加主界面的fragment
@@ -346,60 +343,56 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             //当用户点击我的钱包
             case R.id.help_wallet:
                 List<UserInfo> userInfo = DataSupport.findAll(UserInfo.class);
-                for (UserInfo user : userInfo){
+                for (UserInfo user : userInfo) {
                     Log.i("jsone", "onNavigationItemSelected: ");
-                    if (user.getUsername() != null){
+                    if (user.getUsername() != null) {
                         isLogin = true;
                         Log.i("jsone", "onCreate: " + user.getUsername());
-                        Intent intent = new Intent(this,MyWallet.class);
+                        Intent intent = new Intent(this, MyWallet.class);
                         startActivity(intent);
                     }
                 }
-<<<<<<< HEAD
-                if (!isLogin){
-                    windowBack2.setVisibility(View.VISIBLE);
-                    AlphaAnimation alphaAnimation = (AlphaAnimation) AnimationUtils.loadAnimation(this,R.anim.show_window_back);
-                    windowBack2.startAnimation(alphaAnimation);
-                    PopupWindowUtil.showPopupwindow(MainActivity.this,1);
-=======
                 if (!isLogin) {
+                    windowBack2.setVisibility(View.VISIBLE);
+                    AlphaAnimation alphaAnimation = (AlphaAnimation) AnimationUtils.loadAnimation(this, R.anim.show_window_back);
+                    windowBack2.startAnimation(alphaAnimation);
                     PopupWindowUtil.showPopupwindow(MainActivity.this, 1);
->>>>>>> 9f0ac0023b5eb0887800711452143725bf5e5ffa
-                    closeDrawer();
+                    if (!isLogin) {
+                        PopupWindowUtil.showPopupwindow(MainActivity.this, 1);
+                        closeDrawer();
+                    }
                 }
                 break;
-            //当用户点击我帮助的订单
-            case R.id.help_myself:
-                closeDrawer();
-                break;
-            //当用户点击我的礼包
-            case R.id.help_thing:
-                closeDrawer();
-                break;
-            //当用户点击设置
-            case R.id.help_setting:
-                closeDrawer();
-                break;
-            //当用户点击发布的订单
-            case R.id.help_Release:
-                closeDrawer();
-                break;
-            //当用户点击个人认证
-            case R.id.help_Personal_proof:
-                Intent intent = new Intent(this, PersonalCertification.class);
-                startActivity(intent);
-                break;
+                //当用户点击我帮助的订单
+                case R.id.help_myself:
+                    closeDrawer();
+                    break;
+                //当用户点击我的礼包
+                case R.id.help_thing:
+                    closeDrawer();
+                    break;
+                //当用户点击设置
+                case R.id.help_setting:
+                    closeDrawer();
+                    break;
+                //当用户点击发布的订单
+                case R.id.help_Release:
+                    closeDrawer();
+                    break;
+                //当用户点击个人认证
+                case R.id.help_Personal_proof:
+                    Intent intent = new Intent(this, PersonalCertification.class);
+                    startActivity(intent);
+                    break;
 
+                }
+                return false;
         }
-        return false;
-    }
-
 
     //给fragment提供相应的drawer关闭
     public void closeDrawer() {
         drawer.closeDrawers();
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

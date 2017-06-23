@@ -2,9 +2,11 @@ package com.example.administrator.lifehelp.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.RippleDrawable;
 import android.provider.ContactsContract;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +18,13 @@ import com.example.administrator.lifehelp.R;
 import com.example.administrator.lifehelp.UserArticleActivity;
 import com.example.administrator.lifehelp.application.MyApplication;
 import com.example.administrator.lifehelp.gson.InitArticle;
+import com.example.administrator.lifehelp.util.PopupWindowUtil;
 import com.example.administrator.lifehelp.util.Utils;
 
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserFactory;
+
+import java.io.StringReader;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +35,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 
 /**
- * Created by Administrator on 2017/6/5 0005.
+ *  CreateBy Jam
  */
 
 public class InitArticleAdapter extends RecyclerView.Adapter {
@@ -72,26 +79,28 @@ public class InitArticleAdapter extends RecyclerView.Adapter {
         initArticleViewHolder.articleContent.setText(initArticles.get(position).article_content);
         initArticleViewHolder.articleReward.setText(initArticles.get(position).article_reward);
         initArticleViewHolder.articleNickname.setText(initArticles.get(position).article_nickname);
-        Glide.with(context)
-                .load(initArticles.get(position).author_avatar)
-                .asBitmap()
-                .placeholder(R.drawable.ic_user)
-                .into(initArticleViewHolder.circleImageView);
+
+        String userImg = initArticles.get(position).article_author;
+        //证明头像是存在服务器里面的
+        if(userImg.lastIndexOf("h")!=-1){
+            Glide.with(MyApplication.getContext())
+                    .load(initArticles.get(position).author_avatar)
+                    .asBitmap()
+                    .into(initArticleViewHolder.circleImageView);
+        }else{
+            initArticleViewHolder.circleImageView.setBackgroundResource(R.drawable.ic_user);
+        }
+
         initArticleViewHolder.root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MyApplication.getContext(), UserArticleActivity.class);
-                intent.putExtra("articleId",initArticles.get(position).article_id);
-                intent.putExtra("articleAuthor",initArticles.get(position).article_author);
-                intent.putExtra("userName",initArticles.get(position).article_nickname);
-                intent.putExtra("authorAvatar",initArticles.get(position).author_avatar);
                 intent.putExtra("createTime",initArticles.get(position).create_time);
                 intent.putExtra("articleValid",initArticles.get(position).article_valid);
-                intent.putExtra("articleContent",initArticles.get(position).article_content);
-                intent.putExtra("article_reward",initArticles.get(position).article_reward);
+                intent.putExtra("articleId",initArticles.get(position).article_id);
+                intent.putExtra("userId",initArticles.get(position).article_author);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 MyApplication.getContext().startActivity(intent);
-
             }
         });
     }

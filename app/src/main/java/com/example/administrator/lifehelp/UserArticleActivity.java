@@ -1,39 +1,40 @@
 package com.example.administrator.lifehelp;
 
-import android.Manifest;
-import android.content.ComponentName;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
-
+import android.widget.Toast;
 import com.bumptech.glide.Glide;
+import com.example.administrator.lifehelp.application.MyApplication;
 import com.example.administrator.lifehelp.db.UserInfo;
-import com.example.administrator.lifehelp.util.PopupWindowUtil;
+import com.example.administrator.lifehelp.gson.InitArticleInfo;
+import com.example.administrator.lifehelp.util.HttpRequest;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.litepal.crud.DataSupport;
-
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
 import de.hdodenhof.circleimageview.CircleImageView;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 /**
  * Create by Jam 2017/6/12
  */
 
-public class UserArticleActivity extends AppCompatActivity implements View.OnClickListener {
+public class UserArticleActivity extends AppCompatActivity implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
 
     private CircleImageView circleImageView ;
     private TextView userName ;
@@ -41,7 +42,13 @@ public class UserArticleActivity extends AppCompatActivity implements View.OnCli
     private TextView articleInfo ;
     private TextView endTimer ;
     private TextView userMoney;
+    private TextView userSpeak;
     private ImageButton imageBack;
+    private SwipeRefreshLayout refreshInfo;
+    //请求文章详细信息url地址
+    private String url = "http://192.168.43.67/v1/articleoperation/getcontent/";
+    private InitArticleInfo initArticleInfo;
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,23 +64,63 @@ public class UserArticleActivity extends AppCompatActivity implements View.OnCli
         articleInfo = (TextView) findViewById(R.id.articleInfo);
         endTimer = (TextView) findViewById(R.id.end_time);
         userMoney = (TextView) findViewById(R.id.user_money);
+        userSpeak = (TextView) findViewById(R.id.user_speak);
+        refreshInfo = (SwipeRefreshLayout) findViewById(R.id.refreshArticle);
         imageBack = (ImageButton) findViewById(R.id.title_return);
         imageBack.setOnClickListener(this);
         TextView titleName = (TextView) findViewById(R.id.title_name);
         titleName.setText("求助详情");
-        Intent intent = getIntent();
-        if(intent!=null){
-            Glide.with(this)
-                    .load(intent.getStringExtra("authorAvatar"))
-                    .placeholder(R.drawable.ic_user)
-                    .into(circleImageView);
-            userName.setText(intent.getStringExtra("userName"));
-            articleInfo.setText(intent.getStringExtra("articleContent"));
-            userMoney.setText(intent.getStringExtra("article_reward"));
-            setTimerfuncation(getIntent());
-        }else{
-            throw new NullPointerException("Intent is not null");
-        }
+        intent = getIntent();
+        setTimerfuncation(intent);
+        url += intent.getStringExtra("articleId");
+        refreshInfo.setColorSchemeColors(MyApplication.Color.PRIMARYCOLOR);
+        refreshInfo.setRefreshing(true);
+        refreshInfo.setOnRefreshListener(this);
+        requestArticleInfo();
+    }
+
+    private void requestArticleInfo() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                HttpRequest.request(url, new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        Log.d("Jam", String.valueOf(Thread.currentThread().getId()));
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Log.d("Jam", String.valueOf(Thread.currentThread().getId()));
+                                Toast.makeText(UserArticleActivity.this,"请求服务器失败",Toast.LENGTH_SHORT).show();
+                                refreshInfo.setRefreshing(false);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        String result = response.body().string();   //异步获取到服务器返回的数据
+                        Gson gson = new Gson();
+                        initArticleInfo = gson.fromJson(result,InitArticleInfo.class);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                userName.setText(initArticleInfo.articleAuthor);
+                                articleInfo.setText(initArticleInfo.articleContent);
+                                userMoney.setText(initArticleInfo.articleReward);
+                                refreshInfo.setRefreshing(false);
+                                userSpeak.setText(initArticleInfo.articleSignature);
+                                if(initArticleInfo.articleAvatar.lastIndexOf("h")!=-1){
+                                    Glide.with(UserArticleActivity.this).load(initArticleInfo.articleAvatar).into(circleImageView);
+                                }else{
+                                    circleImageView.setBackgroundResource(R.drawable.ic_user);
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        }).start();
     }
 
     private void setTimerfuncation(Intent intent){
@@ -85,6 +132,7 @@ public class UserArticleActivity extends AppCompatActivity implements View.OnCli
             startTimer.setText(getStartForEndTimerString(startTime)+"前");
         }
     }
+
 
     private String getStartForEndTimerString(Long startTime){
         if(startTime>0){
@@ -118,13 +166,46 @@ public class UserArticleActivity extends AppCompatActivity implements View.OnCli
 
     public void startWork(View view) {
         if(view.getId() == R.id.startWork_btn){
-            Cursor cursor = DataSupport.findBySQL("select token,TlssToken from userinfo;");
-            if(cursor.moveToNext()){
-                String token = cursor.getString(cursor.getColumnIndex("token"));
-                String tlsToken = cursor.getString(cursor.getColumnIndex("tlsstoken"));
-                cursor.close();
+            List<UserInfo> userInfos = DataSupport.select("username","token_base64","user_id").find(UserInfo.class);
+            //获取当前登录的账号
+            String userAccount = userInfos.get(0).getUsername();
+            String userId = userInfos.get(0).getUser_id();
+            String token = userInfos.get(0).getToken_base64();
+            if(userAccount!=null&&userAccount.length()>0) {
+                String requestUrl = "http://192.168.43.67/v1/useraction/getuserproperty/";
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append(requestUrl).append(userId+"/").append(token.replace("\"",""));
+                Log.d("Jam",stringBuilder.toString());
+                HttpRequest.request(stringBuilder.toString(), new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(UserArticleActivity.this,"请求服务器失败",Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        String result = response.body().string();
+                        try {
+                            JSONObject jsonObject = new JSONObject(result);
+                            String business = jsonObject.getString("business");
+                            if(business.equals("1")){
+                                //如果是接单员的话就开始我们的接单处理业务逻辑
+
+                            }else{
+
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
             }else{
-                PopupWindowUtil.showPopupwindow(this,1);
+                //用户没有登录状态下的结果
             }
         }
     }
@@ -137,4 +218,11 @@ public class UserArticleActivity extends AppCompatActivity implements View.OnCli
                 break;
         }
     }
+
+    @Override
+    public void onRefresh() {
+        Log.d("Jam","what");
+        requestArticleInfo();
+    }
+
 }
