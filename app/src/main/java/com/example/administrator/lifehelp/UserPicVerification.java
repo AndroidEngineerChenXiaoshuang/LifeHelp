@@ -181,6 +181,8 @@ public class UserPicVerification extends AppCompatActivity implements View.OnKey
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.returnPhone:
+                Intent intent = new Intent(UserPicVerification.this,UserPhone.class);
+                startActivity(intent);
                 finish();
                 break;
             case R.id.aginRequest:

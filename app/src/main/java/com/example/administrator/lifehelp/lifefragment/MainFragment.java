@@ -120,6 +120,7 @@ public class MainFragment extends Fragment implements View.OnClickListener{
         root = LayoutInflater.from(getActivity()).inflate(R.layout.activity_main_fragment,container,false);
         initData();
         return root;
+
     }
 
     /**

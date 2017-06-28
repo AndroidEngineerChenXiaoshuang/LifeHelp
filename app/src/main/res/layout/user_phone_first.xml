@@ -2,7 +2,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/user_phone_back"
-    android:background="@drawable/lifehelp_background">
+    android:background="#ffffff"
+    >
+
     <View
         android:layout_marginRight="55dp"
         android:layout_marginLeft="55dp"
@@ -114,6 +116,28 @@
         android:layout_below="@+id/view"
         android:layout_centerHorizontal="true"
         android:id="@+id/user_btn_next" />
+
+    <RelativeLayout
+        android:visibility="gone"
+        android:id="@+id/window_loading"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ProgressBar
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+
+    <ImageView
+        android:layout_marginTop="130dp"
+        android:src="@drawable/zuihouyici"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/textView3"
+        android:id="@+id/imageView5"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
 
 </RelativeLayout>

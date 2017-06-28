@@ -21,6 +21,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
@@ -146,6 +148,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      */
     public int fragmentstate = 1;
 
+    public static Window win ;
 
 
     @Override
@@ -156,8 +159,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         initData();
         mainContext = MainActivity.this;
+        win = getWindow();
+       //
     }
-
+    public static void setWindowBackGround(Window window){
+        WindowManager.LayoutParams params = window.getAttributes();
+        params.alpha = WindowManager.LayoutParams.ALPHA_CHANGED;
+        win.setAttributes(params);
+    }
 
     /**
      * 用于初始化所有控件的方法
@@ -334,6 +343,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         this.isShow = isShow;
     }
 
+
+
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -350,16 +361,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 }
                 if (!isLogin) {
-                    PopupWindowUtil.showPopupwindow(MainActivity.this, 1);
+//                    PopupWindowUtil.showPopupwindow(MainActivity.this, 1);
+//                    layoutParams.alpha = 0.5f;
+//                    win.setAttributes(layoutParams);
+                    //setWindowBackGround();
                     closeDrawer();
                 }
                 break;
             //当用户点击我帮助的订单
             case R.id.help_myself:
+
+                PopupWindowUtil.showPopupwindow(MainActivity.this, 1).setWindowBackGround(win);
                 closeDrawer();
                 break;
             //当用户点击我的礼包
             case R.id.help_thing:
+
                 closeDrawer();
                 break;
             //当用户点击设置
@@ -372,7 +389,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             //当用户点击个人认证
             case R.id.help_Personal_proof:
-                Intent intent = new Intent(this, PersonalCertification.class);
+//                Intent intent = new Intent(this, PersonalCertification.class);
+//                startActivity(intent);
+                Intent intent = new Intent(this,MyWallet.class);
                 startActivity(intent);
                 break;
 

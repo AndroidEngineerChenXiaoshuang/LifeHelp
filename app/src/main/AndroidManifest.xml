@@ -45,7 +45,9 @@
         <!-- 这个是验证界面 -->
         <activity
             android:name=".UserVerification"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" >
+
+        </activity>
         <activity
             android:name=".WriteHelpInfo"
             android:screenOrientation="portrait"
@@ -81,11 +83,15 @@
         <activity
             android:name=".MyWallet"
             android:enabled="true"
-            android:exported="false" />
+            android:exported="false" >
+
+        </activity>
         <activity
             android:name=".UserPicVerification"
             android:enabled="true"
-            android:exported="false" />
+            android:exported="false" >
+
+        </activity>
         <activity
             android:name=".UserArticleActivity"
             android:enabled="true"

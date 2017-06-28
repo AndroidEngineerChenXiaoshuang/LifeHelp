@@ -1,5 +1,6 @@
 package com.example.administrator.lifehelp;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -10,11 +11,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -22,6 +29,7 @@ import com.example.administrator.lifehelp.application.MyApplication;
 import com.example.administrator.lifehelp.db.UserInfo;
 import com.example.administrator.lifehelp.gson.JudgeVerJson;
 import com.example.administrator.lifehelp.util.HttpRequest;
+import com.example.administrator.lifehelp.util.PopupWindowUtil;
 import com.example.administrator.lifehelp.util.ToastUtil;
 import com.example.administrator.lifehelp.util.Utils;
 import com.google.gson.Gson;
@@ -43,9 +51,11 @@ import okhttp3.Response;
 public class UserPhone extends AppCompatActivity {
 
     private final static String TAG = "jsone";
-    private final static int SHOWINTERNET = 1;
+    public final static int SHOWINTERNET = 1;
+    public final static int SHOW_LODING = 2;
 
     public boolean t = true;
+    public boolean Fourteen = false;
     //手机号码格式
     private String telRegex = "[1][34578][0-9][ ]\\d{4}[ ]\\d{4}";
     //下一步按钮
@@ -62,6 +72,7 @@ public class UserPhone extends AppCompatActivity {
     //判断在那个页面
     public boolean isEdit = true;
     public RelativeLayout user_phone_back;
+    public RelativeLayout window_loading;
     //拥挤手机号
     public String userPhone;
 
@@ -82,6 +93,7 @@ public class UserPhone extends AppCompatActivity {
                 finish();
             }
         }
+        //Utils.setStatusBarColor(Color.TRANSPARENT, this);
         setContentView(R.layout.user_phone_first);
         //初始化控件
         initControl();
@@ -95,26 +107,42 @@ public class UserPhone extends AppCompatActivity {
      * 对输入的手机号格式进行判断
      */
     public void userPhoneFormat() {
-        //user_edit_phone.addTextChangedListener(textChange);
         user_edit_phone.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
             }
-//          这里是手机代码格式例如 888 8888 8888
+            //          这里是手机代码格式例如 888 8888 8888
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int i2) {
                 textLength = s;
+                if (s == null || s.length() == 0) return;
                 StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < s.length(); i++) {
-                    sb.append(s.charAt(i));
-                    if ((sb.length() == 4 || sb.length() == 9)
-                            && sb.charAt(sb.length() - 1) != ' ') {
-                        sb.insert(sb.length() - 1, ' ');
-                        String temp = s.toString();
-                        user_edit_phone.setText(sb.toString());
-                        user_edit_phone.setSelection(temp.length() +1);
+                    if (i != 3 && i != 8 && s.charAt(i) == ' ') {
+                        continue;
+                    } else {
+                        sb.append(s.charAt(i));
+                        if ((sb.length() == 4 || sb.length() == 9) && sb.charAt(sb.length() - 1) != ' ') {
+                            sb.insert(sb.length() - 1, ' ');
+                        }
                     }
+                }
+                if (!sb.toString().equals(s.toString())) {
+                    int index = start + 1;
+                    if (sb.charAt(start) == ' ') {
+                        if (before == 0) {
+                            index++;
+                        } else {
+                            index--;
+                        }
+                    } else {
+                        if (before == 1) {
+                            index--;
+                        }
+                    }
+                    user_edit_phone.setText(sb.toString());
+                    user_edit_phone.setSelection(index);
                 }
             }
 
@@ -127,9 +155,9 @@ public class UserPhone extends AppCompatActivity {
                 String text = textLength.toString() + ' ';
                 int phone_length = text.length();
                 if (phone_length == 14) {
-                    /**
-                     * 这里让输入完后失去输入焦点
-                     */
+                    user_btn_next.setEnabled(true);
+                    Fourteen = false;
+                    //输入完之后关闭输入
                     user_edit_phone.setOnTouchListener(new View.OnTouchListener() {
                         @Override
                         public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -156,14 +184,56 @@ public class UserPhone extends AppCompatActivity {
                             }else {
                                 userPhone = user_edit_phone.getText().toString();
                                 t = true;
+                                setBackGroundLoading();
                                 serverRequest();
                                 judgeActivity();
                             }
                         }
                     });
                 }
+                if (phone_length != 14){
+                    Fourteen = true;
+                    user_btn_next.setTextColor(Color.rgb(193, 192, 190));
+                    user_btn_next.setEnabled(false);
+                }
             }
         });
+    }
+
+    public void setBackGroundLoading(){
+        PopupWindowUtil.showPopupwindowLoading(this);
+        final Window window = getWindow();
+        ValueAnimator valueAnimator = ValueAnimator.ofFloat(1f,0.4f);
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                WindowManager.LayoutParams params = window.getAttributes();
+                params.alpha = (float) valueAnimator.getAnimatedValue();
+                window.setAttributes(params);
+
+            }
+        });
+        valueAnimator.setDuration(700);
+        valueAnimator.start();
+    }
+    public void CloseBackGroundLoading(){
+        PopupWindowUtil.CloseLoadingPopupwindow();
+        final Window window = getWindow();
+        ValueAnimator valueAnimator = ValueAnimator.ofFloat(0.4f,1f);
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                WindowManager.LayoutParams params = window.getAttributes();
+                params.alpha = (float) valueAnimator.getAnimatedValue();
+                window.setAttributes(params);
+
+            }
+        });
+        valueAnimator.setDuration(700);
+        valueAnimator.start();
+        window_loading.setVisibility(View.GONE);
+        user_btn_skip.setEnabled(true);
+        user_btn_next.setEnabled(true);
     }
 
     private void judgeActivity() {
@@ -171,7 +241,7 @@ public class UserPhone extends AppCompatActivity {
             @Override
             public void onFailure(Call call, IOException e) {
                 Message message = new Message();
-                message.obj = "你没有网络";
+                message.obj = "请检查网络";
                 message.what = SHOWINTERNET;
                 handlerInfo.sendMessage(message);
             }
@@ -199,24 +269,14 @@ public class UserPhone extends AppCompatActivity {
         picIntent.putExtra("userPhoneNumber", Utils.getPhoneNumber(userPhone));
         if (judgeCode == 1001 || judgeCode == 1002 ){
             Log.i(TAG, "judgeStartActivity: " + "test");
-            if (t){
-                startActivity(intent);
-                finish();
-            }else {
-                UiThread("你的手机号已上限，请明日再试");
-            }
+            startActivity(intent);
+            finish();
         }else if (judgeCode == 1013 || judgeCode == 1011){
             Log.i(TAG, "手机请求正常" + judgeCode);
         }else if (judgeCode == 1000){
-            if (t){
-                startActivity(picIntent);
-                finish();
-            }else {
-                UiThread("你的手机号已上限，请明日再试");
-            }
-        }else if (judgeCode == 1014){
-            t = false;
-            UiThread("你的手机号已上限，请明日再试");
+            startActivity(picIntent);
+            finish();
+        }else if (judgeCode == 1014){UiThread("你的手机号已上限，请明日再试");
         }else if (judgeCode == 1012 || judgeCode == 1003){
             UiThread("天欢的服务器炸了");
         }else {
@@ -235,7 +295,7 @@ public class UserPhone extends AppCompatActivity {
             @Override
             public void onFailure(Call call, IOException e) {
                 Message message = new Message();
-                message.obj = "你没有网络";
+                message.obj = "请检查网络";
                 message.what = SHOWINTERNET;
                 handlerInfo.sendMessage(message);
             }
@@ -254,6 +314,7 @@ public class UserPhone extends AppCompatActivity {
      */
     private void initControl() {
 
+        window_loading = (RelativeLayout) findViewById(R.id.window_loading);
         user_phone_back = (RelativeLayout) findViewById(R.id.user_phone_back);
         //跳过按钮
         user_btn_skip = (Button) findViewById(R.id.user_btn_skip);
@@ -296,7 +357,13 @@ public class UserPhone extends AppCompatActivity {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what){
-                case SHOWINTERNET : ToastUtil.showToast(UserPhone.this,(String) msg.obj,3000);
+                case SHOWINTERNET :
+                    CloseBackGroundLoading();
+                    ToastUtil.showToast(UserPhone.this,(String) msg.obj,3000);
+                    break;
+                case SHOW_LODING:
+
+                    break;
             }
         }
     }
@@ -318,7 +385,7 @@ public class UserPhone extends AppCompatActivity {
 
         @Override
         public void onTextChanged(CharSequence s, int i, int i1, int i2) {
-           // PhoneNumberUtils.formatNumber()
+            // PhoneNumberUtils.formatNumber()
             textLength = s;
             String contents = s.toString();
             int length = contents.length();

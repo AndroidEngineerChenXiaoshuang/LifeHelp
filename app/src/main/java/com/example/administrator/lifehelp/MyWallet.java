@@ -58,7 +58,7 @@ public class MyWallet extends Activity implements View.OnClickListener{
         switch (view.getId()){
             //充值按钮
             case R.id.wallet_Recharge:
-                PopupWindowUtil.showPopupwindow(MainActivity.getMainContext(),1);
+                PopupWindowUtil.showPopupwindow(this,1).setWindowBackGround(getWindow());
                 break;
             //提现按钮
             case R.id.wallet_cash:

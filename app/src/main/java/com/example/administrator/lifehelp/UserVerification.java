@@ -338,7 +338,7 @@ public class UserVerification extends AppCompatActivity implements View.OnClickL
                     userInfo.setPrimary_key(loginAndRegisterJson.getPrimary_key());
                     userInfo.setUser_id(loginAndRegisterJson.getUser_id());
                     userInfo.setToken_base64(res);
-                    userInfo.save();
+                    //userInfo.save();
                     Intent intent = new Intent(UserVerification.this,MainActivity.class);
                     startActivity(intent);
                     finish();

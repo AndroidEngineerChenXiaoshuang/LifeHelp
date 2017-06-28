@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     android:id="@+id/popupWindow_phone">
 
+
     <RelativeLayout
         android:id="@+id/rela_test"
         android:visibility="visible"
@@ -32,7 +33,6 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:id="@+id/window_user_btn_next" />
-
         <LinearLayout
             android:id="@+id/linearLayout_edit"
             android:orientation="horizontal"
@@ -92,6 +92,20 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
             android:id="@+id/textView" />
+
     </RelativeLayout>
+
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/loading"
+        android:background="@drawable/shape_next_radio_two"
+        android:gravity="center"
+        android:layout_marginTop="151dp"
+        android:layout_width="300dp"
+        android:layout_height="50dp">
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 
 </RelativeLayout>
