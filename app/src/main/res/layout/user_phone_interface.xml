@@ -1,7 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
+    android:layout_height="match_parent"
+    android:background="@drawable/ic_svg_bg">
     <!--这是手机图标-->
     <ImageView
         android:src="@drawable/ic_svg_phone"
@@ -214,6 +214,5 @@
         android:layout_below="@+id/textView2"
         android:layout_alignLeft="@+id/user_end_time"
         android:layout_alignStart="@+id/user_end_time" />
-
 
 </RelativeLayout>

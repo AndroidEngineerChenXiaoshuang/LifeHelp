@@ -195,11 +195,8 @@ public class MyApplication extends Application{
         /**
          *  http://192.168.43.67/用于当前测试开发所使用等同于bangbangshenghuoserver01.website
          */
-        public static final String LIFEHELP_SERVER_URL = "http://192.168.43.67/";
+        public static final String LIFEHELP_SERVER_URL = "http://113.209.31.223/";
 
-        public static final String TIANHUAN_TEST_URL = "http://192.168.43.67/v1/useraction/";
+        public static final String TIANHUAN_TEST_URL = "http://113.209.31.223/v1/useraction/";
     }
-
-
-
 }

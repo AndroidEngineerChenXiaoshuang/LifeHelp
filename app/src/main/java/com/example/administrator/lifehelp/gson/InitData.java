@@ -15,4 +15,8 @@ public class InitData {
 
     public String apk_link;
 
+
+
+
+
 }

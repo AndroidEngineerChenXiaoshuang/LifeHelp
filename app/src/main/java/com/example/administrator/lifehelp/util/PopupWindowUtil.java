@@ -544,7 +544,10 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (judgeCode == 1001 || judgeCode == 1002 ){
+                if ( judgeCode == 1014){
+                    t = false;
+                    UiThread("你的手机号已上限，请明日再试");
+                } else if (judgeCode == 1001 || judgeCode == 1002){
                     Log.i(TAG, "judgeStartActivity: " + "test");
                     if (t){
                         timer.start();
@@ -566,9 +569,6 @@ public class PopupWindowUtil extends Activity implements View.OnClickListener,Vi
                     }else {
                         UiThread("你的手机号已上限，请明日再试");
                     }
-                }else if (judgeCode == 1014){
-                    t = false;
-                    UiThread("你的手机号已上限，请明日再试");
                 }else if (judgeCode == 1012 || judgeCode == 1003){
                     UiThread("天欢的服务器炸了");
                 }else {

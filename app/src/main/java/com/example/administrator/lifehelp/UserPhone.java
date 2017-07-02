@@ -51,10 +51,11 @@ import okhttp3.Response;
 public class UserPhone extends AppCompatActivity {
 
     private final static String TAG = "jsone";
-    public final static int SHOWINTERNET = 1;
-    public final static int SHOW_LODING = 2;
+    public final int SHOWINTERNET = 1;
+    public final int SHOW_LOADING = 2;
+    public final int CLOSE_LOADING = 3;
 
-    public boolean t = true;
+    public boolean full = true;
     public boolean Fourteen = false;
     //手机号码格式
     private String telRegex = "[1][34578][0-9][ ]\\d{4}[ ]\\d{4}";
@@ -77,7 +78,7 @@ public class UserPhone extends AppCompatActivity {
     public String userPhone;
 
     public HandlerInfo handlerInfo = new HandlerInfo();
-    TextChange textChange = new TextChange();
+    public Message message = new Message();
 
     public void onCreate(Bundle savedInstanceState)
     {
@@ -183,7 +184,7 @@ public class UserPhone extends AppCompatActivity {
                                 ToastUtil.showToast(MyApplication.getContext(),"你输入的格式错误",3000);
                             }else {
                                 userPhone = user_edit_phone.getText().toString();
-                                t = true;
+                                full = true;
                                 setBackGroundLoading();
                                 serverRequest();
                                 judgeActivity();
@@ -240,7 +241,7 @@ public class UserPhone extends AppCompatActivity {
         HttpRequest.request(MyApplication.ServerUrl.TIANHUAN_TEST_URL + "verifyIP", new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Message message = new Message();
+                //Message message = new Message();
                 message.obj = "请检查网络";
                 message.what = SHOWINTERNET;
                 handlerInfo.sendMessage(message);
@@ -267,19 +268,36 @@ public class UserPhone extends AppCompatActivity {
         intent.putExtra("userPhoneNumber", Utils.getPhoneNumber(userPhone));
         picIntent.putExtra("user_phone",userPhone);
         picIntent.putExtra("userPhoneNumber", Utils.getPhoneNumber(userPhone));
-        if (judgeCode == 1001 || judgeCode == 1002 ){
+
+        if (judgeCode == 1014){
+            full = false;
+            message.what = CLOSE_LOADING;
+            handlerInfo.sendMessage(message);
+            UiThread("你的手机号已上限，请明日再试");
+        }else if (judgeCode == 1001 || judgeCode == 1002 ){
             Log.i(TAG, "judgeStartActivity: " + "test");
-            startActivity(intent);
-            finish();
+            if (full){
+                message.what = CLOSE_LOADING;
+                handlerInfo.sendMessage(message);
+                startActivity(intent);
+                finish();
+            }
         }else if (judgeCode == 1013 || judgeCode == 1011){
             Log.i(TAG, "手机请求正常" + judgeCode);
         }else if (judgeCode == 1000){
-            startActivity(picIntent);
-            finish();
-        }else if (judgeCode == 1014){UiThread("你的手机号已上限，请明日再试");
+            if (full){
+                message.what = CLOSE_LOADING;
+                handlerInfo.sendMessage(message);
+                startActivity(picIntent);
+                finish();
+            }
         }else if (judgeCode == 1012 || judgeCode == 1003){
+            message.what = CLOSE_LOADING;
+            handlerInfo.sendMessage(message);
             UiThread("天欢的服务器炸了");
         }else {
+            message.what = CLOSE_LOADING;
+            handlerInfo.sendMessage(message);
             UiThread("请求登陆验证太频繁，请稍候再试");
         }
     }
@@ -361,8 +379,11 @@ public class UserPhone extends AppCompatActivity {
                     CloseBackGroundLoading();
                     ToastUtil.showToast(UserPhone.this,(String) msg.obj,3000);
                     break;
-                case SHOW_LODING:
-
+                case SHOW_LOADING:
+                    setBackGroundLoading();
+                    break;
+                case CLOSE_LOADING:
+                    CloseBackGroundLoading();
                     break;
             }
         }
@@ -376,46 +397,4 @@ public class UserPhone extends AppCompatActivity {
             }
         });
     }
-    private class TextChange implements TextWatcher{
-
-        @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int i, int i1, int i2) {
-            // PhoneNumberUtils.formatNumber()
-            textLength = s;
-            String contents = s.toString();
-            int length = contents.length();
-            if(length == 4){
-                if(contents.substring(3).equals(new String(" "))){ // -
-                    contents = contents.substring(0, 3);
-                    user_edit_phone.setText(contents);
-                    user_edit_phone.setSelection(contents.length());
-                }else{ // +
-                    contents = contents.substring(0, 3) + " " + contents.substring(3);
-                    user_edit_phone.setText(contents);
-                    user_edit_phone.setSelection(contents.length());
-                }
-            }
-            else if(length == 9){
-                if(contents.substring(8).equals(new String(" "))){ // -
-                    contents = contents.substring(0, 8);
-                    user_edit_phone.setText(contents);
-                    user_edit_phone.setSelection(contents.length());
-                }else{// +
-                    contents = contents.substring(0, 8) + " " + contents.substring(8);
-                    user_edit_phone.setText(contents);
-                    user_edit_phone.setSelection(contents.length());
-                }
-            }
-        }
-        @Override
-        public void afterTextChanged(Editable editable) {
-
-        }
-    }
-
 }

@@ -291,15 +291,19 @@ public class UserVerification extends AppCompatActivity implements View.OnClickL
                 if (user_btn_click == 1){
                     view_text_1.setText(" ");
                     user_btn_click = 0;
+                    user_input = null;
                 }else if (user_btn_click == 2){
                     view_text_2.setText(" ");
                     user_btn_click = 1;
+                    user_input = user_input.substring(0,1);
                 }else if (user_btn_click == 3){
                     view_text_3.setText(" ");
                     user_btn_click = 2;
+                    user_input = user_input.substring(0,2);
                 }else if (user_btn_click == 4){
                     user_btn_click = 3;
                     view_text_4.setText(" ");
+                    user_input = user_input.substring(0,3);
                 }
                 break;
         }

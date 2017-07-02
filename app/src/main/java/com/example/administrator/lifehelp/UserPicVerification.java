@@ -75,6 +75,7 @@ public class UserPicVerification extends AppCompatActivity implements View.OnKey
     }
 
     public void getVerifylImg() {
+        Log.i(TAG, "getVerifylImg: " + MyApplication.ServerUrl.TIANHUAN_TEST_URL + "getVerifyImg");
         HttpRequest.request(MyApplication.ServerUrl.TIANHUAN_TEST_URL + "getVerifyImg", new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {

@@ -15,7 +15,7 @@ import com.example.administrator.lifehelp.util.PopupWindowUtil;
  */
 public class MyWallet extends Activity implements View.OnClickListener{
 
-    private final static String rmb = "¥";
+    public static String rmb = "¥";
     //显示用户余额
     public double userWalletBalance = 88.88;
     //返回按钮
@@ -29,15 +29,11 @@ public class MyWallet extends Activity implements View.OnClickListener{
     //显示余额
     public TextView walletNum;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_wallet);
         initControl();
-
-
     }
 
     private void initControl() {
